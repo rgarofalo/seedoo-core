@@ -1,0 +1,134 @@
+// Dependency Tree
+digraph {
+	fl_acl [label=fl_acl]
+	fl_disable_childof_search_panel [label=fl_disable_childof_search_panel]
+	fl_m2m_search_panel [label=fl_m2m_search_panel]
+	fl_disable_childof_search_panel -> fl_m2m_search_panel
+	fl_feature_enterprise [label=fl_feature_enterprise]
+	fl_fields_file [label=fl_fields_file]
+	fl_load_only_children_search_panel [label=fl_load_only_children_search_panel]
+	fl_disable_childof_search_panel [label=fl_disable_childof_search_panel]
+	fl_load_only_children_search_panel -> fl_disable_childof_search_panel
+	fl_m2m_search_panel [label=fl_m2m_search_panel]
+	fl_m2m_tree [label=fl_m2m_tree]
+	fl_m2o_tree [label=fl_m2o_tree]
+	fl_m2m_tree -> fl_m2o_tree
+	fl_m2o_tree [label=fl_m2o_tree]
+	fl_mail_client [label=fl_mail_client]
+	fl_mimetypes [label=fl_mimetypes]
+	fl_mail_client -> fl_mimetypes
+	fl_partner_email [label=fl_partner_email]
+	fl_mail_client -> fl_partner_email
+	fl_feature_enterprise [label=fl_feature_enterprise]
+	fl_mail_client -> fl_feature_enterprise
+	fl_mail_client_pec [label=fl_mail_client_pec]
+	fl_mail_client [label=fl_mail_client]
+	fl_mail_client_pec -> fl_mail_client
+	fl_partner_pec [label=fl_partner_pec]
+	fl_mail_client_pec -> fl_partner_pec
+	fl_mimetypes [label=fl_mimetypes]
+	fl_onchange_action [label=fl_onchange_action]
+	fl_partner_cf [label=fl_partner_cf]
+	fl_partner_vat [label=fl_partner_vat]
+	fl_partner_cf -> fl_partner_vat
+	fl_partner_email [label=fl_partner_email]
+	fl_partner_email_unique [label=fl_partner_email_unique]
+	fl_partner_email [label=fl_partner_email]
+	fl_partner_email_unique -> fl_partner_email
+	fl_partner_pa [label=fl_partner_pa]
+	fl_partner_cf [label=fl_partner_cf]
+	fl_partner_pa -> fl_partner_cf
+	fl_partner_pec [label=fl_partner_pec]
+	fl_partner_pa -> fl_partner_pec
+	fl_partner_pec [label=fl_partner_pec]
+	fl_partner_email [label=fl_partner_email]
+	fl_partner_pec -> fl_partner_email
+	fl_partner_pec_unique [label=fl_partner_pec_unique]
+	fl_partner_email_unique [label=fl_partner_email_unique]
+	fl_partner_pec_unique -> fl_partner_email_unique
+	fl_partner_pec [label=fl_partner_pec]
+	fl_partner_pec_unique -> fl_partner_pec
+	fl_partner_vat [label=fl_partner_vat]
+	fl_protocollo_segnatura_xml [label=fl_protocollo_segnatura_xml]
+	sd_protocollo_pec [label=sd_protocollo_pec]
+	fl_protocollo_segnatura_xml -> sd_protocollo_pec
+	fl_set [label=fl_set]
+	fl_disable_childof_search_panel [label=fl_disable_childof_search_panel]
+	fl_set -> fl_disable_childof_search_panel
+	fl_set_pa [label=fl_set_pa]
+	fl_set [label=fl_set]
+	fl_set_pa -> fl_set
+	fl_tooltip_search_panel [label=fl_tooltip_search_panel]
+	fl_utility [label=fl_utility]
+	fl_web_preview [label=fl_web_preview]
+	fl_widget_ztree [label=fl_widget_ztree]
+	sd_dms [label=sd_dms]
+	fl_mimetypes [label=fl_mimetypes]
+	sd_dms -> fl_mimetypes
+	fl_fields_file [label=fl_fields_file]
+	sd_dms -> fl_fields_file
+	fl_acl [label=fl_acl]
+	sd_dms -> fl_acl
+	fl_set [label=fl_set]
+	sd_dms -> fl_set
+	fl_web_preview [label=fl_web_preview]
+	sd_dms -> fl_web_preview
+	fl_load_only_children_search_panel [label=fl_load_only_children_search_panel]
+	sd_dms -> fl_load_only_children_search_panel
+	fl_tooltip_search_panel [label=fl_tooltip_search_panel]
+	sd_dms -> fl_tooltip_search_panel
+	fl_utility [label=fl_utility]
+	sd_dms -> fl_utility
+	fl_feature_enterprise [label=fl_feature_enterprise]
+	sd_dms -> fl_feature_enterprise
+	sd_dms_aoo [label=sd_dms_aoo]
+	sd_dms [label=sd_dms]
+	sd_dms_aoo -> sd_dms
+	fl_set_pa [label=fl_set_pa]
+	sd_dms_aoo -> fl_set_pa
+	sd_dms_titolario [label=sd_dms_titolario]
+	sd_dms [label=sd_dms]
+	sd_dms_titolario -> sd_dms
+	sd_fascicolo [label=sd_fascicolo]
+	sd_dms [label=sd_dms]
+	sd_fascicolo -> sd_dms
+	sd_dms_titolario [label=sd_dms_titolario]
+	sd_fascicolo -> sd_dms_titolario
+	fl_partner_pa [label=fl_partner_pa]
+	sd_fascicolo -> fl_partner_pa
+	fl_utility [label=fl_utility]
+	sd_fascicolo -> fl_utility
+	sd_protocollo [label=sd_protocollo]
+	fl_utility [label=fl_utility]
+	sd_protocollo -> fl_utility
+	fl_mail_client_pec [label=fl_mail_client_pec]
+	sd_protocollo -> fl_mail_client_pec
+	sd_dms [label=sd_dms]
+	sd_protocollo -> sd_dms
+	fl_set [label=fl_set]
+	sd_protocollo -> fl_set
+	fl_m2m_tree [label=fl_m2m_tree]
+	sd_protocollo -> fl_m2m_tree
+	sd_protocollo_aoo [label=sd_protocollo_aoo]
+	fl_set_pa [label=fl_set_pa]
+	sd_protocollo_aoo -> fl_set_pa
+	sd_protocollo_pec [label=sd_protocollo_pec]
+	sd_protocollo_aoo -> sd_protocollo_pec
+	sd_dms_aoo [label=sd_dms_aoo]
+	sd_protocollo_aoo -> sd_dms_aoo
+	sd_protocollo_fascicolo [label=sd_protocollo_fascicolo]
+	sd_protocollo_titolario [label=sd_protocollo_titolario]
+	sd_protocollo_fascicolo -> sd_protocollo_titolario
+	sd_fascicolo [label=sd_fascicolo]
+	sd_protocollo_fascicolo -> sd_fascicolo
+	sd_protocollo_pec [label=sd_protocollo_pec]
+	sd_protocollo [label=sd_protocollo]
+	sd_protocollo_pec -> sd_protocollo
+	sd_protocollo_titolario [label=sd_protocollo_titolario]
+	sd_protocollo [label=sd_protocollo]
+	sd_protocollo_titolario -> sd_protocollo
+	sd_dms_titolario [label=sd_dms_titolario]
+	sd_protocollo_titolario -> sd_dms_titolario
+	fl_onchange_action [label=fl_onchange_action]
+	sd_protocollo_titolario -> fl_onchange_action
+}
