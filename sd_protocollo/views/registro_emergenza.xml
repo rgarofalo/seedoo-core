@@ -13,7 +13,7 @@
                                 class="oe_highlight"
                                 type="object"
                                 name="action_apri"
-                                attrs="{'invisible': [('state','!=','bozza')]}"
+                                invisible="[('state','!=','bozza')]"
                         />
                     </header>
                     <sheet>
@@ -21,17 +21,17 @@
                         <field name="company_id" invisible="1"/>
                         <group>
                             <field name="numero_protocolli"/>
-                            <field name="causa" attrs="{'readonly': [('field_readonly','=', False)]}"/>
+                            <field name="causa" readonly="[('field_readonly','=', False)]"/>
                             <field name="utente_id"/>
-                            <field name="data_inizio" attrs="{'readonly': [('field_readonly','=', False)]}"/>
-                            <field name="data_fine" attrs="{'readonly': [('field_readonly','=', False)]}"/>
-                            <field name="registro_id" attrs="{'readonly': [('field_readonly','=', False)]}"/>
+                            <field name="data_inizio" readonly="[('field_readonly','=', False)]"/>
+                            <field name="data_fine" readonly="[('field_readonly','=', False)]"/>
+                            <field name="registro_id" readonly="[('field_readonly','=', False)]"/>
                         </group>
                         <notebook>
                             <page string="Numeri">
                                 <field name="numero_ids"
                                        nolabel="1"
-                                       attrs="{'invisible': [('state','=','bozza')]}"
+                                       invisible="[('state','=','bozza')]"
                                 />
                             </page>
                         </notebook>

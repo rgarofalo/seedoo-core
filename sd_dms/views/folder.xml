@@ -7,16 +7,16 @@
 <odoo>
     <data>
         <record id="view_sd_dms_folder_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.folder.tree</field>
+            <field name="name">view.sd.dms.folder.list</field>
             <field name="model">sd.dms.folder</field>
             <field name="arch" type="xml">
-                <tree string="Directories">
+                <list string="Directories">
                     <field name="path_name"/>
                     <field name="write_date"/>
                     <field name="count_documents" string="Files"/>
                     <field name="count_folders" string="Directories"/>
                     <field name="storage_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -36,28 +36,31 @@
                             <h1>
                                 <field name="name"
                                        placeholder="My Documents"
-                                       attrs="{'readonly': [('name_readonly','=',True)]}"
+                                       readonly="[('name_readonly','=',True)]"
                                 />
                             </h1>
                         </div>
                         <group name="settings">
                             <group>
                                 <field name="is_root_folder"
-                                       attrs="{'readonly': [('perm_write','!=',True)]}"
+                                       readonly="[('perm_write','!=',True)]"
                                 />
                                 <field name="storage_id"
                                        options="{'no_open': True}"
-                                       attrs="{'invisible':['|', ('is_root_folder','=',True), ('parent_folder_id','=',False)]}"
+                                       invisible="['|', ('is_root_folder','=',True), ('parent_folder_id','=',False)]"
                                 />
                                 <field name="root_storage_id"
                                        options="{'no_open': True}"
-                                       attrs="{'invisible':[('is_root_folder','=',False)], 'required':[('is_root_folder','=',True)], 'readonly': [('perm_write','!=',True)]}"
+                                       invisible="[('is_root_folder','=',False)]" 
+                                       required="[('is_root_folder','=',True)]"
+                                       readonly="[('perm_write','!=',True)]"
                                 />
                             </group>
                             <group>
                                 <field name="parent_folder_id"
-                                       invisible="context.get('folder_invisible')"
-                                       attrs="{'invisible':[('is_root_folder','=',True)], 'required':[('is_root_folder','=',False)], 'readonly': [('parent_folder_id_readonly','=',True)]}"
+                                       invisible="['|',context.get('folder_invisible'),('is_root_folder','=',True)]"
+                                       required="[('is_root_folder','=',False)]"
+                                       readonly="[('parent_folder_id_readonly','=',True)]"
                                        options="{'no_open': True, 'no_create': True}"
                                 />
                             </group>
@@ -73,13 +76,13 @@
                                 <field name="category_id"
                                        placeholder="Internal / Human Resource"
                                        options="{'no_open': True, 'no_create': True}"
-                                       attrs="{'readonly': [('perm_write','!=',True)]}"
+                                       readonly="[('perm_write','!=',True)]"
                                 />
                                 <field name="tag_ids"
                                        widget="many2many_tags"
                                        placeholder="Tags..."
                                        options="{'no_create_edit': True}"
-                                       attrs="{'readonly': [('perm_write','!=',True)]}"
+                                       readonly="[('perm_write','!=',True)]"
                                 />
                             </group>
                         </group>
@@ -102,12 +105,12 @@
                                        }"
                                         readonly="1"
                                 >
-                                    <tree string="Subdirectories" limit="10">
+                                    <list string="Subdirectories" limit="10">
                                         <field name="name"/>
                                         <field name="count_folders" string="Directories"/>
                                         <field name="count_documents" string="Files"/>
                                         <!--<field name="human_size"/>-->
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="page_files" string="Documents">
@@ -123,21 +126,21 @@
                             <page name="page_acl" string="Acl">
                                 <group>
                                     <field name="owner_id"
-                                           attrs="{'readonly': [('is_owner','!=',True)]}"
+                                           readonly="[('is_owner','!=',True)]"
                                            colspan="2"
                                     />
                                     <separator string="Inherit Acl"
-                                               attrs="{'invisible': ['|', ('parent_folder_id','=',False), '&amp;', ('inherit_acl','!=',True),('perm_write','!=',True)]}"
+                                               invisible="['|', ('parent_folder_id','=',False), '&amp;', ('inherit_acl','!=',True),('perm_write','!=',True)]"
                                                colspan="2"
                                     />
                                     <field name="inherit_acl"
-                                           attrs="{'invisible': ['|', ('parent_folder_id','=',False), ('perm_write','!=',True)]}"
+                                           invisible="['|', ('parent_folder_id','=',False), ('perm_write','!=',True)]"
                                            widget="boolean_toggle"
                                            nolabel="1"
                                            colspan="2"
                                     />
                                     <field name="inherit_acl_ids"
-                                           attrs="{'invisible':['|', ('parent_folder_id','=',False), ('inherit_acl','!=',True)]}"
+                                           invisible="['|', ('parent_folder_id','=',False), ('inherit_acl','!=',True)]"
                                            nolabel="1"
                                            colspan="2"
                                     />
@@ -146,31 +149,31 @@
                                            nolabel="1"
                                            colspan="2"
                                     >
-                                        <tree>
+                                        <list>
                                             <field name="res_model"/>
                                             <field name="res_name"/>
                                             <field name="perm_create"/>
                                             <field name="perm_read"/>
                                             <field name="perm_write"/>
                                             <field name="perm_delete"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                     <separator string="Acl" colspan="2"/>
                                     <field name="acl_ids"
                                            widget="one2many"
-                                           attrs="{'readonly': [('perm_write','!=',True)]}"
+                                           readonly="[('perm_write','!=',True)]"
                                            context="{'acl_values': acl_ids}"
                                            nolabel="1"
                                            colspan="2"
                                     >
-                                        <tree>
+                                        <list>
                                             <field name="res_model"/>
                                             <field name="res_name"/>
                                             <field name="perm_create"/>
                                             <field name="perm_read"/>
                                             <field name="perm_write"/>
                                             <field name="perm_delete"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                             </page>

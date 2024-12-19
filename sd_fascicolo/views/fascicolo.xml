@@ -3,10 +3,10 @@
     <data>
 
         <record id="view_sd_fascicolo_fascicolo_tree" model="ir.ui.view">
-            <field name="name">view.sd.fascicolo.fascicolo.tree</field>
+            <field name="name">view.sd.fascicolo.fascicolo.list</field>
             <field name="model">sd.fascicolo.fascicolo</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="nome"/>
                     <field name="oggetto"/>
                     <field name="anno"/>
@@ -15,14 +15,14 @@
                     <field name="autore_id"/>
                     <field name="state"/>
                     <field name="button_tree_disassocia_fascicolo_invisible" invisible="1"/>
-                    <button attrs="{'invisible': [('button_tree_disassocia_fascicolo_invisible','=',True)]}"
+                    <button invisible="[('button_tree_disassocia_fascicolo_invisible','=',True)]"
                             name="disassocia_fascicolo"
                             help="Disassociate"
                             type="object"
                             class="oe_stat_button"
                             icon="fa-unlink"
                             />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -37,21 +37,21 @@
                                 type="object"
                                 string="Apri Fascicolo"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('button_apri_fascicolo_invisible', '=', True)]}"
+                                invisible="[('button_apri_fascicolo_invisible', '=', True)]"
                                 confirm="Una volta aperto il fascicolo non sarà più possibile modificare oggetto e classificazione"
                         />
                         <button name="chiudi_fascicolo"
                                 type="object"
                                 string="Chiudi Fascicolo"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('button_chiudi_fascicolo_invisible', '=', True)]}"
+                                invisible="[('button_chiudi_fascicolo_invisible', '=', True)]"
                         />
                         <field name="button_fascicolo_aggiungi_documento_invisible" invisible="1"/>
                         <button name="fascicolo_aggiungi_documento_action"
                             type="object"
                             string="Add documents"
                             class="oe_highlight"
-                            attrs="{'invisible': [('button_fascicolo_aggiungi_documento_invisible','=',True)]}"
+                            invisible="[('button_fascicolo_aggiungi_documento_invisible','=',True)]"
                     />
                     </header>
                     <sheet>
@@ -67,7 +67,7 @@
                         <div name="button_box" class="oe_button_box">
                             <button name="protocollo_lista_sottofascicoli_action"
                                     type="object"
-                                    attrs="{'invisible': [('tipologia', '!=', 'fascicolo')]}"
+                                    invisible="[('tipologia', '!=', 'fascicolo')]"
                                     class="oe_stat_button"
                                     icon="fa-file">
                                 <field name="sottofascicolo_count" widget="statinfo" string="Sottofascicoli" options="{'reload_on_button': true}" />
@@ -81,27 +81,29 @@
                             <button name="protocollo_lista_inserti_action"
                                     type="object"
                                     class="oe_stat_button"
-                                    attrs="{'invisible': [('tipologia', '!=', 'sottofascicolo')]}"
+                                    invisible="[('tipologia', '!=', 'sottofascicolo')]"
                                     icon="fa-file">
                                 <field name="inserto_count" widget="statinfo" string="Inserti" options="{'reload_on_button': true}" />
                             </button>
                         </div>
 
-                        <h2 class="fascicolo-title" attrs="{'invisible': [('nome', '=', False)]}">
+                        <h2 class="fascicolo-title" invisible="[('nome', '=', False)]">
                             <field name="nome" force_save="1" />
                         </h2>
                         <group name="fascicolo">
                             <group>
                                 <field name="tipologia"
                                        readonly="context.get('default_tipologia', False)"
-                                       attrs="{'readonly': [('field_readonly', '=', True)]}"/>
-                                <field name="categoria" attrs="{'readonly': [('categoria_readonly', '=', True)]}"/>
+                                       readonly="[('field_readonly', '=', True)]"/>
+                                <field name="categoria" readonly="[('categoria_readonly', '=', True)]"/>
                                 <field name="parent_id_domain" invisible="1"/>
                                 <field name="parent_id"
                                        force_save="1"
                                        readonly="context.get('default_tipologia', False)"
                                        options="{'no_create': True}"
-                                       attrs="{'invisible': [('tipologia', 'not in', ['sottofascicolo','inserto'])], 'required':[('tipologia','!=','fascicolo')],'readonly': [('field_readonly', '=', True)]}"
+                                       invisible="[('tipologia', 'not in', ['sottofascicolo','inserto'])]"
+                                       required="[('tipologia','!=','fascicolo')]"
+                                       readonly="[('field_readonly', '=', True)]"
                                 />
                             </group>
                             <group>
@@ -113,7 +115,7 @@
                                        options="{'no_open': True, 'no_create': True}"/>
                                 <field name="ufficio_autore_id_readonly" invisible="1"/>
                                 <field name="ufficio_autore_id"
-                                       attrs="{'readonly': [('ufficio_autore_id_readonly', '=', True)]}"
+                                       readonly="[('ufficio_autore_id_readonly', '=', True)]"
                                        options="{'no_create': True, 'no_open': True}"
                                        force_save="1"
                                 />
@@ -137,9 +139,11 @@
                                        'no_open': True,
                                        'no_create': True
                                        }"
-                                       attrs="{'invisible': [('tipologia', '!=', 'fascicolo')], 'required':[('tipologia','=','fascicolo')],'readonly': [('field_readonly', '=', True)]}"
+                                       invisible= "[('tipologia', '!=', 'fascicolo')]"
+                                       required="[('tipologia','=','fascicolo')]"
+                                       readonly="[('field_readonly', '=', True)]"
                                 />
-                                <field name="oggetto" attrs="{'readonly': [('field_readonly', '=', True)]}"/>
+                                <field name="oggetto" readonly="[('field_readonly', '=', True)]"/>
                             </group>
                             </group>
 
@@ -160,7 +164,7 @@
                                 <button name="fascicolo_aggiungi_contatto_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                        attrs="{'invisible': [('button_add_amministrazione_titolare_invisible','=', True)]}"
+                                        invisible="[('button_add_amministrazione_titolare_invisible','=', True)]"
                                         context="{'from':'amministrazione_titolare_ids', 'wizard_label': 'Aggiungi Amministrazione Titolare'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Aggiungi</span>
@@ -176,7 +180,7 @@
                                 <button name="fascicolo_aggiungi_contatto_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                         attrs="{'invisible': [('button_add_amministrazione_partecipante_invisible','=', True)]}"
+                                         invisible="[('button_add_amministrazione_partecipante_invisible','=', True)]"
                                         context="{'from':'amministrazione_partecipante_ids', 'wizard_label': 'Aggiungi Amministrazione Partecipante'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Aggiungi</span>
@@ -192,7 +196,7 @@
                                 <button name="fascicolo_aggiungi_contatto_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                        attrs="{'invisible': [('button_add_soggetto_intestatario_invisible','=', True)]}"
+                                        invisible="[('button_add_soggetto_intestatario_invisible','=', True)]"
                                         context="{'from':'soggetto_intestatario_ids', 'wizard_label': 'Aggiungi Soggetto Intestatario'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Aggiungi</span>
@@ -208,7 +212,7 @@
                                 <button name="fascicolo_aggiungi_contatto_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                         attrs="{'invisible': [('button_add_rup_invisible','=', True)]}"
+                                         invisible="[('button_add_rup_invisible','=', True)]"
                                         context="{'from':'rup_ids', 'wizard_label': 'Responsabile Unico Procedimento'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Aggiungi</span>
@@ -239,21 +243,21 @@
                                     <field name="perm_write" invisible="1"/>
                                     <field name="is_owner" invisible="1"/>
                                     <field name="owner_id"
-                                           attrs="{'readonly': [('is_owner','!=',True)]}"
+                                           readonly="[('is_owner','!=',True)]"
                                            colspan="2"
                                     />
                                     <separator string="Inherit Acl"
-                                               attrs="{'invisible': ['|', ('parent_id','=',False), '&amp;', ('inherit_acl','!=',True),('perm_write','!=',True)]}"
+                                               invisible="['|', ('parent_id','=',False), '&amp;', ('inherit_acl','!=',True),('perm_write','!=',True)]"
                                                colspan="2"
                                     />
                                     <field name="inherit_acl"
-                                           attrs="{'invisible': ['|', ('parent_id','=',False), ('perm_write','!=',True)]}"
+                                           invisible="['|', ('parent_id','=',False), ('perm_write','!=',True)]"
                                            widget="boolean_toggle"
                                            nolabel="1"
                                            colspan="2"
                                     />
                                     <field name="inherit_acl_ids"
-                                           attrs="{'invisible':['|', ('parent_id','=',False), ('inherit_acl','!=',True)]}"
+                                           invisible="['|', ('parent_id','=',False), ('inherit_acl','!=',True)]"
                                            nolabel="1"
                                            colspan="2"
                                     />
@@ -265,7 +269,7 @@
                                     <separator string="Acl" colspan="2"/>
                                     <field name="acl_ids"
                                            widget="one2many"
-                                           attrs="{'readonly': [('perm_write','!=',True)]}"
+                                           readonly="[('perm_write','!=',True)]"
                                            context="{'acl_values': acl_ids}"
                                            nolabel="1"
                                            colspan="2"
@@ -306,11 +310,9 @@
                     <filter string="Sottofascicolo" name="filter_sottofascicolo" domain="[('tipologia','=','sottofascicolo')]"/>
                     <filter string="Inserto" name="filter_inserto" domain="[('tipologia','=','inserto')]"/>
                     <separator/>
-                    <filter string="Data apertura" name="filter_data_apertura" date="data_apertura"
-                            default_period="this_month"/>
+                    <filter string="Data apertura" name="filter_data_apertura" domain="[('data_apertura', '=',  context_today().strftime('%%m'))]"/>
                     <separator/>
-                    <filter string="Data chiusura" name="filter_data_chiusura" date="data_chiusura"
-                            default_period="this_month"/>
+                    <filter string="Data chiusura" name="filter_data_chiusura" domain="[('data_chiusura', '=',  context_today().strftime('%%m'))]"/>
                     <separator/>
                     <searchpanel>
                         <field name="voce_titolario_id"

@@ -78,7 +78,7 @@ class Fascicolo(models.Model):
             if dossier.ufficio_autore_id:
                 if self.env.user.id not in fl_set_set_obj.browse(dossier.ufficio_autore_id.id).user_ids.ids:
                     has_changed_office = True
-            condition_1 = (fl_set_set_obj.search([("user_ids", "=", dossier.autore_id.id)],count=True) == 1
+            condition_1 = (fl_set_set_obj.search_count([("user_ids", "=", dossier.autore_id.id)]) == 1
                            and not has_changed_office)
             # se
             condition_2 = not ((self.env.user == dossier.create_uid or not dossier.create_uid)

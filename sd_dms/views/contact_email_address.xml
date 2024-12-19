@@ -8,13 +8,13 @@
     <data>
 
         <record id="view_sd_dms_contact_email_address_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.contact.email.address.tree</field>
+            <field name="name">view.sd.dms.contact.email.address.list</field>
             <field name="model">sd.dms.contact.email.address</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="type"/>
                     <field name="email_address"/>
-                </tree>
+                </list>
             </field>
         </record>
 

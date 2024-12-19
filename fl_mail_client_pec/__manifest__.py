@@ -1,6 +1,6 @@
 {
     "name": "E-mail client - PEC Support",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Discuss",
     "summary": "PEC extension for e-mail client",
     "description": "",
@@ -14,23 +14,17 @@
     ],
     "data": [
         "actions/inherit_mail_mail.xml",
-
         "views/inherit_fl_mail_client_contact.xml",
         "views/inherit_fl_mail_client_account.xml",
         "views/inherit_mail_mail.xml",
         "views/inherit_fetchmail_server.xml",
-
         "menu/actions.xml",
         "menu/items.xml",
-
-        "static/src/templates/web_templates.xml",
-
+        # "static/src/templates/web_templates.xml",
         "wizards/inherit_mail_compose_message_view.xml",
     ],
-    "qweb": [
-        'static/src/components/discuss_sidebar/discuss_sidebar.xml'
-    ],
+    "qweb": ["static/src/components/discuss_sidebar/discuss_sidebar.xml"],
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

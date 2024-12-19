@@ -45,9 +45,9 @@ class Archivio(models.Model):
     @api.depends("protocollo_ids")
     def _compute_protocollo_count(self):
         for rec in self:
-            rec.protocollo_count = self.env["sd.protocollo.protocollo"].with_context(active_test=False).search([
+            rec.protocollo_count = self.env["sd.protocollo.protocollo"].with_context(active_test=False).search_count([
                 ("archivio_id", "=", rec.id)
-            ], count=True)
+            ])
 
     @api.model
     def get_domain_can_used_to_protocol(self):

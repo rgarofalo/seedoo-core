@@ -43,10 +43,10 @@ class Protocollo(models.Model):
         # il button di fascicolazione deve essere invisibile se uno dei seguenti casi è verificata
         # caso base:
         # - il numero dei documenti associati al protocollo da classificare e fascicolare è maggiore di zero
-        caso_base = self.env["sd.dms.document"].search([
+        caso_base = self.env["sd.dms.document"].search_count([
             ("protocollo_id", "=", self.id),
             "|", ("voce_titolario_id", "=", False), ("fascicolo_ids", "=", False)
-        ], count=True) > 0
+        ]) > 0
         # caso 1:
         # - caso base
         # - l'utente corrente ha profilo protocollatore

@@ -4,45 +4,45 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define('fl_web_preview.PreviewContentPDF', function (require) {
-"use strict";
+/** @odoo-module **/
 
-var core = require('web.core');
-var ajax = require('web.ajax');
-var utils = require('web.utils');
-var session = require('web.session');
+import { registry } from "@web/core/registry";
+import AbstractPreviewContent from "@fl_web_preview/js/preview/content";
 
-var registry = require('fl_web_preview.registry');
+class PreviewContentPDF extends AbstractPreviewContent {
+    static template = "fl_web_preview.PreviewContentPDF";
 
-var AbstractPreviewContent = require('fl_web_preview.AbstractPreviewContent');
+    setup() {
+        super.setup();
+        this.viewerUrl = `/web/static/lib/pdfjs/web/viewer.html?file=${encodeURIComponent(this.props.url)}`;
+    }
 
-var QWeb = core.qweb;
-var _t = core._t;
-
-var PreviewContentPDF = AbstractPreviewContent.extend({
-	template: "fl_web_preview.PreviewContentPDF",
-	init: function(parent, url, mimetype, filename) {
-    	this._super.apply(this, arguments);
-        this.viewer_url = '/web/static/lib/' + 
-        	'pdfjs/web/viewer.html?file=' + 
-        	encodeURIComponent(this.url);
-    },
-    renderPreviewContent: function() {
-    	var def = $.Deferred();
-    	this.$('.fl_web_preview_pdf iframe').on('load', function () {
-    		$(this).contents().find('button#openFile').hide();
-    		def.resolve();
+    async renderPreviewContent() {
+        return new Promise((resolve) => {
+            const iframe = this.el.querySelector(".fl_web_preview_pdf iframe");
+            if (iframe) {
+                iframe.addEventListener("load", () => {
+                    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+                    const openFileButton = iframeDocument.querySelector("button#openFile");
+                    if (openFileButton) {
+                        openFileButton.style.display = "none";
+                    }
+                    resolve();
+                });
+            } else {
+                resolve();
+            }
         });
-    	return def;
-    },
-    downloadable: false,
-    printable: false,
-});
+    }
+}
 
-registry.add('pdf', PreviewContentPDF);
-registry.add('.pdf', PreviewContentPDF);
-registry.add('application/pdf', PreviewContentPDF);
+PreviewContentPDF.downloadable = false;
+PreviewContentPDF.printable = false;
 
-return PreviewContentPDF;
+// Register in the preview registry
+const previewRegistry = registry.category("preview_widgets");
+previewRegistry.add("pdf", PreviewContentPDF);
+previewRegistry.add(".pdf", PreviewContentPDF);
+previewRegistry.add("application/pdf", PreviewContentPDF);
 
-});
+export default PreviewContentPDF;

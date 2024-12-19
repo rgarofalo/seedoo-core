@@ -1,4 +1,4 @@
-<odoo>
+<!-- <odoo>
     <template id="assets_backend" inherit_id="web.assets_backend" name="FL M2M Search Panel Assets">
 
         <xpath expr="." position="inside">
@@ -7,4 +7,4 @@
         </xpath>
 
     </template>
-</odoo>
+</odoo> -->

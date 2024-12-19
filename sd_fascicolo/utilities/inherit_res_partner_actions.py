@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 
+
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
@@ -8,13 +9,17 @@ class ResPartner(models.Model):
 
         return {
             "name": _("Dossiers"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.fascicolo.fascicolo",
-            "domain": ["|","|","|",
-                        ("rup_ids.partner_id", "=", self.id),
-                        ("soggetto_intestatario_ids.partner_id", "=", self.id),
-                        ("amministrazione_partecipante_ids.partner_id", "=", self.id),
-                        ("amministrazione_titolare_ids.partner_id", "=", self.id)],
+            "domain": [
+                "|",
+                "|",
+                "|",
+                ("rup_ids.partner_id", "=", self.id),
+                ("soggetto_intestatario_ids.partner_id", "=", self.id),
+                ("amministrazione_partecipante_ids.partner_id", "=", self.id),
+                ("amministrazione_titolare_ids.partner_id", "=", self.id),
+            ],
             "type": "ir.actions.act_window",
             "target": "current",
         }

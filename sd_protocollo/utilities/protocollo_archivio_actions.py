@@ -6,16 +6,13 @@ class ProtocolloArchivioActions(models.Model):
 
     def show_protocollo_ids_action(self):
         self.ensure_one()
-        context = dict(
-            self.env.context,
-            active_test=False
-        )
+        context = dict(self.env.context, active_test=False)
         return {
             "name": "Protocolli",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.protocollo.protocollo",
             "type": "ir.actions.act_window",
             "target": "current",
             "domain": [("archivio_id", "=", self.id)],
-            "context": context
+            "context": context,
         }

@@ -1,241 +1,162 @@
-odoo.define("fl_m2o_tree.M2oTree", function (require) {
-"use strict";
+/** @odoo-module **/
 
-var AbstractField = require("web.AbstractField");
-var Domain = require("web.Domain");
-var registry = require("web.field_registry");
-var core = require("web.core");
+import { registry } from "@web/core/registry";
+import { Component, useState, onWillStart, onMounted } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
 
-var _t = core._t;
-var _lt = core._lt;
+class M2oTreeField extends Component {
+    setup() {
+        this.orm = useService("orm");
+        this.state = useState({
+            isRendered: false,
+            zNodes: [],
+        });
 
-var M2oTreeField = AbstractField.extend({
-    description: _lt("M2oTreeField"),
-    supportedFieldTypes: ["many2one"],
-    template: "m2o_tree",
-    init: function (parent, name, record, options) {
-        this._super.apply(this, arguments);
-        this.nodeOptions = _.defaults(this.nodeOptions, {});
-        this.nodeContext = this.record.getContext({additionalContext: this.attrs.context || {}});
-        if (this.record.getDomain({fieldName: this.name}).length>0) {
-            this.nodeDomain = this.record.getDomain({fieldName: this.name});
-        } else {
-             this.nodeDomain = Domain.prototype.stringToArray(this.attrs.domain || "");
-        }
-        this.isRendered = false;
-    },
-    _setValue: function (value, options) {
-        value = value || {};
-        // we need to specify the model for the change in basic_model
-        // the value is then now a dict with id, display_name and model
-        value.model = this.field.relation;
-        return this._super(value, options);
-    },
-    _renderEdit: function () {
-        var self = this;
-        if (self.isRendered) {
-            return;
-        }
-        var modelFields = ["id"];
+        onWillStart(async () => {
+            await this._fetchData();
+        });
 
-        var field_name = "";
-        if (self.nodeOptions.field_name) {
-            field_name = self.nodeOptions.field_name;
-        } else {
-            field_name = "name";
-        }
+        onMounted(() => {
+            this._renderTree();
+        });
+    }
+
+    async _fetchData() {
+        const modelFields = ["id"];
+        const field_name = this.props.nodeOptions.field_name || "name";
         modelFields.push(field_name);
 
-        var fieldStyle = false;
-        if (self.nodeOptions.field_style) {
-            fieldStyle = self.nodeOptions.field_style;
-            modelFields.push(fieldStyle);
+        if (this.props.nodeOptions.field_style) {
+            modelFields.push(this.props.nodeOptions.field_style);
         }
 
-        var pid = "parent_id";
-        if (self.nodeOptions.field_parent) {
-            pid = self.nodeOptions.field_parent;
-        }
+        const pid = this.props.nodeOptions.field_parent || "parent_id";
         modelFields.push(pid);
 
-        if (self.nodeOptions.field_checkable) {
-            modelFields.push(self.nodeOptions.field_checkable);
+        if (this.props.nodeOptions.field_checkable) {
+            modelFields.push(this.props.nodeOptions.field_checkable);
         }
 
-        var order = [{name: field_name}];
-        if (self.nodeOptions.order) {
-            order = _.map(self.nodeOptions.order.split(","), function (orderComponent) {
-                var orderFieldComponents = orderComponent.split(" ");
-                if (orderFieldComponents.length > 1) {
-                    return {
-                        name: orderFieldComponents[0],
-                        asc: orderFieldComponents[1].toLowerCase()=="desc" ? false : true
-                    };
-                } else {
-                    return {
-                        name: orderFieldComponents[0]
-                    };
-                }
-            });
-        }
+        const order = this.props.nodeOptions.order
+            ? this.props.nodeOptions.order.split(",").map((orderComponent) => {
+                  const orderFieldComponents = orderComponent.split(" ");
+                  return {
+                      name: orderFieldComponents[0],
+                      asc: orderFieldComponents[1]?.toLowerCase() !== "desc",
+                  };
+              })
+            : [{ name: field_name }];
 
-        self._rpc({
-            model: self.field.relation,
-            method: "search_read",
-            args: [],
-            kwargs: {
-                domain: self.nodeDomain,
-                fields: modelFields,
-                limit: self.nodeOptions.limit,
-                order: order,
-                context: self.nodeContext,
-            }
-        }).then(function (res) {
-            var zNodes = [];
-            for (var r in res) {
-                var iconSkin = "";
-                if (fieldStyle) {
-                    iconSkin =  res[r][fieldStyle];
-                }
-                var nocheck = false;
-                if (self.nodeOptions.field_checkable && res[r][self.nodeOptions.field_checkable]) {
-                    nocheck = true;
-                } else if (self.nodeContext.disable_ids && self.nodeContext.disable_ids.indexOf(res[r]["id"])!==-1) {
-                    nocheck = true;
-                }
-                var zNode = {
-                    id: res[r]["id"],
-                    pId: res[r][pid] && res[r][pid][0] || false,
-                    name: res[r][field_name],
-                    doCheck: true,
-                    chkDisabled: nocheck,
-                    checked: self.value.res_id == res[r]["id"] && true || false,
-                    open: false,
-                    iconSkin: iconSkin,
-                    isParent: self.nodeContext.async
-                };
-                if (self.nodeContext.async) {
-                    zNode["isParent"] = true;
-                }
-                zNodes.push(zNode);
-            }
-
-            var setting = {
-                view: {
-                    selectedMulti: false,
-                    dblClickExpand: false
-                },
-                check: {
-                    enable: true,
-                    chkStyle: "radio",
-                    radioType: "all"
-                },
-                data: {
-                    simpleData: {
-                        enable: true
-                    }
-                },
-                callback: {
-                    beforeCheck: beforeCheck,
-                    onClick: onClick,
-                    onCheck: onCheck
-                }
-            };
-            if (self.nodeContext.async) {
-                setting["async"] = {
-                    enable: true,
-                    contentType: "application/json",
-                    dataType: "json",
-                    url: self.nodeContext.async_url,
-                    autoParam: ["id"],
-                    dataFilter: filter
-                };
-                function filter(treeId, parentNode, result) {
-                    var childNodes = result["result"];
-                    return childNodes;
-                }
-            }
-            var code, log, className = "dark";
-            function beforeCheck(treeId, treeNode) {
-                return (treeNode.doCheck !== false);
-            };
-            function onClick(event, treeId, treeNode) {
-                if (!treeNode.chkDisabled) {
-                    var zTree = $.fn.zTree.getZTreeObj(treeId);
-                    if (zTree) {
-                        zTree.checkNode(treeNode, !treeNode.checked,false,true);
-                    }
-                }
-            };
-            function onCheck(e, treeId, treeNode) {
-                if (self.value.res_id == treeNode["id"]) {
-                    self._setValue({id: false}, {});
-                } else {
-                    self._setValue({id: treeNode["id"]}, {});
-                }
-            };
-            function expandParentNode(zTree, node) {
-                var pnode = false;
-                if (node) {
-                    pnode = zTree.getNodeByParam("id", node["pId"], null);
-                }
-                if (pnode) {
-                    zTree.expandNode(pnode, true, false, true);
-                    expandParentNode(zTree, pnode);
-                }
-            };
-
-            $.fn.zTree.init(self.$el, setting, zNodes);
-            var zTree = $.fn.zTree.getZTreeObj("treeData_" + self.name);
-            if (zTree) {
-                var all_parent_nodes = zTree.getNodesByParam("isParent", true, null);
-
-                if (! self.nodeOptions.all_checkable) {
-                    for (var n in all_parent_nodes) {
-                        if (all_parent_nodes[n].isParent) {
-                            zTree.setChkDisabled(all_parent_nodes[n], true);
-                        }
-                    }
-                }
-                var checked = zTree.getNodeByParam("checked", true, null);
-                expandParentNode(zTree, checked);
-            }
-
-            self.isRendered = true;
+        const res = await this.orm.searchRead(this.props.field.relation, [], {
+            domain: this.props.nodeDomain,
+            fields: modelFields,
+            limit: this.props.nodeOptions.limit,
+            order: order,
+            context: this.props.nodeContext,
         });
-    },
-    _renderReadonly: function () {
-        var self = this;
-        
-        var escapedValue = _.escape((self.value && self.value.data && self.value.data.display_name || "").trim());
-        var value = escapedValue.split("\n").map(function (line) {
-            return "<span>" + line + "</span>";
-        }).join("<br/>");
-        if (self.nodeOptions.no_open) {
-            var link = _.str.sprintf("<span class='oe_form_uri'>%s</span><br/>", value);
-        } else {
-            var link = _.str.sprintf("<a id='oe_form_uri_%s' class='oe_form_uri' href='#id=%s&model=%s' res_id='%s'><span>%s</span></a><br/>", self.value.res_id, self.value.res_id, self.field.relation, self.value.res_id, value);
+
+        this.state.zNodes = res.map((r) => {
+            const iconSkin = this.props.nodeOptions.field_style ? r[this.props.nodeOptions.field_style] : "";
+            const nocheck = this.props.nodeOptions.field_checkable && r[this.props.nodeOptions.field_checkable]
+                ? true
+                : this.props.nodeContext.disable_ids?.includes(r.id) || false;
+
+            return {
+                id: r.id,
+                pId: r[pid]?.[0] || false,
+                name: r[field_name],
+                doCheck: true,
+                chkDisabled: nocheck,
+                checked: this.props.value.res_id === r.id,
+                open: false,
+                iconSkin: iconSkin,
+                isParent: this.props.nodeContext.async,
+            };
+        });
+    }
+
+    _renderTree() {
+        const setting = {
+            view: {
+                selectedMulti: false,
+                dblClickExpand: false,
+            },
+            check: {
+                enable: true,
+                chkStyle: "radio",
+                radioType: "all",
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                },
+            },
+            callback: {
+                beforeCheck: this.beforeCheck,
+                onClick: this.onClick,
+                onCheck: this.onCheck,
+            },
+        };
+
+        if (this.props.nodeContext.async) {
+            setting.async = {
+                enable: true,
+                contentType: "application/json",
+                dataType: "json",
+                url: this.props.nodeContext.async_url,
+                autoParam: ["id"],
+                dataFilter: this.filter,
+            };
         }
-        self.$el.append(link);
-        if (!self.nodeOptions.no_open) {
-            var $link = self.$el.find(_.str.sprintf("#oe_form_uri_%s", self.value.res_id)).unbind("click");
-            $link.click(function (ev) {
-                self.do_action({
-                    type: "ir.actions.act_window",
-                    res_model: self.field.relation,
-                    res_id: parseInt($(ev.currentTarget).attr("res_id")),
-                    views: [[false, "form"]],
-                    target: "current",
-                    context: self.nodeContext,
+
+        $.fn.zTree.init(this.el, setting, this.state.zNodes);
+        const zTree = $.fn.zTree.getZTreeObj(`treeData_${this.props.name}`);
+        if (zTree) {
+            const all_parent_nodes = zTree.getNodesByParam("isParent", true, null);
+            if (!this.props.nodeOptions.all_checkable) {
+                all_parent_nodes.forEach((node) => {
+                    if (node.isParent) {
+                        zTree.setChkDisabled(node, true);
+                    }
                 });
-                return false;
-            });
+            }
+            const checked = zTree.getNodeByParam("checked", true, null);
+            this.expandParentNode(zTree, checked);
+        }
+
+        this.state.isRendered = true;
+    }
+
+    beforeCheck(treeId, treeNode) {
+        return treeNode.doCheck !== false;
+    }
+
+    onClick(event, treeId, treeNode) {
+        if (!treeNode.chkDisabled) {
+            const zTree = $.fn.zTree.getZTreeObj(treeId);
+            if (zTree) {
+                zTree.checkNode(treeNode, !treeNode.checked, false, true);
+            }
         }
     }
-});
 
-registry.add("m2o_tree", M2oTreeField);
+    onCheck(e, treeId, treeNode) {
+        if (this.props.value.res_id === treeNode.id) {
+            this.props.updateValue({ id: false });
+        } else {
+            this.props.updateValue({ id: treeNode.id });
+        }
+    }
 
-return M2oTreeField;
+    expandParentNode(zTree, node) {
+        let pnode = node ? zTree.getNodeByParam("id", node.pId, null) : false;
+        if (pnode) {
+            zTree.expandNode(pnode, true, false, true);
+            this.expandParentNode(zTree, pnode);
+        }
+    }
+}
 
-});
+M2oTreeField.template = "m2o_tree";
+
+registry.category("fields").add("m2o_tree", M2oTreeField);

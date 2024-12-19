@@ -8,14 +8,14 @@
     <data noupdate="0">
 
         <record id="view_sd_dms_storage_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.storage.tree</field>
+            <field name="name">view.sd.dms.storage.list</field>
             <field name="model">sd.dms.storage</field>
             <field name="arch" type="xml">
-                <tree string="Storages">
+                <list string="Storages">
                     <field name="name"/>
                     <field name="count_storage_folders"/>
                     <field name="count_storage_documents"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -55,12 +55,13 @@
                         </group>
                         <notebook>
                             <page name="page_roots" string="Root Folders">
-                                <field name="root_folder_ids"
-                                       context="{'default_root_storage_id': active_id, 'default_is_root_folder': True}">
-                                    <tree string="Root Directories">
+                                <field name="root_folder_ids"                                        context="{'default_is_root_folder': True}">
+
+                                       <!-- context="{'default_root_storage_id': active_id, 'default_is_root_folder': True}"> -->
+                                    <list string="Root Directories">
                                         <field name="name"/>
                                         <field name="size" widget="binary_size"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

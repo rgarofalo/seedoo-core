@@ -22,6 +22,6 @@ class ProtocolloPecDashboardController(ProtocolloDashboardController):
         mail_obj = env["mail.mail"]
         values = super(ProtocolloPecDashboardController, self)._prepare_values_for_dashboard()
         values.update({
-            "mail_da_protocollare_pec": mail_obj.search([("filter_mail_da_protocollare_pec", "=", True)], count=True)
+            "mail_da_protocollare_pec": mail_obj.search_count([("filter_mail_da_protocollare_pec", "=", True)])
         })
         return values

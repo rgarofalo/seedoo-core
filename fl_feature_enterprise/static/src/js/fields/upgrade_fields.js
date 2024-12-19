@@ -1,134 +1,129 @@
-odoo.define('fl_feature_enterprise.fl_upgrade_widgets', function (require) {
-"use strict";
+/** @odoo-module **/
+
+import { Component } from "@odoo/owl";
+import { Dialog } from "@web/core/dialog/dialog";
+import { registry } from "@web/core/registry";
+import { useService } from "@web/core/utils/hooks";
 
 /**
- *  The upgrade widgets are intended to be used in config settings.
- *  When checked, an upgrade popup is showed to the user.
+ *  I widget di upgrade sono destinati all'uso nelle impostazioni di configurazione.
+ *  Quando selezionati, mostrano un popup di upgrade all'utente.
  */
 
-var AbstractField = require('web.AbstractField');
-var basic_fields = require('web.basic_fields');
-var core = require('web.core');
-var Dialog = require('web.Dialog');
-var field_registry = require('web.field_registry');
-var framework = require('web.framework');
-var relational_fields = require('web.relational_fields');
-
-var _t = core._t;
-var QWeb = core.qweb;
-
-var FieldBoolean = basic_fields.FieldBoolean;
-var FieldRadio = relational_fields.FieldRadio;
-
-
-/**
- * Mixin that defines the common functions shared between Boolean and Radio
- * upgrade widgets
- */
-var AbstractFieldUpgrade = {
-    //--------------------------------------------------------------------------
-    // Private
-    //--------------------------------------------------------------------------
+class AbstractFieldUpgrade extends Component {
+    setup() {
+        this.orm = useService("orm");
+        this.dialogService = useService("dialog");
+    }
 
     /**
-     * Redirects the user to the upgrade page
+     * Reindirizza l'utente alla pagina di upgrade.
      *
      * @private
-     * @returns {Promise}
+     * @returns {void}
      */
-    _confirmUpgrade: function () {
+    _confirmUpgrade() {
         window.open("https://www.flosslab.com/", "_blank");
-    },
+    }
+
     /**
-     * This function is meant to be overridden to insert the 'Enterprise' label
-     * JQuery node at the right place.
+     * Funzione pensata per essere sovrascritta per inserire
+     * il nodo jQuery dell'etichetta "Enterprise" nel posto corretto.
      *
      * @abstract
      * @private
-     * @param {jQuery} $enterpriseLabel the 'Enterprise' label to insert
+     * @param {jQuery} $enterpriseLabel Etichetta "Enterprise" da inserire
      */
-    _insertEnterpriseLabel: function ($enterpriseLabel) {},
+    _insertEnterpriseLabel($enterpriseLabel) {
+        // Implementazione specifica lasciata alle classi derivate
+    }
+
     /**
-     * Opens the Upgrade dialog.
+     * Apre il dialog di upgrade.
      *
      * @private
-     * @returns {Dialog} the instance of the opened Dialog
+     * @returns {Dialog} Istanza del Dialog aperto
      */
-    _openDialog: function () {
-        var message = $(QWeb.render('FLEnterpriseUpgrade'));
+    _openDialog() {
+        const message = `<div><p>${this.env._t("Per continuare, passa alla versione Enterprise.")}</p></div>`;
 
-        var buttons = [
+        const buttons = [
             {
-                text: _t("Vai al sito"),
-                classes: 'btn-primary',
+                text: this.env._t("Vai al sito"),
+                classes: "btn-primary",
                 close: true,
                 click: this._confirmUpgrade.bind(this),
             },
             {
-                text: _t("Annulla"),
+                text: this.env._t("Annulla"),
                 close: true,
             },
         ];
 
-        return new Dialog(this, {
-            size: 'medium',
-            buttons: buttons,
-            $content: $('<div>', {
-                html: message,
-            }),
-            title: _t("Versione Enterprise"),
-        }).open();
-    },
+        return this.dialogService.add({
+            title: this.env._t("Versione Enterprise"),
+            body: message,
+            buttons,
+        });
+    }
+}
 
-};
+/**
+ * Widget personalizzato Boolean con funzionalità di upgrade.
+ */
+class FLUpgradeBoolean extends AbstractFieldUpgrade {
+    setup() {
+        super.setup();
+        this.state = useState({ value: false });
+    }
 
-var FLUpgradeBoolean = FieldBoolean.extend(AbstractFieldUpgrade, {
-    supportedFieldTypes: [],
-    events: _.extend({}, AbstractField.prototype.events, {
-        'click input': '_onInputClicked',
-    }),
     /**
-     * Re-renders the widget with the label
+     * Gestisce il clic sull'input Boolean.
      *
-     * @param {jQuery} $label
-     */
-    renderWithLabel: function ($label) {
-        this.$label = $label;
-        this._render();
-    },
-
-    _onInputClicked: function (event) {
-        self = this
-        this._setValue(!this.value)
-        this._rpc({
-                model: 'ir.module.module',
-                method: 'show_dialog_on_checkbox_click',
-                args: [[this.name]],
-            })
-            .then(function (result) {
-                if ($(event.currentTarget).prop("checked") && result === true) {
-                    self._openDialog().on('closed', self, self._resetValue.bind(self));
-                }
-            });
-
-    },
-
-
-    //--------------------------------------------------------------------------
-    // Private
-    //--------------------------------------------------------------------------
-
-    /**
-     * @override
+     * @param {Event} event
      * @private
      */
-    _resetValue: function () {
-        this.$input.prop("checked", false).change();
-        this._setValue(false)
-    },
-});
+    async _onInputClicked(event) {
+        this.state.value = !this.state.value;
 
-field_registry
-    .add('fl_upgrade_boolean', FLUpgradeBoolean)
+        const result = await this.orm.call("ir.module.module", "show_dialog_on_checkbox_click", [[this.props.name]]);
+        if (this.state.value && result === true) {
+            this._openDialog().on("closed", this._resetValue.bind(this));
+        }
+    }
 
-});
+    /**
+     * Reimposta il valore del campo.
+     *
+     * @private
+     */
+    _resetValue() {
+        this.state.value = false;
+    }
+
+    /**
+     * Esegue il rendering del widget con l'etichetta.
+     *
+     * @param {HTMLElement} label
+     */
+    renderWithLabel(label) {
+        this.el.innerHTML = "";
+        this.el.appendChild(label);
+    }
+
+    render() {
+        this.el.innerHTML = `
+            <div>
+                <input type="checkbox" ${this.state.value ? "checked" : ""} />
+                <label>${this.props.label || "Upgrade"}</label>
+            </div>
+        `;
+
+        this.el.querySelector("input").addEventListener("click", (ev) => this._onInputClicked(ev));
+    }
+}
+
+// Registrazione del widget nel registro dei campi
+registry.category("fields").add("fl_upgrade_boolean", {component: FLUpgradeBoolean});
+
+export { FLUpgradeBoolean };

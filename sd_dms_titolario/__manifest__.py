@@ -1,6 +1,6 @@
 {
     "name": "Titolario - Documents",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Document Management",
     "summary": "Classificazione dei documenti mediante titolario",
     "description": "",
@@ -16,24 +16,20 @@
         "security/access/titolario.xml",
         "security/access/voce_titolario.xml",
         "security/rule/titolario.xml",
-
         "actions/titolario.xml",
-
         "views/inherit_sd_dms_titolario.xml",
         "views/inherit_sd_dms_voce_titolario.xml",
         "views/inherit_sd_dms_document.xml",
         "views/inherit_sd_dms_document_type.xml",
-
         "menu/action.xml",
         "menu/items.xml",
-
         "wizards/inherit_res_config_settings.xml",
-
-        "template/assets.xml",
-
-        "data/ir_config_parameter.xml"
+        "data/ir_config_parameter.xml",
     ],
+    "assets": {
+        "web.assets_backend": ["/sd_dms_titolario/static/src/scss/widget_ztree.scss"]
+    },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

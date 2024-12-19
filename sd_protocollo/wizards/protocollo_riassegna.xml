@@ -9,14 +9,14 @@
                 <form>
                     <sheet>
 
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',False)]}" col="4">
+                        <group invisible="[('assegnatari_non_presenti','=',False)]" col="4">
                             <div colspan="4">
                                 <h3>Non ci sono assegnatari.</h3>
                                 <p>Per selezionare gli assegnatari è necessario configurare gli uffici e i relativi utenti dalla apposita sezione di configurazione.</p>
                             </div>
                         </group>
 
-                        <div attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}">
+                        <div invisible="[('assegnatari_non_presenti','=',True)]">
                             <group>
                                 <field name="assegnazione_competenza_id" invisible="1"/>
                                 <field name="assegnazione_competenza_name"
@@ -28,7 +28,7 @@
                         </div>
                         <hr/>
 
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}">
+                        <group invisible="[('assegnatari_non_presenti','=',True)]">
                                 <field name="assegnatario_competenza_id"
                                    widget="ztree_select"
                                    required="1"
@@ -45,7 +45,7 @@
                             />
                         </group>
 
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}">
+                        <group invisible="[('assegnatari_non_presenti','=',True)]">
 
                             <field name="messaggio"
                                    placeholder="messaggio"
@@ -64,7 +64,7 @@
                         <button string="Riassegna"
                                 name="action_riassegna"
                                 type="object"
-                                attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}"
+                                invisible="[('assegnatari_non_presenti','=',True)]"
                                 class="oe_highlight"
                         />
                         <button string="Abbandona"

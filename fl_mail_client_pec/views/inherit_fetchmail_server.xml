@@ -11,7 +11,7 @@
 
                 <xpath expr="//field[@name='mail_client']" position="after">
                     <field name="mail_client_fetch_emails_from_server_pec"
-                           attrs="{'invisible': [('mail_client_account_pec','!=',True)]}"
+                           invisible="[('mail_client_account_pec','!=',True)]"
                     />
                     <field name="mail_client_account_pec"
                            invisible="1"

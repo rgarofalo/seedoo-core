@@ -1,6 +1,6 @@
 {
     "name": "Feature Enterprise",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Security",
     "summary": "Enterprise Fetures Widget",
     "description": "",
@@ -11,10 +11,12 @@
     "depends": [
         "web",
     ],
-    "data": [
-        "static/src/templates/web_templates.xml"
-    ],
-    'qweb': [
+    "assets": {
+        "web.assets_frontend": [
+            "fl_feature_enterprise/static/src/js/fields/upgrade_fields.js"
+        ]
+    },
+    "qweb": [
         "static/src/xml/base.xml",
     ],
     "installable": True,

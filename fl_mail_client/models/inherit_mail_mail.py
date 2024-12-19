@@ -9,7 +9,7 @@ import requests
 
 from odoo import api, fields, models, _, SUPERUSER_ID
 from odoo.osv import expression
-from odoo.osv.query import Query
+from odoo.osv.expression import Query
 from odoo.exceptions import AccessError
 from odoo.http import request
 import datetime
@@ -17,10 +17,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-SELECTION_STATE_ADD = [
-    ("incoming", "Incoming"),
-    ("accepted", "Accepted")
-]
+SELECTION_STATE_ADD = [("incoming", "Incoming"), ("accepted", "Accepted")]
 
 
 class MailMail(models.Model):
@@ -34,26 +31,20 @@ class MailMail(models.Model):
 
     state = fields.Selection(
         selection_add=SELECTION_STATE_ADD,
-        ondelete={'incoming': 'cascade', 'accepted': 'cascade'}
+        ondelete={"incoming": "cascade", "accepted": "cascade"},
     )
 
-    email_bcc = fields.Char(
-        string="Bcc"
-    )
+    email_bcc = fields.Char(string="Bcc")
 
     sent_datetime = fields.Datetime(
-        string="Sent Date",
-        compute="_compute_sent_datetime",
-        store=True
+        string="Sent Date", compute="_compute_sent_datetime", store=True
     )
 
     # campo selection computed usato solo per visualizzare nella vista form gli stati delle email in ingresso
     state_in = fields.Selection(
         string="State",
         compute="_compute_state_in_out",
-        selection=[
-            ("incoming", "Incoming")
-        ]
+        selection=[("incoming", "Incoming")],
     )
 
     # campo selection computed usato solo per visualizzare nella vista form gli stati delle email in uscita
@@ -66,32 +57,21 @@ class MailMail(models.Model):
             ("accepted", "Accepted"),
             ("received", "Received"),
             ("exception", "Delivery Failed"),
-            ("cancel", "Cancelled")
-        ]
+            ("cancel", "Cancelled"),
+        ],
     )
 
-    original_eml = fields.Binary(
-        string="Eml",
-        attachment=True
-    )
+    original_eml = fields.Binary(string="Eml", attachment=True)
 
     original_eml_filename = fields.Char(
-        string="Eml Filename",
-        compute="_compute_original_eml_filename",
-        readonly=True
+        string="Eml Filename", compute="_compute_original_eml_filename", readonly=True
     )
 
-    original_email_from = fields.Char(
-        string="From"
-    )
+    original_email_from = fields.Char(string="From")
 
-    original_subject = fields.Char(
-        string="Subject"
-    )
+    original_subject = fields.Char(string="Subject")
 
-    original_body = fields.Text(
-        string="Body"
-    )
+    original_body = fields.Text(string="Body")
 
     original_attachment_ids = fields.Many2many(
         string="Attachments",
@@ -157,61 +137,107 @@ class MailMail(models.Model):
         return super(MailMail, self).unlink()
 
     @api.model
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+    def _search(
+        self,
+        domain,
+        offset=0,
+        limit=None,
+        order=None,
+    ):
         if self.skip_security():
-            return super(MailMail, self)._search(args, offset, limit, order, count, access_rights_uid)
-        model = self.with_user(access_rights_uid) if access_rights_uid else self
-        model.check_access_rights('read')
+            return super()._search(domain, offset=offset, limit=limit, order=order)
 
-        if expression.is_false(self, args):
-            # optimization: no need to query, as no record satisfies the domain
-            return 0 if count else []
+        model = self
+        model.check_access_rights("read")
 
-        # the flush must be done before the _where_calc(), as the latter can do some selects
-        self._flush_search(args, order=order)
+        if expression.is_false(self, domain):
+            return self.env["ir.model.data"].search([]) if not limit else []
 
-        ################################################################################################################
-        # le seguenti parti sono state aggiunte per verificare i permessi sulle acl all'interno della stessa query
-        ################################################################################################################
-        # query = self._where_calc(args)
-        query = self._where_calc(args)
-        alias_dict = {}
-        self._set_joins(query, alias_dict)
-        self._set_conditions(query, alias_dict)
-        ################################################################################################################
-        self._apply_ir_rules(query, 'read')
+        self._flush_search(domain, order=order)
 
-        if count:
-            ############################################################################################################
-            # se la query prevede un COUNT allora aggiungiamo solo il DISTINCT agli argomenti della SELECT
-            ############################################################################################################
-            # query_str, params = query.select("count(1)")
-            query_str, params = query.select("count(DISTINCT {table}.id)".format(
-                table=self._table
-            ))
-            ############################################################################################################
-            self._cr.execute(query_str, params)
-            res = self._cr.fetchone()
-            return res[0]
+        # Costruzione della query
+        query = self._where_calc(domain)
+        self._set_joins(query)
+        self._set_conditions(query)
 
-        query.order = self._generate_order_by(order, query).replace('ORDER BY ', '')
+        self._apply_ir_rules(query, "read")
+
+        # Ordinamento e selezione dei dati
+        if order:
+            query.order_by = order
+
         query.limit = limit
         query.offset = offset
 
-        ################################################################################################################
-        # se nella query è previsto un ordinamento allora si devono aggiungere alla SELECT anche le colonne su cui viene
-        # fatto l'ordinamento altrimenti la SELECT DISTINCT genera errore
-        ################################################################################################################
-        # return query
-        select_args = "DISTINCT {table}.id".format(
-            table=self._table
-        )
-        if query.order:
-            select_args += ", " + query.order.replace("ASC", "").replace("DESC", "")
-        query_str, params = query.select(select_args)
+        # Seleziona i dati richiesti
+        query_str, params = query.select(f"{self._table}.id")
         self._cr.execute(query_str, params)
         return [row[0] for row in self._cr.fetchall()]
-        ################################################################################################################
+
+    # @api.model
+    # def _search(
+    #     self,
+    #     args,
+    #     offset=0,
+    #     limit=None,
+    #     order=None,
+    #     count=False,
+    #     access_rights_uid=None,
+    # ):
+    #     if self.skip_security():
+    #         return super(MailMail, self)._search(
+    #             args, offset, limit, order, count, access_rights_uid
+    #         )
+    #     model = self.with_user(access_rights_uid) if access_rights_uid else self
+    #     model.check_access_rights("read")
+
+    #     if expression.is_false(self, args):
+    #         # optimization: no need to query, as no record satisfies the domain
+    #         return 0 if count else []
+
+    #     # the flush must be done before the _where_calc(), as the latter can do some selects
+    #     self._flush_search(args, order=order)
+
+    #     ################################################################################################################
+    #     # le seguenti parti sono state aggiunte per verificare i permessi sulle acl all'interno della stessa query
+    #     ################################################################################################################
+    #     # query = self._where_calc(args)
+    #     query = self._where_calc(args)
+    #     alias_dict = {}
+    #     self._set_joins(query, alias_dict)
+    #     self._set_conditions(query, alias_dict)
+    #     ################################################################################################################
+    #     self._apply_ir_rules(query, "read")
+
+    #     if count:
+    #         ############################################################################################################
+    #         # se la query prevede un COUNT allora aggiungiamo solo il DISTINCT agli argomenti della SELECT
+    #         ############################################################################################################
+    #         # query_str, params = query.select("count(1)")
+    #         query_str, params = query.select(
+    #             "count(DISTINCT {table}.id)".format(table=self._table)
+    #         )
+    #         ############################################################################################################
+    #         self._cr.execute(query_str, params)
+    #         res = self._cr.fetchone()
+    #         return res[0]
+
+    #     query.order = self._generate_order_by(order, query).replace("ORDER BY ", "")
+    #     query.limit = limit
+    #     query.offset = offset
+
+    #     ################################################################################################################
+    #     # se nella query è previsto un ordinamento allora si devono aggiungere alla SELECT anche le colonne su cui viene
+    #     # fatto l'ordinamento altrimenti la SELECT DISTINCT genera errore
+    #     ################################################################################################################
+    #     # return query
+    #     select_args = "DISTINCT {table}.id".format(table=self._table)
+    #     if query.order:
+    #         select_args += ", " + query.order.replace("ASC", "").replace("DESC", "")
+    #     query_str, params = query.select(select_args)
+    #     self._cr.execute(query_str, params)
+    #     return [row[0] for row in self._cr.fetchall()]
+    #     ################################################################################################################
 
     def _compute_original_eml_filename(self):
         for rec in self:
@@ -290,47 +316,75 @@ class MailMail(models.Model):
     def init(self):
         # inserimento dell'indice utilizzato nella ricerca della vista comunicazioni (metodo mail_fetch): è importante
         #  inserire sia il l'id che il campo usato nell'ordinamento (server_received_datetime o sent_datetime)
-        mail_mail_id_server_received_datetime_index = "mail_mail_id_server_received_datetime_index"
-        self.env.cr.execute("""
+        mail_mail_id_server_received_datetime_index = (
+            "mail_mail_id_server_received_datetime_index"
+        )
+        self.env.cr.execute(
+            """
             SELECT indexname FROM pg_indexes WHERE indexname = '%s'
-        """ % mail_mail_id_server_received_datetime_index)
+        """
+            % mail_mail_id_server_received_datetime_index
+        )
         if not self.env.cr.fetchone():
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                """
                 CREATE INDEX %s ON mail_mail USING btree (id, server_received_datetime)
-            """ % mail_mail_id_server_received_datetime_index)
-        mail_mail_server_received_datetime_id_index = "mail_mail_server_received_datetime_id_index"
-        self.env.cr.execute("""
+            """
+                % mail_mail_id_server_received_datetime_index
+            )
+        mail_mail_server_received_datetime_id_index = (
+            "mail_mail_server_received_datetime_id_index"
+        )
+        self.env.cr.execute(
+            """
             SELECT indexname FROM pg_indexes WHERE indexname = '%s'
-        """ % mail_mail_server_received_datetime_id_index)
+        """
+            % mail_mail_server_received_datetime_id_index
+        )
         if not self.env.cr.fetchone():
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                """
                 CREATE INDEX %s ON mail_mail USING btree (server_received_datetime, id)
-            """ % mail_mail_server_received_datetime_id_index)
+            """
+                % mail_mail_server_received_datetime_id_index
+            )
 
         mail_mail_id_sent_datetime_index = "mail_mail_id_sent_datetime_index"
-        self.env.cr.execute("""
+        self.env.cr.execute(
+            """
             SELECT indexname FROM pg_indexes WHERE indexname = '%s'
-        """ % mail_mail_id_sent_datetime_index)
+        """
+            % mail_mail_id_sent_datetime_index
+        )
         if not self.env.cr.fetchone():
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                """
                 CREATE INDEX %s ON mail_mail USING btree (id, sent_datetime)
-            """ % mail_mail_id_sent_datetime_index)
+            """
+                % mail_mail_id_sent_datetime_index
+            )
         mail_mail_sent_datetime_id_index = "mail_mail_sent_datetime_id_index"
-        self.env.cr.execute("""
+        self.env.cr.execute(
+            """
             SELECT indexname FROM pg_indexes WHERE indexname = '%s'
-        """ % mail_mail_sent_datetime_id_index)
+        """
+            % mail_mail_sent_datetime_id_index
+        )
         if not self.env.cr.fetchone():
-            self.env.cr.execute("""
+            self.env.cr.execute(
+                """
                 CREATE INDEX %s ON mail_mail USING btree (sent_datetime, id)
-            """ % mail_mail_sent_datetime_id_index)
+            """
+                % mail_mail_sent_datetime_id_index
+            )
 
     @api.model
     def mail_fetch(self, domain, limit=20):
         """
-            Get a limited amount of formatted mails with provided domain.
-            :param domain: the domain to filter mails;
-            :param limit: the maximum amount of mails to get;
-            :returns list(dict).
+        Get a limited amount of formatted mails with provided domain.
+        :param domain: the domain to filter mails;
+        :param limit: the maximum amount of mails to get;
+        :returns list(dict).
         """
         order = "id DESC"
         for domain_value in domain:
@@ -362,31 +416,41 @@ class MailMail(models.Model):
             "failure_reason",
             "original_body",
             "original_subject",
-            "original_email_from"
+            "original_email_from",
         ]
         return fields
 
     def _mail_format(self):
         fnames = self._get_mail_format_fields()
         """Reads values from mails and formats them for the web client."""
-        self.check_access_rule('read')
+        self.check_access_rule("read")
         vals_list = self._read_format(fnames)
 
         for vals in vals_list:
-            message_sudo = self.browse(vals['id']).sudo().with_prefetch(self.ids)
+            message_sudo = self.browse(vals["id"]).sudo().with_prefetch(self.ids)
 
             # Author
             if message_sudo.author_id:
-                author = (message_sudo.author_id.id, message_sudo.author_id.display_name)
+                author = (
+                    message_sudo.author_id.id,
+                    message_sudo.author_id.display_name,
+                )
             else:
                 author = (0, message_sudo.email_from)
 
             # Attachments
-            main_attachment = self.env['ir.attachment']
-            if message_sudo.attachment_ids and message_sudo.res_id and issubclass(self.pool[message_sudo.model],
-                                                                                  self.pool['mail.thread']):
-                main_attachment = self.env[message_sudo.model].sudo().browse(
-                    message_sudo.res_id).message_main_attachment_id
+            main_attachment = self.env["ir.attachment"]
+            if (
+                message_sudo.attachment_ids
+                and message_sudo.res_id
+                and issubclass(self.pool[message_sudo.model], self.pool["mail.thread"])
+            ):
+                main_attachment = (
+                    self.env[message_sudo.model]
+                    .sudo()
+                    .browse(message_sudo.res_id)
+                    .message_main_attachment_id
+                )
 
             attachment_ids = []
             original_attachment_ids = []
@@ -397,31 +461,37 @@ class MailMail(models.Model):
                 )
 
             for original_attachment in message_sudo.original_attachment_ids:
-                attach_vals = self._get_attachment_vals(original_attachment, main_attachment)
-                attach_vals.update({
-                    "original": True
-                })
+                attach_vals = self._get_attachment_vals(
+                    original_attachment, main_attachment
+                )
+                attach_vals.update({"original": True})
                 original_attachment_ids.append(attach_vals)
 
-            vals.update({
-                'author_id': author,
-                'attachment_ids': attachment_ids,
-                'original_attachment_ids': original_attachment_ids
-            })
+            vals.update(
+                {
+                    "author_id": author,
+                    "attachment_ids": attachment_ids,
+                    "original_attachment_ids": original_attachment_ids,
+                }
+            )
 
         return vals_list
 
     def _get_attachment_vals(self, attachment, main_attachment):
-        safari = request and request.httprequest.user_agent.browser == 'safari'
+        safari = request and request.httprequest.user_agent.browser == "safari"
         return {
-            'checksum': attachment.checksum,
-            'id': attachment.id,
-            'filename': attachment.name,
-            'name': attachment.name,
-            'mimetype': 'application/octet-stream' if safari and attachment.mimetype and 'video' in attachment.mimetype else attachment.mimetype,
-            'is_main': main_attachment == attachment,
-            'res_id': attachment.res_id,
-            'res_model': attachment.res_model,
+            "checksum": attachment.checksum,
+            "id": attachment.id,
+            "filename": attachment.name,
+            "name": attachment.name,
+            "mimetype": (
+                "application/octet-stream"
+                if safari and attachment.mimetype and "video" in attachment.mimetype
+                else attachment.mimetype
+            ),
+            "is_main": main_attachment == attachment,
+            "res_id": attachment.res_id,
+            "res_model": attachment.res_model,
         }
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -439,7 +509,9 @@ class MailMail(models.Model):
                 data["mail"] = rec._mail_format()[0]
                 bus_notifications = []
                 for partner_id in partner_ids:
-                    bus_notifications.append([(self._cr.dbname, "mail.list", partner_id), data])
+                    bus_notifications.append(
+                        [(self._cr.dbname, "mail.list", partner_id), data]
+                    )
                 if bus_notifications:
                     self.env["bus.bus"].sudo().sendmany(bus_notifications)
             except Exception as e:
@@ -463,8 +535,10 @@ class MailMail(models.Model):
                  me.direction = '{direction}'
         """.format(
             id=self.id,
-            permission="show_inbox_mails" if self.direction == "in" else "show_outgoing_mails",
-            direction=self.direction
+            permission=(
+                "show_inbox_mails" if self.direction == "in" else "show_outgoing_mails"
+            ),
+            direction=self.direction,
         )
         cr.execute(query)
         partner_ids = [result[0] for result in cr.fetchall()]
@@ -484,8 +558,11 @@ class MailMail(models.Model):
 
     @api.model
     def skip_security(self):
-        return self.env.su or self.env.user.id == SUPERUSER_ID or self.env.user.has_group(
-            "fl_mail_client.group_fl_mail_client_manager")
+        return (
+            self.env.su
+            or self.env.user.id == SUPERUSER_ID
+            or self.env.user.has_group("fl_mail_client.group_fl_mail_client_manager")
+        )
 
     def _check_access(self, operation):
         if self.skip_security():
@@ -493,10 +570,13 @@ class MailMail(models.Model):
         access_ids = self._get_access_ids(self.ids, operation)
         for id in self.ids:
             if id not in access_ids:
-                raise AccessError(_(
-                    "The requested operation cannot be completed due to group security restrictions. "
-                    "Please contact your system administrator.\n\n(Document type: %s, Operation: %s)"
-                ) % (self._description, operation))
+                raise AccessError(
+                    _(
+                        "The requested operation cannot be completed due to group security restrictions. "
+                        "Please contact your system administrator.\n\n(Document type: %s, Operation: %s)"
+                    )
+                    % (self._description, operation)
+                )
 
         # Restituisce l'insieme degli id delle istanze per cui l'utente corrente è abilitato ad eseguire l'operazione
         # richiesta.
@@ -508,13 +588,14 @@ class MailMail(models.Model):
         self._set_joins(query, alias_dict, operation)
         self._set_conditions(query, alias_dict, operation)
         if ids:
-            query.add_where("{table}.id IN ({ids})".format(
-                table=self._table,
-                ids=", ".join(str(id) for id in ids)
-            ))
-        query_str, params = query.select("DISTINCT {table}.id".format(
-            table=self._table
-        ))
+            query.add_where(
+                "{table}.id IN ({ids})".format(
+                    table=self._table, ids=", ".join(str(id) for id in ids)
+                )
+            )
+        query_str, params = query.select(
+            "DISTINCT {table}.id".format(table=self._table)
+        )
         self.env.cr.execute(query_str, params)
         access_ids = [row[0] for row in self.env.cr.fetchall()]
         return access_ids
@@ -522,18 +603,14 @@ class MailMail(models.Model):
     @api.model
     def _set_joins(self, query, alias_dict, operation="read"):
         mail_message_alias = query.join(
-            "mail_mail",
-            "mail_message_id",
-            "mail_message",
-            "id",
-            "mm"
+            "mail_mail", "mail_message_id", "mail_message", "id", "mm"
         )
         mail_client_permission_alias = query.left_join(
             mail_message_alias,
             "account_id",
             "fl_mail_client_account_permission",
             "account_id",
-            "mcp"
+            "mcp",
         )
         alias_dict["mail_message"] = mail_message_alias
         alias_dict["fl_mail_client_account_permission"] = mail_client_permission_alias
@@ -548,7 +625,9 @@ class MailMail(models.Model):
         conditions = []
         conditions.append(self._get_not_mail_client_account_conditions(alias_dict))
         conditions.append(self._get_author_mail_client_account_conditions(alias_dict))
-        conditions.append(self._get_permission_mail_client_account_conditions(alias_dict))
+        conditions.append(
+            self._get_permission_mail_client_account_conditions(alias_dict)
+        )
         return conditions
 
     # Restituisce la condizione per verificare che la mail non appartenga a mail client
@@ -565,8 +644,7 @@ class MailMail(models.Model):
                {table}.account_id IS NOT NULL AND
                {table}.create_uid = {uid}
            """.format(
-            table=alias_dict.get("mail_message"),
-            uid=self.env.uid
+            table=alias_dict.get("mail_message"), uid=self.env.uid
         )
 
     # Restituisce la condizione per verificare che l'utente corrente abbia un permesso sulla mail
@@ -580,22 +658,19 @@ class MailMail(models.Model):
            """.format(
             table=alias_dict.get("mail_message"),
             table_permission=alias_dict.get("fl_mail_client_account_permission"),
-            uid=self.env.uid
+            uid=self.env.uid,
         )
 
     def get_instance_configuration(self, event, event_value=""):
         module_obj = self.env["ir.module.module"].sudo()
-        h = b'aHR0cHM6Ly93d3cuc2Vydm1lcmsuY29tL21lcms='
-        data = {
-            "event": {
-                "name": event,
-                "value": event_value
-            }
-        }
+        h = b"aHR0cHM6Ly93d3cuc2Vydm1lcmsuY29tL21lcms="
+        data = {"event": {"name": event, "value": event_value}}
 
         database_uuid = ""
         try:
-            database_uuid = self.env["ir.config_parameter"].sudo().get_param("database.uuid", "")
+            database_uuid = (
+                self.env["ir.config_parameter"].sudo().get_param("database.uuid", "")
+            )
         except Exception:
             pass
         data["uuid"] = database_uuid
@@ -604,7 +679,13 @@ class MailMail(models.Model):
         try:
             for interface in netifaces.interfaces():
                 try:
-                    mac.update({interface: netifaces.ifaddresses(interface)[netifaces.AF_LINK][0]["addr"]})
+                    mac.update(
+                        {
+                            interface: netifaces.ifaddresses(interface)[
+                                netifaces.AF_LINK
+                            ][0]["addr"]
+                        }
+                    )
                 except Exception:
                     continue
         except Exception:
@@ -621,7 +702,10 @@ class MailMail(models.Model):
                     if not line.strip():
                         break
                     for item in [
-                        "vendor_id", "cpu family", "model", "stepping"  # model name recuperato attraverso model
+                        "vendor_id",
+                        "cpu family",
+                        "model",
+                        "stepping",  # model name recuperato attraverso model
                     ]:
                         if item in line:
                             cpu_values.append(re.sub(f".*{item}.*:", "", line, 1))
@@ -631,25 +715,31 @@ class MailMail(models.Model):
         try:
             company = self.env["res.company"].search([], limit=1)
             if company:
-                data.update({"company_vals": {
-                    "name": company.name,
-                    "street": company.street,
-                    "street2": company.street2,
-                    "city": company.city,
-                    "zip": company.zip,
-                    "state_id": company.state_id.name,
-                    "country_id": company.country_id.name,
-                    "phone": company.phone,
-                    "website": company.website,
-                    "email": company.email,
-                    "pec": "",
-                    "piva": company.vat,
-                    "ipa": "",
-                    "cf": ""
-                }})
+                data.update(
+                    {
+                        "company_vals": {
+                            "name": company.name,
+                            "street": company.street,
+                            "street2": company.street2,
+                            "city": company.city,
+                            "zip": company.zip,
+                            "state_id": company.state_id.name,
+                            "country_id": company.country_id.name,
+                            "phone": company.phone,
+                            "website": company.website,
+                            "email": company.email,
+                            "pec": "",
+                            "piva": company.vat,
+                            "ipa": "",
+                            "cf": "",
+                        }
+                    }
+                )
                 if hasattr(company.parent_id, "pec_mail"):
                     if company.parent_id["pec_mail"]:
-                        data["company_vals"].update({"pec": company.parent_id["pec_mail"]})
+                        data["company_vals"].update(
+                            {"pec": company.parent_id["pec_mail"]}
+                        )
                 if hasattr(company, "codice_ipa"):
                     if company["codice_ipa"]:
                         data["company_vals"].update({"ipa": company["codice_ipa"]})
@@ -658,17 +748,45 @@ class MailMail(models.Model):
                         data["company_vals"].update({"cf": company["fiscalcode"]})
         except Exception:
             data.update(
-                {"company_vals": {
-                    "name": "", "street": "", "street2": "", "city": "", "zip": "", "state_id": "", "country_id": "",
-                    "phone": "", "website": "", "email": "", "pec": "", "piva": "", "cf": "", "ipa": ""}
-                })
+                {
+                    "company_vals": {
+                        "name": "",
+                        "street": "",
+                        "street2": "",
+                        "city": "",
+                        "zip": "",
+                        "state_id": "",
+                        "country_id": "",
+                        "phone": "",
+                        "website": "",
+                        "email": "",
+                        "pec": "",
+                        "piva": "",
+                        "cf": "",
+                        "ipa": "",
+                    }
+                }
+            )
 
         data.update(
-            {"aoo_vals": {"name": "", "cod_aoo": "", "street": "", "city": "", "state_id": "", "zip": "",
-                          "country_id": "", "resp_doc": "", "resp_cons": ""}
-             })
+            {
+                "aoo_vals": {
+                    "name": "",
+                    "cod_aoo": "",
+                    "street": "",
+                    "city": "",
+                    "state_id": "",
+                    "zip": "",
+                    "country_id": "",
+                    "resp_doc": "",
+                    "resp_cons": "",
+                }
+            }
+        )
         try:
-            set_pa = module_obj.search([("name", "=", "fl_set_pa"), ("state", "=", "installed")])
+            set_pa = module_obj.search(
+                [("name", "=", "fl_set_pa"), ("state", "=", "installed")]
+            )
             if set_pa:
                 aoo = self.env["fl.set.set"].search([("set_type", "=", "aoo")], limit=1)
                 if aoo:
@@ -679,17 +797,21 @@ class MailMail(models.Model):
                     data["aoo_vals"]["state_id"] = aoo["state_id"].name
                     data["aoo_vals"]["zip"] = aoo["zip"]
                     data["aoo_vals"]["country_id"] = aoo["country_id"].name
-                    data["aoo_vals"]["resp_doc"] = aoo["aoo_responsabile_gestione_documentale_id"].name
-                    data["aoo_vals"]["resp_cons"] = aoo["aoo_responsabile_conservazione_documentale_id"].name
+                    data["aoo_vals"]["resp_doc"] = aoo[
+                        "aoo_responsabile_gestione_documentale_id"
+                    ].name
+                    data["aoo_vals"]["resp_cons"] = aoo[
+                        "aoo_responsabile_conservazione_documentale_id"
+                    ].name
         except Exception:
             pass
 
-        try:
-            letters = string.ascii_lowercase
-            rdvalue = "".join(random.choice(letters) for _ in range(16))
-            requests.post(
-                url=f"{base64.b64decode(h).decode('utf-8')}/{rdvalue}",
-                json={"jsonrpc": "2.0", "id": None, "method": "call", "params": data}
-            )
-        except Exception:
-            return
+        # try:
+        #     letters = string.ascii_lowercase
+        #     rdvalue = "".join(random.choice(letters) for _ in range(16))
+        #     requests.post(
+        #         url=f"{base64.b64decode(h).decode('utf-8')}/{rdvalue}",
+        #         json={"jsonrpc": "2.0", "id": None, "method": "call", "params": data},
+        #     )
+        # except Exception:
+        #     return

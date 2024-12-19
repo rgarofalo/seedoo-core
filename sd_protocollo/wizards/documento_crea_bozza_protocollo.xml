@@ -16,40 +16,43 @@
                         <group>
                             <field name="crea_bozza" widget="boolean_toggle"/>
                         </group>
-                        <group attrs="{'invisible': [('crea_bozza', '=', False)]}">
+                        <group invisible="[('crea_bozza', '=', False)]">
                             <group>
                                 <field name="company_id"
-                                       attrs="{'required': [('crea_bozza', '=', True)],'invisible': [('company_id_invisible', '=', True)]}"
+                                       required="[('crea_bozza', '=', True)]"
+                                       invisible="[('company_id_invisible', '=', True)]"
                                        options="{'no_create': True, 'no_open': True}"
                                        force_save="1"
                                 />
                                 <field name="protocollatore_ufficio_id"
-                                       attrs="{'required': [('crea_bozza', '=', True)]}"
+                                       required="[('crea_bozza', '=', True)]"
                                        options="{'no_create': True, 'no_open': True}"/>
 
                                 <field name="user_tipologia_protocollo"
-                                       attrs="{'required': [('crea_bozza', '=', True)]}"
+                                       required="[('crea_bozza', '=', True)]"
                                 />
 
                                 <field name="riservato"
-                                       attrs="{'required': [('crea_bozza', '=', True)]}"
+                                       required="[('crea_bozza', '=', True)]"
                                 />
 
                             </group>
                             <group>
                                 <field name="registro_id"
-                                       attrs="{'required': [('crea_bozza', '=', True)],'readonly':[('registro_id_readonly','=',True)]}"
+                                       required="[('crea_bozza', '=', True)]"
+                                       readonly="[('registro_id_readonly','=',True)]"
                                        options="{'no_create': True, 'no_open': True}"
                                        force_save="1"
                                 />
 
                                 <field name="mezzo_trasmissione_id"
                                        context="{'company_id':company_id, 'tipologia_protocollo': user_tipologia_protocollo, 'state_protocollo': 'bozza'}"
-                                       attrs="{'required': [('crea_bozza', '=', True), ('mezzo_trasmissione_id_invisible', '=', False)], 'invisible': [('mezzo_trasmissione_id_invisible', '=', True)]}"
+                                       required=" [('crea_bozza', '=', True), ('mezzo_trasmissione_id_invisible', '=', False)]"
+                                       invisible="[('mezzo_trasmissione_id_invisible', '=', True)]"
                                        options="{'no_create': True, 'no_open': True}"/>
 
                                 <field name="data_ricezione"
-                                       attrs="{'invisible': ['|', ('crea_bozza', '=', False), ('user_tipologia_protocollo', '!=', 'ingresso')]}"
+                                       invisible="['|', ('crea_bozza', '=', False), ('user_tipologia_protocollo', '!=', 'ingresso')]"
                                        />
                             </group>
                         </group>
@@ -57,18 +60,19 @@
                             <group>
                                 <field name="protocollo_id"
                                        options="{'no_create': True, 'no_open': True}"
-                                       attrs="{'invisible': [('crea_bozza', '=', True)], 'required': [('crea_bozza','=', False)]}"
+                                       invisible="[('crea_bozza', '=', True)]"
+                                       required= "[('crea_bozza','=', False)]"
                                 />
                             </group>
                             <group/>
                         </group>
-                        <group attrs="{'invisible': [('field_selection_documenti_invisible', '=', True)]}">
+                        <group invisible="[('field_selection_documenti_invisible', '=', True)]">
                             <b>Select the main document</b>
                         </group>
                         <group>
                             <field name="field_selection_documenti_invisible" invisible="1"/>
                             <field name="selection_documenti"
-                                   attrs="{'invisible': [('field_selection_documenti_invisible', '=', True)]}"
+                                   invisible="[('field_selection_documenti_invisible', '=', True)]"
                                    widget="radio"
                                    nolabel="1"/>
                         </group>
@@ -76,13 +80,13 @@
                     <footer>
                         <button string="Create"
                                 name="crea_protocollo"
-                                attrs="{'invisible': [('crea_bozza', '=', False)]}"
+                                invisible="[('crea_bozza', '=', False)]"
                                 type="object"
                                 class="oe_highlight"
                         />
                         <button string="Add"
                                 name="aggiungi_a_protocollo"
-                                attrs="{'invisible': [('crea_bozza', '=', True)]}"
+                                invisible="[('crea_bozza', '=', True)]"
                                 type="object"
                                 class="oe_highlight"
                         />

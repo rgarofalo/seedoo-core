@@ -11,7 +11,7 @@
                 <xpath expr="//field[@name='company_id']" position="after">
                     <field name="aoo_id_readonly" invisible="1"/>
                     <field name="aoo_id"
-                           attrs="{'readonly': [('aoo_id_readonly', '=', True)]}"
+                           readonly="[('aoo_id_readonly', '=', True)]"
                            options="{'no_open': True, 'no_create': True}"
                            required="1"
                            force_save="1"

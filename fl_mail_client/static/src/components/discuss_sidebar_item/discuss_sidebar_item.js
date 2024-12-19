@@ -1,38 +1,35 @@
-odoo.define('fl_mail_client/static/src/components/discuss_sidebar_item/discuss_sidebar_item.js', function (require) {
-'use strict';
+/** @odoo-module **/
 
-const components = {
-    DiscussSidebarItem: require('mail/static/src/components/discuss_sidebar_item/discuss_sidebar_item.js'),
-};
+import { patch } from "@web/core/utils/patch";
+import { DiscussSidebarItem } from "@mail/components/discuss_sidebar_item/discuss_sidebar_item";
 
-const { patch } = require('web.utils');
-
-patch(components.DiscussSidebarItem, 'fl_mail_client/static/src/components/discuss_sidebar_item/discuss_sidebar_item.js', {
-
-        /**
-         * @private
-         * @param {MouseEvent} ev
-         */
-        _onClick(ev) {
-            // il domain della ricerca deve essere resettato se almeno uno dei seguenti due casi è vero:
-            // - caso1: sì clicca sull'item 'mail.box_mailreceived' e il thread corrente è diverso da 'mailreceived'
-            // - caso2: sì clicca sull'item 'mail.box_mailsent' e il thread corrente è diverso da 'mailsent'
-            let caso1 = this.discuss.activeId=='mail.box_mailreceived' && this.thread.id!='mailreceived';
-            let caso2 = this.discuss.activeId=='mail.box_mailsent' && this.thread.id!='mailsent';
-            if (caso1 || caso2) {
-                this.discuss.update({
-                    stringifiedDomain: '[]'
-                });
-            }
-            // si impostano a 0 i contatori dei menù
-            if (this.thread.id === 'mailreceived') {
-                this.env.messaging.received.update({counter: 0});
-            }
-            if (this.thread.id === 'mailsent') {
-                this.env.messaging.sent.update({counter: 0});
-            }
-            return this._super(...arguments);
+patch(DiscussSidebarItem.prototype, "fl_mail_client.DiscussSidebarItem", {
+    /**
+     * Gestisce il click sull'elemento DiscussSidebarItem.
+     *
+     * @private
+     * @param {MouseEvent} ev
+     */
+    _onClick(ev) {
+        // Il domain della ricerca deve essere resettato se uno dei due casi è vero:
+        // Caso 1: Clicca su 'mail.box_mailreceived' e il thread corrente è diverso da 'mailreceived'
+        // Caso 2: Clicca su 'mail.box_mailsent' e il thread corrente è diverso da 'mailsent'
+        const caso1 = this.discuss.activeId === "mail.box_mailreceived" && this.thread.id !== "mailreceived";
+        const caso2 = this.discuss.activeId === "mail.box_mailsent" && this.thread.id !== "mailsent";
+        if (caso1 || caso2) {
+            this.discuss.update({
+                stringifiedDomain: "[]",
+            });
+        }
+        // Imposta a 0 i contatori dei menù
+        if (this.thread.id === "mailreceived") {
+            this.env.messaging.received.update({ counter: 0 });
+        }
+        if (this.thread.id === "mailsent") {
+            this.env.messaging.sent.update({ counter: 0 });
         }
 
-    });
+        // Chiama il metodo originale
+        super._onClick(ev);
+    },
 });

@@ -13,13 +13,13 @@
                 </xpath>
 
                 <xpath expr="//field[@name='email']" position="before">
-                    <separator attrs="{'invisible': [('fiscalcode_invisible', '=', True),('function_invisible', '=', True)]}"/>
+                    <separator invisible="[('fiscalcode_invisible', '=', True),('function_invisible', '=', True)]"/>
                 </xpath>
 
                 <xpath expr="//field[@name='email']" position="after">
                     <field name="email_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('email', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('email', '=', False)]"
                            force_save="1"
                     />
                     <separator/>
@@ -28,7 +28,7 @@
                 <xpath expr="//field[@name='pec_mail']" position="after">
                     <field name="pec_mail_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('pec_mail', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('pec_mail', '=', False)]"
                            force_save="1"
                     />
                     <separator/>
@@ -37,7 +37,7 @@
                 <xpath expr="//field[@name='email_amm']" position="after">
                     <field name="email_amm_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('email_amm', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('email_amm', '=', False)]"
                            force_save="1"
                     />
                     <separator/>
@@ -46,7 +46,7 @@
                 <xpath expr="//field[@name='pec_mail_amm']" position="after">
                     <field name="pec_mail_amm_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('pec_mail_amm', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('pec_mail_amm', '=', False)]"
                            force_save="1"
                     />
                 </xpath>
@@ -54,7 +54,7 @@
                 <xpath expr="//field[@name='contact_pa_email']" position="after">
                     <field name="contact_pa_email_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('contact_pa_email', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('contact_pa_email', '=', False)]"
                            force_save="1"
                     />
                     <separator/>
@@ -63,7 +63,7 @@
                 <xpath expr="//field[@name='contact_pa_pec_mail']" position="after">
                     <field name="contact_pa_pec_mail_use_in_sending"
                            widget="boolean_toggle"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('contact_pa_pec_mail', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('contact_pa_pec_mail', '=', False)]"
                            force_save="1"
                     />
                 </xpath>
@@ -89,7 +89,7 @@
             </field>
         </record>
         <record id="view_sd_dms_wizard_document_add_contact_digital_domicile_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.wizard.document.add.contact.digital.domicile.tree</field>
+            <field name="name">view.sd.dms.wizard.document.add.contact.digital.domicile.list</field>
             <field name="model">sd.dms.wizard.document.add.contact.digital.domicile</field>
             <field name="inherit_id" ref="sd_dms.view_sd_dms_wizard_document_add_contact_digital_domicile_tree"/>
             <field name="arch" type="xml">
@@ -122,7 +122,7 @@
             </field>
         </record>
         <record id="view_sd_dms_wizard_document_add_contact_email_address_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.wizard.document.add.contact.email.address.tree</field>
+            <field name="name">view.sd.dms.wizard.document.add.contact.email.address.list</field>
             <field name="model">sd.dms.wizard.document.add.contact.email.address</field>
             <field name="inherit_id" ref="sd_dms.view_sd_dms_wizard_document_add_contact_email_address_tree"/>
             <field name="arch" type="xml">

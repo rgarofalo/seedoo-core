@@ -9,13 +9,13 @@ class ProtocolloActions(models.Model):
         documento_ids = [self.documento_id.id] if self.documento_id else []
         documento_ids += self.allegato_ids.ids
         context = dict(self._context or {})
-        #TODO: gestire la creazione di un fascicolo con associazione dei documenti del protocollo
+        # TODO: gestire la creazione di un fascicolo con associazione dei documenti del protocollo
         context["create"] = False
         if not self._is_fascicolazione_disabled():
             context["disassocia_fascicolo_protocollo_id"] = self.id
         return {
             "name": "Fascicoli",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.fascicolo.fascicolo",
             "domain": [("documento_ids", "in", documento_ids)],
             "type": "ir.actions.act_window",

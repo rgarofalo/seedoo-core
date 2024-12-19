@@ -24,12 +24,12 @@
         <template id="template_sd_protocollo_footer_qweb">
             <div t-attf-class="footer o_boxed_footer o_company_#{company.id}_layout">
                 <div class="text-center">
-                    <ul class="list-inline">
-                        <li t-if="company.vat" class="list-inline-item">PIVA: <span
+                    <ul class=">list-inline">
+                        <li t-if="company.vat" class=">list-inline-item">PIVA: <span
                                 t-field="company.vat"/></li>
-                        <li t-if="company.phone" class="list-inline-item">- Tel. <span class="o_force_ltr" t-field="company.phone"/></li>
-                        <li id="email" t-if="company.email" class="list-inline-item">- <span t-field="company.email"/></li>
-                        <li t-if="company.website" class="list-inline-item">- <span t-field="company.website"/></li>
+                        <li t-if="company.phone" class=">list-inline-item">- Tel. <span class="o_force_ltr" t-field="company.phone"/></li>
+                        <li id="email" t-if="company.email" class=">list-inline-item">- <span t-field="company.email"/></li>
+                        <li t-if="company.website" class=">list-inline-item">- <span t-field="company.website"/></li>
 
                     </ul>
                     <div t-field="company.report_footer"/>

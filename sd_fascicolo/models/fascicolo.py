@@ -313,7 +313,7 @@ class Fascicolo(models.Model):
     def _compute_documento_ids_count(self):
         dossier_documents_obj = self.env["sd.dms.document"]
         for document in self:
-            documento_ids_count = dossier_documents_obj.search([("fascicolo_ids", "=", self.id)], count=True)
+            documento_ids_count = dossier_documents_obj.search_count([("fascicolo_ids", "=", self.id)])
             document.documento_ids_count = documento_ids_count
 
     @api.onchange("voce_titolario_id")

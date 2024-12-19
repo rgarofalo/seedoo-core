@@ -1,6 +1,6 @@
 {
     "name": "Widget zTree",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "Modulo estensivo del modulo app_web_widget_ztree",
     "description": """
@@ -14,10 +14,13 @@
     "depends": [
         "app_web_widget_ztree",
     ],
-    "data": [
-        "template/assets.xml"
-    ],
+    "assets": {
+        "web.assets_backend": [
+            "/fl_widget_ztree/static/src/scss/widget_ztree.scss",
+            "/fl_widget_ztree/static/src/js/widget_ztree.js",
+        ]
+    },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

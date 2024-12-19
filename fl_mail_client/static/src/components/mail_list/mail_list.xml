@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
-    <t t-name="fl_mail_client.MailList" owl="1">
-        <div class="o_MessageList o_MailList" t-att-class="{ 'o-empty': threadView and threadView.messages.length === 0, 'o-has-message-selection': props.selectedMessageLocalId }" t-on-scroll="onScroll">
+    <t t-name="fl_mail_client.MailList">
+        <div class="o_MessageList o_MailList"
+             t-att-class="{
+                 'o-empty': threadView and threadView.messages.length === 0,
+                 'o-has-message-selection': props.selectedMessageLocalId
+             }"
+             t-on-scroll="onScroll">
+             
+            <!-- Verifica se threadView esiste -->
             <t t-if="threadView">
-                <!-- No result mails -->
+                
+                <!-- Nessun risultato trovato -->
                 <t t-if="orderedMails.length === 0">
                     <div class="o_MessageList_empty o_MessageList_item">
                         <div class="o_MessageList_emptyTitle o-neutral-face-icon">
@@ -19,32 +27,40 @@
                     </div>
                 </t>
 
+                <!-- Separazione dei messaggi per giorno -->
                 <t t-set="current_day" t-value="0"/>
-                <t t-set="prev_message" t-value="0"/>
                 <t t-foreach="orderedMails" t-as="mail" t-key="mail.localId">
                     <t t-set="mail_day" t-value="getDateDay(mail)"/>
                     <t t-if="current_day !== mail_day">
                         <div class="o_MessageList_separator o_MessageList_separatorDate o_MessageList_item">
-                            <hr class="o_MessageList_separatorLine"/><span class="o_MessageList_separatorLabel o_MessageList_separatorLabelDate"><t t-esc="mail_day"/></span><hr class="o_MessageList_separatorLine"/>
-                            <t t-set="current_day" t-value="mail_day"/>
-                            <t t-set="isMessageSquashed" t-value="false"/>
+                            <hr class="o_MessageList_separatorLine"/>
+                            <span class="o_MessageList_separatorLabel o_MessageList_separatorLabelDate">
+                                <t t-esc="mail_day"/>
+                            </span>
+                            <hr class="o_MessageList_separatorLine"/>
                         </div>
+                        <t t-set="current_day" t-value="mail_day"/>
                     </t>
-                    <Mail mailLocalId="mail.localId"
-                          threadViewLocalId="threadView.localId"/>
+                    
+                    <!-- Componente Mail -->
+                    <Mail mailLocalId="mail.localId" threadViewLocalId="threadView.localId"/>
                 </t>
-                <!-- LOADING (if order desc)-->
+
+                <!-- Caricamento dinamico (solo in ordine discendente) -->
                 <t t-if="props.order === 'desc' and orderedMails.length > 0">
                     <t t-call="fl_mail_client.MailList.loadMore"/>
                 </t>
             </t>
-            <t t-else="">
+
+            <!-- Nessun threadView disponibile -->
+            <t t-else>
                 No message to display
             </t>
         </div>
     </t>
 
-    <t t-name="fl_mail_client.MailList.loadMore" owl="1">
+    <!-- Sub-template per il caricamento dei messaggi -->
+    <t t-name="fl_mail_client.MailList.loadMore">
         <t t-if="threadView.mailCache.isLoadingMore">
             <div class="o_MessageList_item o_MessageList_isLoadingMore">
                 <i class="o_MessageList_isLoadingMoreIcon fa fa-spin fa-spinner"/>
@@ -52,7 +68,10 @@
             </div>
         </t>
         <t t-elif="!threadView.mailCache.isAllHistoryLoaded and !threadView.thread.isTemporary">
-            <a class="o_MessageList_item o_MessageList_loadMore" href="#" t-on-click="_onClickLoadMore" t-ref="loadMore">
+            <a class="o_MessageList_item o_MessageList_loadMore"
+               href="#"
+               t-on-click="_onClickLoadMore"
+               t-ref="loadMore">
                 Load more
             </a>
         </t>

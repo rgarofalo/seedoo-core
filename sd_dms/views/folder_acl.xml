@@ -8,7 +8,7 @@
     <data noupdate="0">
 
         <record id="view_sd_dms_folder_acl_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.folder.acl.tree</field>
+            <field name="name">view.sd.dms.folder.acl.list</field>
             <field name="model">sd.dms.folder.acl</field>
             <field name="mode">primary</field>
             <field name="inherit_id" ref="fl_acl.view_fl_acl_tree"/>

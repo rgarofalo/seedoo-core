@@ -27,7 +27,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_assegnati_a_me" model="ir.actions.act_window">
             <field name="name">Protocolli Assegnati a Me</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_assegnati_a_me", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -35,7 +35,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_in_lavorazione" model="ir.actions.act_window">
             <field name="name">Protocolli in Lavorazione</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_in_lavorazione", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -43,7 +43,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_bozza" model="ir.actions.act_window">
             <field name="name">Protocolli in Bozza</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_bozza", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -51,7 +51,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_assegnati_a_me_competenza" model="ir.actions.act_window">
             <field name="name">Protocolli Assegnati a me per Competenza</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_assegnati_a_me_competenza", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -59,7 +59,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_assegnati_mio_ufficio" model="ir.actions.act_window">
             <field name="name">Protocolli Assegnati al mio Ufficio</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_assegnati_mio_ufficio", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -67,7 +67,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_assegnati_mio_ufficio_competenza" model="ir.actions.act_window">
             <field name="name">Protocolli Assegnati al mio Ufficio per Competenza</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_assegnati_mio_ufficio_competenza", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -75,7 +75,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_da_assegnare" model="ir.actions.act_window">
             <field name="name">Protocolli da Assegnare</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_da_assegnare", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -83,7 +83,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_da_inviare" model="ir.actions.act_window">
             <field name="name">Protocolli da Inviare</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_da_inviare", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -91,7 +91,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_assegnati_da_me" model="ir.actions.act_window">
             <field name="name">Protocolli Assegnati da me</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_assegnati_da_me", "=", True)]</field>
             <field name="limit">20</field>
         </record>
@@ -99,7 +99,7 @@
         <record id="action_sd_protocollo_protocollo_list_protocolli_rifiutati" model="ir.actions.act_window">
             <field name="name">Protocolli Rifiutati</field>
             <field name="res_model">sd.protocollo.protocollo</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[("filter_protocolli_rifiutati", "=", True)]</field>
             <field name="limit">20</field>
         </record>

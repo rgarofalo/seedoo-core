@@ -10,10 +10,10 @@
 
                 <xpath expr="//group[@name='mittente']" position="before">
                     <group name="account"
-                           attrs="{'invisible': [('account_id_invisible', '=', True)]}"
+                           invisible="[('account_id_invisible', '=', True)]"
                     >
                         <field name="account_id"
-                               attrs="{'required': [('account_id_required', '=', True)]}"
+                               required="[('account_id_required', '=', True)]"
                                widget="selection"
                                context="{'display_with_email': True}"
                         />

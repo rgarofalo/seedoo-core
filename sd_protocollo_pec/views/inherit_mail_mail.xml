@@ -12,7 +12,7 @@
                     <button name="protocollo_crea_da_mail_action"
                             type="object"
                             string="Create draft protocol"
-                            attrs="{'invisible': [('button_crea_bozza_protocollo_invisible', '=', True)]}"
+                            invisible="[('button_crea_bozza_protocollo_invisible', '=', True)]"
                             context="{'active_id': id}"
                             class="oe_highlight"
                     />
@@ -20,21 +20,21 @@
                             type="object"
                             string="Protocol not to do"
                             confirm="Il messaggio verrà rimosso dalla lista di protocollazione. Per ripristinarlo come da protocollare è necessario accedere all'APP Comunicazioni, ricercare il messaggio e con il button 'Ripristina per protocollazione' riattivarlo per la protocollazione."
-                            attrs="{'invisible': [('button_non_protocollare_invisible', '=', True)]}"
+                            invisible="[('button_non_protocollare_invisible', '=', True)]"
                             context="{'active_id': id}"
                             class="oe_highlight"
                     />
                     <button name="ripristina_da_non_protocollata_action"
                             type="object"
                             string="Restore to protocol"
-                            attrs="{'invisible': [('button_ripristina_da_non_protocollata_invisible', '=', True)]}"
+                            invisible="[('button_ripristina_da_non_protocollata_invisible', '=', True)]"
                             context="{'active_id': id}"
                             class="oe_highlight"
                     />
                     <button name="ripristina_da_protocollata_action"
                             type="object"
                             string="Restore to protocol"
-                            attrs="{'invisible': [('button_ripristina_da_protocollata_invisible', '=', True)]}"
+                            invisible="[('button_ripristina_da_protocollata_invisible', '=', True)]"
                             context="{'active_id': id}"
                             class="oe_highlight"
                     />
@@ -42,12 +42,12 @@
 
                 <xpath expr="//notebook/page[last()]" position="after">
                     <page string="Protocol"
-                          attrs="{'invisible': [('protocollo_in_id', '=', False)]}"
+                          invisible="[('protocollo_in_id', '=', False)]"
                     >
                         <group>
                             <field name="protocollo_action"/>
                             <field name="protocollo_in_id"
-                                   attrs="{'invisible': [('protocollo_in_id', '=', False)]}"
+                                   invisible="[('protocollo_in_id', '=', False)]"
                             />
                         </group>
                     </page>

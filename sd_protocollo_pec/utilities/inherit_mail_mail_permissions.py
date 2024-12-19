@@ -65,6 +65,6 @@ class MailPermissions(models.Model):
                 self.direction == "in" and \
                 self.protocollo_action == "protocollata" and \
                 (self.protocollo_id and self.protocollo_id.state == "annullato") and \
-                self.search([("protocollo_restore_mail_id", "=", self.id)], count=True) == 0:
+                self.search_count([("protocollo_restore_mail_id", "=", self.id)]) == 0:
             return False
         return True

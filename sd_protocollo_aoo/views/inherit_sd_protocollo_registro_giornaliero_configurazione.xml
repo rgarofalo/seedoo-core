@@ -3,7 +3,7 @@
     <data noupdate="0">
 
         <record id="view_sd_protocollo_registro_giornaliero_configurazione_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.registro.giornaliero.configurazione.tree</field>
+            <field name="name">view.sd.protocollo.registro.giornaliero.configurazione.list</field>
             <field name="model">sd.protocollo.registro.giornaliero.configurazione</field>
             <field name="inherit_id" ref="sd_protocollo.view_sd_protocollo_registro_giornaliero_configurazione_tree"/>
             <field name="arch" type="xml">

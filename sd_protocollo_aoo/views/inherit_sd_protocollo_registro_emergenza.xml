@@ -11,7 +11,7 @@
                 <xpath expr="//field[@name='registro_id']" position="after">
                     <field name="aoo_id"
                            options="{'no_create': True, 'no_edit': True}"
-                           attrs="{'readonly': [('field_readonly','=', False)]}"
+                           readonly="[('field_readonly','=', False)]"
                     />
                 </xpath>
 

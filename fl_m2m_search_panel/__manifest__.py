@@ -1,6 +1,6 @@
 {
     "name": "M2M search panel",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "Enable search panel for field many2many",
     "description": "",
@@ -8,20 +8,13 @@
     "website": "https://www.flosslab.com",
     "license": "LGPL-3",
     "sequence": 0,
-    "depends": [
-        "web"
-    ],
-    "data": [
-        "templates/assets.xml",
-    ],
-    'qweb': [
-
-    ],
-    "external_dependencies": {
-        "python": [],
-        "bin": [],
+    "depends": ["web"],
+    "assets": {
+        "web.assets_frontend": [
+            "/fl_m2m_search_panel/static/src/js/views/search_panel_model_extension.js"
+        ]
     },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

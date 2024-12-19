@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
 
-                <xpath expr="//div[hasclass('settings')]" position="inside">
+                <xpath expr="//form" position="inside">
                     <div class="app_settings_block" data-string="Fascicoli" data-key="sd_fascicolo"
                          groups="base.group_system">
                         <div name="sd_fascicolo_settings">

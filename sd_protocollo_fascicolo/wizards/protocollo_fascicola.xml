@@ -17,25 +17,25 @@
                                    colspan="4"
                             />
                         </group>
-                        <group attrs="{'invisible': ['|', ('documento_ids', '=', []), ('fascicolo_id', '=', False)]}">
+                        <group invisible="['|', ('documento_ids', '=', []), ('fascicolo_id', '=', False)]">
                             <b>Documenti del protocollo da inserire nel fascicolo</b>
                         </group>
-                        <group attrs="{'invisible': ['|', ('documento_ids', '!=', []), ('fascicolo_id', '=', False)]}">
+                        <group invisible="['|', ('documento_ids', '!=', []), ('fascicolo_id', '=', False)]">
                             <b>Non ci sono documenti associabili al fascicolo selezionato</b>
                         </group>
                         <field name="documento_ids"
                                nolabel="1"
-                               attrs="{'invisible': ['|', ('documento_ids', '=', []), ('fascicolo_id', '=', False)]}"
+                               invisible="['|', ('documento_ids', '=', []), ('fascicolo_id', '=', False)]"
                                force_save="1"
                         >
-                            <tree>
+                            <list>
                                 <field name="filename"/>
                                 <field name="subject"/>
                                 <field name="folder_id"/>
                                 <field name="document_type_id"/>
                                 <field name="voce_titolario_id"/>
                                 <field name="state"/>
-                            </tree>
+                            </list>
                         </field>
                     </sheet>
                     <footer>
@@ -43,7 +43,7 @@
                                 type="object"
                                 string="Fascicola"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('documento_ids', '=', [])]}"
+                                invisible="[('documento_ids', '=', [])]"
                         />
                         <button string="Abbandona"
                                 class="oe_link"

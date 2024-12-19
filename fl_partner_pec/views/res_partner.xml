@@ -14,7 +14,8 @@
                     <field name="fl_pec_mail_required" invisible="1"/>
                     <field name="pec_mail"
                            widget="email"
-                           attrs="{'required': [('fl_pec_mail_required', '=', True)], 'invisible': [('fl_pec_mail_invisible', '=', True)]}"
+                           required="[('fl_pec_mail_required', '=', True)]" 
+                           invisible= "[('fl_pec_mail_invisible', '=', True)]"
                     />
                 </xpath>
 
@@ -27,7 +28,7 @@
                 <xpath expr="//field[@name='child_ids']//kanban//field[@name='email']" position="after">
                     <field name="pec_mail"/>
                 </xpath>
-                <xpath expr="//field[@name='child_ids']//kanban//div[@t-if='record.email.raw_value']" position="after">
+                <xpath expr="//field[@name='child_ids']//kanban//div[@t-if='record.phone.raw_value']" position="before">
                     <div t-if="record.pec_mail.raw_value"><field name="pec_mail" widget="email"/></div>
                 </xpath>
 
@@ -35,7 +36,7 @@
         </record>
 
         <record id="view_res_partner_tree" model="ir.ui.view">
-            <field name="name">view.res.partner.tree</field>
+            <field name="name">view.res.partner.list</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
@@ -57,11 +58,12 @@
                     <field name="pec_mail"/>
                     <field name="fl_pec_mail_invisible"/>
                 </field>
+<!--                 
                 <xpath expr='//kanban/templates/t/div/div/ul/li[@t-if="record.city.raw_value or record.country_id.raw_value"]' position="after">
                     <li t-if="record.pec_mail.raw_value and !record.fl_pec_mail_invisible.raw_value" class="o_text_overflow">
                         <field name="pec_mail"/><span> (PEC)</span>
                     </li>
-                </xpath>
+                </xpath> -->
 
             </field>
         </record>

@@ -1,86 +1,44 @@
-odoo.define('sd.protocollo.Dashboard', function (require) {
-    'use strict';
+/** @odoo-module **/
 
-    var AbstractAction = require('web.AbstractAction');
-    var core = require('web.core');
-    var WebClient = require('web.web_client');
-    const {Component} = owl;
+import { Component, useState, onWillStart } from '@odoo/owl';
+import { registry } from '@web/core/registry';
+import { useService } from '@web/core/utils/hooks';
 
-    var _t = core._t;
+class SDProtocolloDashboard extends Component {
+    setup() {
+        this.actionService = useService('action');
+        this.rpc = useService('rpc');
+        this.state = useState({
+            title: this.props.action.name || this.env._t('Dashboard'),
+            htmlContent: '',
+        });
 
-    var SDProtocolloDashboard = AbstractAction.extend({
-        hasControlPanel: true,
-        events: {
-            "click .sd-button": "_onClickKanbanButton",
-            "click tr.o_odoo_model": "on_odoo_model",
-        },
+        onWillStart(async () => {
+            const response = await this.rpc('/protocollo/dashboard');
+            this.state.htmlContent = response.html_content;
+        });
+    }
 
+    async _onClickKanbanButton(event) {
+        const data = event.currentTarget.dataset;
+        const parameters = {
+            action_name: data.actionName || [],
+            action_context: data.actionContext || [],
+        };
+        const action = await this.rpc('/protocollo/dashboard/list', { params: parameters });
+        this.actionService.doAction(action, { on_reverse_breadcrumb: this.on_reverse_breadcrumb.bind(this) });
+    }
 
-        init: function (parent, action) {
-            this._super.apply(this, arguments);
-            this.action = action;
-            this.set('title', action.name || _t('Dashboard'));
-        },
+    on_reverse_breadcrumb() {
+        this.actionService.doPushState({});
+        this.setup();
+    }
 
-        /**
-         * @private
-         * @param {MouseEvent} event
-         */
-        _onClickKanbanButton: function (event) {
-            var self = this;
-            var data = $(event.currentTarget).data();
+    static template = 'sd_protocollo.DashboardTemplate';
+}
 
-            var parameters = {
-                action_name: data.actionName || [],
-                action_context: data.actionContext || [],
-            }
-            var options = {
-                on_reverse_breadcrumb: this.on_reverse_breadcrumb,
-            };
-            return this._rpc({
-                route: "/protocollo/dashboard/list",
-                params: parameters,
-            }).then(function (action) {
-                self.do_action(action, options);
-            });
-        },
+SDProtocolloDashboard.template = 'sd_protocollo.DashboardTemplate';
 
-        /**
-         * Refresh the DOM html
-         *
-         * @private
-         * @param {string|html} dom
-         */
-        _refreshPageWithNewHtml: function (dom) {
-            var $dom = $(dom);
-            this.$el.html($dom);
-        },
+registry.category('actions').add('sd.protocollo.dashboard',{component: SDProtocolloDashboard});
 
-        /**
-         *  Start è il metodo che viene chiamato dopo init, willStart
-         *  Chiama il controller di odoo che restituisce il template valorizzato sotto forma di html
-         */
-        start: function () {
-            var self = this;
-
-            return self._rpc({
-                route: "/protocollo/dashboard",
-            }).then(function (response) {
-                self._refreshPageWithNewHtml(response.html_content);
-            });
-        },
-
-        // Breadcrumb navigation processing
-        on_reverse_breadcrumb: function () {
-            var self = this;
-            WebClient.do_push_state({});
-            self.start();
-        },
-
-    });
-
-    core.action_registry.add('sd.protocollo.dashboard', SDProtocolloDashboard);
-
-    return SDProtocolloDashboard;
-});
-
+export default SDProtocolloDashboard;

@@ -4,16 +4,16 @@
     <data noupdate="0">
 
         <record id="view_fl_mail_client_account_permission_tree" model="ir.ui.view">
-            <field name="name">view.fl.mail.client.account.permission.tree</field>
+            <field name="name">view.fl.mail.client.account.permission.list</field>
             <field name="model">fl.mail.client.account.permission</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="account_id"/>
                     <field name="user_id"/>
                     <field name="show_inbox_mails" widget="boolean_toggle"/>
                     <field name="show_outgoing_mails" widget="boolean_toggle"/>
                     <field name="use_outgoing_server" widget="boolean_toggle"/>
-                </tree>
+                </list>
             </field>
         </record>
 

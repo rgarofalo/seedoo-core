@@ -31,7 +31,7 @@
                     <button name="%(action_sd_dms_set_res_users_list)d"
                             class="oe_stat_button"
                             icon="fa-building"
-                            attrs="{'invisible': [('count_user_set', '=', 0)]}"
+                            invisible="[('count_user_set', '=', 0)]"
                             context="{'user_id': id}"
                             type="action">
                         <field name="count_user_set" widget="statinfo" string="Set"/>
@@ -64,27 +64,16 @@
                 <field name="login_date" position="after">
                     <field name="is_online"/>
                 </field>
-                <xpath expr="//ul" position="replace">
-                    <ul>
-                        <li class="text-success float-right mb4" t-if="record.is_online.raw_value">
-                            <i class="fa fa-circle" role="img" aria-label="Online" title="Online"></i>
-                        </li>
-                        <li class="text-danger float-right mb4" t-if="!record.is_online.raw_value">
+                <xpath expr="//kanban//t//main//div" position="replace">
+                    <div>
+                        <div t-if="record.is_online.raw_value" class="text-success float-end mb4">
+                           <i class="fa fa-circle" role="img" aria-label="Online" title="Online"></i>
+                        </div>
+                        <div t-else="" class="text-danger float-end mb4">
                             <i class="fa fa-circle" role="img" aria-label="Offline" title="Offline"></i>
-                        </li>
-                        <li class="mb4">
-                            <strong>
-                                <field name="name"/>
-                            </strong>
-                        </li>
-                        <li class="badge badge-pill float-right mb4" t-if="record.lang.raw_value">
-                            <field name="lang"/>
-                        </li>
-                        <li class="mb4" t-if="record.login.raw_value" title="Login">
-                            <i class="fa fa-envelope" role="img" aria-label="Login"/>
-                            <field name="login"/>
-                        </li>
-                    </ul>
+                        </div>
+                        <field class="fw-bold" name="name"/>
+                    </div>
                 </xpath>
             </field>
         </record>

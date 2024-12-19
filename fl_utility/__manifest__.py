@@ -1,6 +1,6 @@
 {
     "name": "Base Utilities Addon",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Hidden",
     "summary": "",
     "description": "",
@@ -18,5 +18,5 @@
     },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

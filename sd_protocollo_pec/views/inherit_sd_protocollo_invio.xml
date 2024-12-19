@@ -3,7 +3,7 @@
     <data>
 
         <record id="view_sd_protocollo_invio_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.invio.tree</field>
+            <field name="name">view.sd.protocollo.invio.list</field>
             <field name="model">sd.protocollo.invio</field>
             <field name="inherit_id" ref="sd_protocollo.view_sd_protocollo_invio_tree"/>
             <field name="arch" type="xml">
@@ -20,12 +20,12 @@
                     <button name="action_reinvia_mail"
                             type="object"
                             class="fa fa-repeat btn btn-secondary o-kanban-button-new oe_edit_only"
-                            attrs="{'invisible': [('button_reinvia_mail_invisible','=', True)]}">
+                            invisible="[('button_reinvia_mail_invisible','=', True)]">
                     </button>
                     <button name="action_reset_mail"
                             type="object"
                             class="fa fa-repeat btn btn-secondary o-kanban-button-new oe_edit_only"
-                            attrs="{'invisible': [('button_reset_mail_invisible','=', True)]}">
+                            invisible="[('button_reset_mail_invisible','=', True)]">
                     </button>
                 </xpath>
 
@@ -49,14 +49,14 @@
                 </xpath>
 
                 <xpath expr="//page[@name='destinatari']" position="after">
-                    <page string="Ricevute" attrs="{'invisible': [('ricevuta_pec_ids','=',[])]}">
+                    <page string="Ricevute" invisible="[('ricevuta_pec_ids','=',[])]">
                         <field name="ricevuta_pec_ids">
-                            <tree>
+                            <list>
                                 <field name="subject"/>
                                 <field name="date"/>
                                 <field name="pec_type"/>
                                 <field name="recipient_addr"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                 </xpath>

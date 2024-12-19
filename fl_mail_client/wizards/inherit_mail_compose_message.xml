@@ -18,9 +18,9 @@
                     />
                 </xpath>
 
-                <xpath expr="//span[@name='document_followers_text']" position="replace">
+                <!-- <xpath expr="//span[@name='document_followers_text']" position="replace">
 
-                </xpath>
+                </xpath> -->
 
                 <xpath expr="//label[@for='partner_ids']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -34,19 +34,19 @@
                     <field name="email_ids"
                            widget="many2many_tags_email"
                            options="{'no_quick_create': True}"
-                           attrs="{'invisible': [('composition_mode', '!=', 'comment')]}"
+                           invisible="[('composition_mode', '!=', 'comment')]"
                            context="{'account_id': account_id}"
                     />
                     <field name="email_cc_ids"
                            widget="many2many_tags_email"
                            options="{'no_quick_create': True}"
-                           attrs="{'invisible': [('composition_mode', '!=', 'comment')]}"
+                           invisible= "[('composition_mode', '!=', 'comment')]"
                            context="{'account_id': account_id}"
                     />
                     <field name="email_bcc_ids"
                            widget="many2many_tags_email"
                            options="{'no_quick_create': True}"
-                           attrs="{'invisible': [('composition_mode', '!=', 'comment')]}"
+                           invisible="[('composition_mode', '!=', 'comment')]"
                            context="{'account_id': account_id}"
                     />
                 </xpath>
@@ -55,9 +55,9 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <xpath expr="//button[@name='save_as_template']" position="attributes">
+                <!-- <xpath expr="//button[@name='save_as_template']" position="attributes">
                     <attribute name="invisible">1</attribute>
-                </xpath>
+                </xpath> -->
 
             </field>
         </record>

@@ -1,6 +1,6 @@
 {
     "name": "Protocollo",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Document Management",
     "summary": "Protocolla a norma di legge i tuoi documenti",
     "description": """
@@ -11,7 +11,7 @@
     "license": "LGPL-3",
     "sequence": 0,
     "depends": [
-        "fl_partner_pec_unique",
+        # "fl_partner_pec_unique",
         "fl_utility",
         "fl_mail_client_pec",
         "sd_dms",
@@ -31,15 +31,11 @@
         "data/report_paperformat_landscape.xml",
         "data/report_paperformat_portrait.xml",
         "data/cartella.xml",
-
         "templates/header_footer_template.xml",
         "templates/registro_giornaliero.xml",
-
         "reports/registro_giornaliero.xml",
-
         "security/categories.xml",
         "security/groups.xml",
-
         "security/access/assegnazione.xml",
         "security/access/invio.xml",
         "security/access/invio_destinatario.xml",
@@ -62,13 +58,10 @@
         "security/rule/registro.xml",
         "security/rule/registro_emergenza.xml",
         "security/rule/registro_giornaliero.xml",
-
         "actions/protocollo.xml",
         "actions/inherit_sd_dms_documento.xml",
-
         "menu/action.xml",
         "menu/items.xml",
-
         "wizards/protocollo_registra.xml",
         "wizards/protocollo_annulla.xml",
         "wizards/protocollo_assegna.xml",
@@ -82,7 +75,6 @@
         "wizards/protocollo_elimina_assegnazione.xml",
         "wizards/documento_crea_bozza_protocollo.xml",
         "wizards/res_config_settings.xml",
-
         "views/assegnazione.xml",
         "views/archivio.xml",
         "views/cartella.xml",
@@ -99,15 +91,21 @@
         "views/registro_emergenza.xml",
         "views/res_partner.xml",
         "views/registro_giornaliero_configurazione.xml",
-
         "templates/dashboard_template.xml",
-
-        "static/src/templates/web_templates.xml",
-
+        # "static/src/templates/web_templates.xml",
     ],
-    "qweb": [],
+    "assets": {
+        "web.assets_frontend": [
+            "/sd_protocollo/static/src/js/dashboard.js",
+            "/sd_protocollo/static/src/js/mezzo_trasmissione.js",
+            "/sd_protocollo/static/src/js/inherit_basic_view.js",
+            "/sd_protocollo/static/src/scss/dashboard.scss",
+            "/sd_protocollo/static/src/scss/message_chatter.scss",
+            "/sd_protocollo/static/src/scss/protocollo.scss",
+        ]
+    },
     "installable": True,
     "application": True,
-    "post_init_hook": "post_init_hook",
-    "auto_install": False
+    # "post_init_hook": "post_init_hook",
+    "auto_install": False,
 }

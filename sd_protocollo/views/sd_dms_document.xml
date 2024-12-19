@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <record id="view_sd_dms_document_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.document.tree</field>
+            <field name="name">view.sd.dms.document.list</field>
             <field name="model">sd.dms.document</field>
             <field name="inherit_id" ref="sd_dms.view_sd_dms_document_tree"/>
             <field name="arch" type="xml">
@@ -27,7 +27,7 @@
                             type="object"
                             class="oe_stat_button"
                             icon="fa-gavel"
-                            attrs="{'invisible': [('protocollo_id', '=',False)]}"
+                            invisible="[('protocollo_id', '=',False)]"
                     >
                         <div class="o_stat_info">
                             <span class="o_stat_text">Protocollo</span>
@@ -38,7 +38,7 @@
 
                 <xpath expr="//field[@name='registration_type']" position="after">
                     <field name="protocollo_id"
-                           attrs="{'invisible': [('protocollo_id', '=',False)]}"
+                           invisible="[('protocollo_id', '=',False)]"
                            options="{'no_create': True, 'no_open': True}"
                            string="Protocollo N."
                     />

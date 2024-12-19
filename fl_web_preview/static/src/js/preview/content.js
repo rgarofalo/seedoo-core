@@ -4,47 +4,48 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define('fl_web_preview.AbstractPreviewContent', function (require) {
-"use strict";
+/** @odoo-module **/
 
-var core = require('web.core');
-var ajax = require('web.ajax');
-var utils = require('web.utils');
-var session = require('web.session');
-var Widget = require('web.Widget');
+import { Component, useState } from "@odoo/owl";
+// import ajax from "web.ajax";
+// import { jsonrpc } from "@web/core/network/rpc_service";
+// import { useState } from "@odoo/owl/hooks";
+import { _t } from "@web/core/l10n/translation";
 
-var QWeb = core.qweb;
-var _t = core._t;
+class AbstractPreviewContent extends Component {
+    // Props
+    static props = {
+        url: { type: String },
+        mimetype: { type: String, default: "application/octet-stream" },
+        filename: { type: String, default: "Unknown" },
+    };
 
-var AbstractPreviewContent = Widget.extend({
-	init: function(parent, url, mimetype, filename) {
-    	this._super.apply(this, arguments);
-        this.mimetype = mimetype || "application/octet-stream";
-        this.filename = filename || "Unknown";
-        this.url = url;
-    },
-	willStart: function() { 
-		return $.when(
-			this._super.apply(this, arguments),
-			ajax.loadLibs(this)
-		);
-    },
-	start: function () {
-		return $.when(
-			this._super.apply(this, arguments),
-			this.renderPreviewContent(),
-		);
-    },
-	renderPreviewContent: function() {
-    	return $.when();
-    },
-    printable: false,
-    downloadable: false,
-	contentActions: function() {
-    	return [];
-    },
-});
+    // State
+    setup() {
+        this.state = useState({
+            printable: false,
+            downloadable: false,
+        });
+    }
 
-return AbstractPreviewContent;
+    // Lifecycle Hooks
+    async willStart() {
+        const assets_backend = this.env.services['web.assets_backend'];
 
-});
+        await assets_backend.loadLibs(this);
+    }
+
+    async start() {
+        await this.renderPreviewContent();
+    }
+
+    async renderPreviewContent() {
+        // Placeholder for extending classes
+    }
+
+    contentActions() {
+        return [];
+    }
+}
+
+export default AbstractPreviewContent;

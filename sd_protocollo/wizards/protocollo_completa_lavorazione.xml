@@ -10,14 +10,15 @@
                     <sheet>
                         <group>
                             <field name="stato_da_modificare"
-                                   attrs="{'invisible':[('stato_da_modificare_invisible','=',True)]}"
+                                   invisible="[('stato_da_modificare_invisible','=',True)]"
                             />
                             <field name="assegnazione_id"
                                    widget="selection"
-                                   attrs="{'required':[('stato_da_modificare','=','stato_assegnazione')], 'invisible':['|',('stato_da_modificare','!=','stato_assegnazione'),('assegnazione_id_invisible','=',True)]}"
+                                   required="[('stato_da_modificare','=','stato_assegnazione')]"
+                                   invisible="['|',('stato_da_modificare','!=','stato_assegnazione'),('assegnazione_id_invisible','=',True)]"
                             />
                             <field name="motivazione"
-                                   attrs="{'invisible':[('motivazione_invisible','=',True)]}"
+                                   invisible="[('motivazione_invisible','=',True)]"
                             />
                         </group>
                         <group invisible="1">

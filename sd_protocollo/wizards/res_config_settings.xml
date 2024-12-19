@@ -9,7 +9,7 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
 
-                <xpath expr="//div[hasclass('settings')]" position="inside">
+                <xpath expr="//form" position="inside">
                     <div class="app_settings_block" data-string="Protocollo" data-key="sd_protocollo"
                          groups="base.group_system">
                         <div name="sd_protocollo_settings">
@@ -139,7 +139,7 @@
                                             Abilita la classificazione del documento e degli allegati del protocollo tramite il titolario
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_sd_protocollo_titolario', '=', False)]}"
+                                             invisible="[('module_sd_protocollo_titolario', '=', False)]"
                                              id="msg_module_sd_protocollo_titolario">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -276,7 +276,7 @@
                                             Abilita la gestione delle cartelle in cui salvare i documenti e gli allegati del Protocollo
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_protocollo_dms_folder', '=', False)]}"
+                                             invisible="[('module_fl_protocollo_dms_folder', '=', False)]"
                                              id="msg_module_fl_protocollo_dms_folder">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -323,7 +323,7 @@
                                             Enable the management of the protocol assignment workflow by switching
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_protocollo_smistamento', '=', False)]}"
+                                             invisible="[('module_fl_protocollo_smistamento', '=', False)]"
                                              id="msg_module_fl_protocollo_smistamento">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -533,7 +533,7 @@
                                             Permette di protocollare PEC e inviare un documento protocollato tramite mezzo di trasmissione PEC
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_sd_protocollo_pec', '=', False)]}"
+                                             invisible="[('module_sd_protocollo_pec', '=', False)]"
                                              id="msg_module_sd_protocollo_pec">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -554,7 +554,7 @@
                                             Permette di protocollare una e-mail e inviare un documento protocollato tramite mezzo di trasmissione e-mail
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_protocollo_email', '=', False)]}"
+                                             invisible="[('module_fl_protocollo_email', '=', False)]"
                                              id="msg_module_fl_protocollo_email">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -604,7 +604,7 @@
                                             Abilita la generazione e il parsing della segnatura.xml
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_protocollo_segnatura_xml', '=', False)]}"
+                                             invisible="[('module_fl_protocollo_segnatura_xml', '=', False)]"
                                              id="msg_module_fl_protocollo_segnatura_xml">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e
@@ -624,7 +624,7 @@
                                             Abilita la generazione e parsing dei messaggi di ritorno (conferma.xml, annullamento.xml e eccezione.xml)
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_protocollo_interoperabilita', '=', False)]}"
+                                             invisible="[('module_fl_protocollo_interoperabilita', '=', False)]"
                                              id="msg_module_fl_protocollo_interoperabilita">
                                             <div class="text-warning mt16">
                                                 Per configurare la funzionalità <strong>salvare</strong> questa pagina e

@@ -3,12 +3,12 @@
     <data>
 
         <record id="view_sd_protocollo_invio_destinatario_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.invio.destinatario.tree</field>
+            <field name="name">view.sd.protocollo.invio.destinatario.list</field>
             <field name="model">sd.protocollo.invio.destinatario</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="contatto_id_name"/>
-                </tree>
+                </list>
             </field>
         </record>
 

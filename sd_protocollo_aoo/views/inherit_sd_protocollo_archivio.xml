@@ -3,7 +3,7 @@
     <data noupdate="0">
 
         <record id="view_sd_protocollo_archivio_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.archivio.tree</field>
+            <field name="name">view.sd.protocollo.archivio.list</field>
             <field name="model">sd.protocollo.archivio</field>
             <field name="inherit_id" ref="sd_protocollo.view_sd_protocollo_archivio_tree"/>
             <field name="arch" type="xml">

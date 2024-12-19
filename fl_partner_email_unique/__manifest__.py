@@ -1,6 +1,6 @@
 {
     "name": "Partner e-mail unique",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "",
     "summary": "Adds e-mail uniqueness check for the partner",
     "description": "",
@@ -11,14 +11,9 @@
     "depends": [
         "fl_partner_email",
     ],
-    "external_dependencies": {
-    },
-    "data": [
-        "data/ir_config_parameter.xml",
-
-        "views/res_config_settings.xml"
-    ],
+    "external_dependencies": {},
+    "data": ["data/ir_config_parameter.xml", "views/res_config_settings.xml"],
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

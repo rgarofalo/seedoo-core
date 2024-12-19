@@ -28,7 +28,8 @@
                                    'no_open': True,
                                    'no_create': True
                                    }"
-                           attrs="{'required': [('voce_titolario_id_required','=',True)], 'readonly': [('voce_titolario_id_readonly','=',True)]}"
+                           required="[('voce_titolario_id_required','=',True)]"
+                           readonly="[('voce_titolario_id_readonly','=',True)]"
                            colspan="4"
                     />
                 </xpath>

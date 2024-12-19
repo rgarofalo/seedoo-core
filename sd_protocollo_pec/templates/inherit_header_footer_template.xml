@@ -6,7 +6,7 @@
                   inherit_id="sd_protocollo.template_sd_protocollo_footer_qweb">
 
             <xpath expr="//li[@id='email']" position="after">
-                <li t-if="company.partner_id.pec_mail" class="list-inline-item">- PEC: <span t-field="company.partner_id.pec_mail"/></li>
+                <li t-if="company.partner_id.pec_mail" class=">list-inline-item">- PEC: <span t-field="company.partner_id.pec_mail"/></li>
             </xpath>
 
         </template>

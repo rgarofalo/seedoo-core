@@ -4,18 +4,14 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define('fl_web_preview.registry', function (require) {
-"use strict";
+/** @odoo-module **/
 
-var Registry = require('web.Registry');
+import { registry } from "@web/core/registry";
+import PreviewContentUnsupported from "@fl_web_preview/js/preview/unsupported";
 
-var PreviewWidget = require('fl_web_preview.PreviewContentUnsupported');
+const previewRegistry = registry.category("preview_widgets");
 
-var previewRegistry = new Registry();
-previewRegistry.defaultPreview = function () {
-    return PreviewWidget;
-};
+// Register default preview widget
+previewRegistry.add("default", () => PreviewContentUnsupported);
 
-return previewRegistry;
-
-});
+export default previewRegistry;

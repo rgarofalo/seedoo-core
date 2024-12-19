@@ -10,17 +10,17 @@
                     <sheet>
                         <group>
                             <field name="modalita_invio_readonly" invisible="1"/>
-                            <field name="modalita_invio" attrs="{'readonly':[('modalita_invio_readonly', '=', True)]}"/>
+                            <field name="modalita_invio" [('modalita_invio_readonly', '=', True)]"/>
                             <field name="motivazione"/>
                         </group>
                         <label for="contatto_ids" string="Contatti"/>
                         <group>
                             <field name="contatto_ids" options="{'create': false}" nolabel="1">
-                                <tree string="Contatti" editable="top">
+                                <list string="Contatti" editable="top">
                                     <field name="name" readonly="1"/>
                                     <field name="email"/>
                                     <field name="destinatario_id" invisible="1"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
                     </sheet>
@@ -40,14 +40,14 @@
         </record>
 
         <record id="view_sd_protocollo_wizard_protocollo_reinvio_mail_contatto_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.wizard.protocollo.reinvio.mail.contatto.tree</field>
+            <field name="name">view.sd.protocollo.wizard.protocollo.reinvio.mail.contatto.list</field>
             <field name="model">sd.protocollo.wizard.protocollo.reinvio.mail.contatto</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="email"/>
                     <field name="destinatario_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

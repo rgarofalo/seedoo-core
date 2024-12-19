@@ -9,8 +9,8 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
 
-                <xpath expr="//div[hasclass('settings')]" position="inside">
-                    <div class="app_settings_block" data-string="Mail Client" data-key="fl_mail_client"
+            <xpath expr="//form" position="inside">
+                    <app class="app_settings_block" data-string="Mail Client" data-key="fl_mail_client"
                          groups="base.group_system">
                         <div name="fl_mail_client_settings">
 
@@ -78,7 +78,7 @@
                                             Enable the advanced management of the mail history
                                         </div>
                                         <div class="content-group"
-                                             attrs="{'invisible': [('module_fl_mail_client_history', '=', False)]}"
+                                             invisible="[('module_fl_mail_client_history', '=', False)]"
                                              id="msg_module_fl_mail_client_history">
                                             <div class="text-warning mt16">
                                                 <strong>Save</strong> this page and come back here
@@ -90,7 +90,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </app>
                 </xpath>
 
             </field>

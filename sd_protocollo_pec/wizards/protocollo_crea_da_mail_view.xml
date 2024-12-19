@@ -11,17 +11,17 @@
                         <group>
                             <field name="company_id"
                                    groups="base.group_multi_company"
-                                   attrs="{'invisible': [('company_id_invisible', '=', True)]}"
+                                   invisible="[('company_id_invisible', '=', True)]"
                                    options="{'no_open': True, 'no_create': True}"
                                    required="1"
                             />
                             <field name="protocollatore_ufficio_id"
-                                   attrs="{'invisible': [('protocollatore_ufficio_id_invisible','=',True)]}"
+                                   invisible="[('protocollatore_ufficio_id_invisible','=',True)]"
                                    context="{'company_id': company_id}"
                                    required="1"
                             />
                             <field name="registro_id"
-                                   attrs="{'invisible': [('registro_id_invisible','=',True)]}"
+                                   invisible="[('registro_id_invisible','=',True)]"
                                    options="{'no_open': True, 'no_create': True}"
                                    context="{'company_id': company_id}"
                                    required="1"
@@ -31,13 +31,14 @@
                         <group>
                             <field name="documento_attachment_id"
                                    domain="[('message_ids','=',mail_message_id)]"
-                                   attrs="{'invisible': [('documento_tipologia','!=','allegato')], 'required':[('documento_tipologia','=','allegato')]}"
+                                   invisible="[('documento_tipologia','!=','allegato')]" 
+                                   required ="[('documento_tipologia','=','allegato')]"
                                    widget="selection"
                             />
                         </group>
                         <group>
                             <field name="folder_id"
-                                   attrs="{'invisible': [('folder_id_invisible','=',True)]}"
+                                   invisible="[('folder_id_invisible','=',True)]"
                                    options="{'no_open': True, 'no_create': True}"
                                    required="1"
                             />

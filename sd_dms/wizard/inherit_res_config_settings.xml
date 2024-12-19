@@ -14,7 +14,7 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
 
-                <xpath expr="//div[@id='user_default_rights']" position="inside">
+                <xpath expr="//block[@id='user_default_rights']" position="inside">
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_left_pane">
                             <field name="module_fl_acl"/>
@@ -40,7 +40,7 @@
                     </div>
                 </xpath>
 
-                <xpath expr="//div[hasclass('settings')]" position="inside">
+                <xpath expr="//form" position="inside">
                     <div class="app_settings_block" data-string="Documents" data-key="sd_dms"
                          groups="base.group_system">
                         <h2>General</h2>
@@ -55,7 +55,7 @@
                                         Enable the classification of documents by Titolario
                                     </div>
                                     <div class="content-group"
-                                         attrs="{'invisible': [('module_sd_dms_titolario', '=', False)]}"
+                                         invisible="[('module_sd_dms_titolario', '=', False)]"
                                          id="msg_module_sd_dms_titolario">
                                         <div class="text-warning mt16">
                                             <strong>Save</strong> this page and come back here
@@ -108,7 +108,7 @@
                                         Allows attachments to be stored inside of Documents
                                     </div>
                                     <div class="content-group"
-                                         attrs="{'invisible': [('module_fl_dms_attachment', '=', False)]}"
+                                         invisible="[('module_fl_dms_attachment', '=', False)]"
                                          id="msg_module_fl_dms_attachment">
                                         <div class="text-warning mt16">
                                             <strong>Save</strong> this page and come back here
@@ -140,7 +140,7 @@
                                         Adds Full-text content searches feature for Documents
                                     </div>
                                     <div class="content-group"
-                                         attrs="{'invisible': [('module_fl_dms_fulltext', '=', False)]}"
+                                         invisible="[('module_fl_dms_fulltext', '=', False)]"
                                          id="msg_module_fl_dms_fulltext">
                                         <div class="text-warning mt16">
                                             <strong>Save</strong> this page and come back here
@@ -160,7 +160,7 @@
                                         Enable the use of collaborative editor for create and modify text, spreadsheet and presentation documents
                                     </div>
                                     <div class="content-group"
-                                         attrs="{'invisible': [('module_fl_dms_onlyoffice', '=', False)]}"
+                                         invisible="[('module_fl_dms_onlyoffice', '=', False)]"
                                          id="msg_module_fl_dms_onlyoffice">
                                         <div class="text-warning mt16">
                                             <strong>Save</strong> this page and come back here
@@ -194,7 +194,7 @@
                                         Massive file import from smb server
                                     </div>
                                     <div class="content-group"
-                                         attrs="{'invisible': [('module_fl_dms_importer', '=', False)]}"
+                                         invisible="[('module_fl_dms_importer', '=', False)]"
                                          id="msg_module_fl_dms_importer">
                                         <div class="text-warning mt16">
                                             <strong>Save</strong> this page and come back here
@@ -293,7 +293,7 @@
                                         Adds support for files with extension: .doc, .docx, .docm, .ppt, .pptx,
                                         .pptm, .xls, .xlsx, .xlsm, .xlsb
                                     </div>
-                                    <div class="content-group" attrs="{'invisible': [('module_fl_web_preview_msoffice','=',False)]}">
+                                    <div class="content-group" invisible="[('module_fl_web_preview_msoffice','=',False)]">
                                         <div class="text-muted">
                                             <label for="fl_web_preview_msoffice_web_base_url"/>
                                             <br/>

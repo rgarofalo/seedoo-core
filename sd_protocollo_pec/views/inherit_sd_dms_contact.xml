@@ -13,12 +13,12 @@
                 </xpath>
 
                 <xpath expr="//field[@name='email']" position="before">
-                    <separator attrs="{'invisible': [('fiscalcode_invisible', '=', True),('function_invisible', '=', True)]}"/>
+                    <separator invisible="[('fiscalcode_invisible', '=', True),('function_invisible', '=', True)]"/>
                 </xpath>
 
                 <xpath expr="//field[@name='email']" position="after">
                     <field name="email_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('email', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('email', '=', False)]"
                            readonly="1"
                     />
                     <separator/>
@@ -26,7 +26,7 @@
 
                 <xpath expr="//field[@name='pec_mail']" position="after">
                     <field name="pec_mail_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('pec_mail', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('pec_mail', '=', False)]"
                            readonly="1"
                     />
                     <separator/>
@@ -34,7 +34,7 @@
 
                 <xpath expr="//field[@name='email_amm']" position="after">
                     <field name="email_amm_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('email_amm', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('email_amm', '=', False)]"
                            readonly="1"
                     />
                     <separator/>
@@ -42,14 +42,14 @@
 
                 <xpath expr="//field[@name='pec_mail_amm']" position="after">
                     <field name="pec_mail_amm_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('pec_mail_amm', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('pec_mail_amm', '=', False)]"
                            readonly="1"
                     />
                 </xpath>
 
                 <xpath expr="//field[@name='contact_pa_email']" position="after">
                     <field name="contact_pa_email_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('contact_pa_email', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('contact_pa_email', '=', False)]"
                            readonly="1"
                     />
                     <separator/>
@@ -57,7 +57,7 @@
 
                 <xpath expr="//field[@name='contact_pa_pec_mail']" position="after">
                     <field name="contact_pa_pec_mail_use_in_sending"
-                           attrs="{'invisible': ['|', ('use_in_sending_invisible', '=', True), ('contact_pa_pec_mail', '=', False)]}"
+                           invisible="['|', ('use_in_sending_invisible', '=', True), ('contact_pa_pec_mail', '=', False)]"
                            readonly="1"
                     />
                 </xpath>

@@ -10,20 +10,20 @@
                     <sheet>
                         <group>
                             <field name="account_id"
-                                   attrs="{'invisible': [('account_id','!=',False)]}"
+                                   invisible="[('account_id','!=',False)]"
                                    widget="selection"
                                    context="{'display_with_email': True}"
                             />
                             <field name="account_id_name"
-                                   attrs="{'invisible': [('account_id','=',False)]}"
+                                   invisible="[('account_id','=',False)]"
                             />
                             <field name="destinatari"/>
                             <field name="modalita_invio"
-                                   attrs="{'invisible': [('modalita_invio_invisible','=',True)]}"
+                                   invisible="[('modalita_invio_invisible','=',True)]"
                             />
                             <field name="oggetto"/>
                             <field name="body"
-                                   attrs="{'invisible': [('body_invisible','=',True)]}"
+                                   invisible="[('body_invisible','=',True)]"
                                    nolabel="1"
                                    colspan="2"
                             />
@@ -36,7 +36,7 @@
                                    colspan="2"
                             />
                             <field name="template_id"
-                                   attrs="{'invisible': [('template_id_invisible','=',True)]}"
+                                   invisible="[('template_id_invisible','=',True)]"
                                    options="{'no_create': True, 'no_open': True}"
                             />
                         </group>
@@ -60,7 +60,7 @@
 
                         <button name="save_as_template"
                                 type="object"
-                                attrs="{'invisible': [('template_id_invisible','=',True)]}"
+                                invisible="[('template_id_invisible','=',True)]"
                                 string="Save as new template"
                                 class="btn-secondary float-right"
                                 icon="fa-lg fa-save"

@@ -1,6 +1,6 @@
 from . import archivio
 from . import assegnazione
-from . import cartella
+# from . import cartella
 from . import fl_set_set
 from . import fl_set_voce_organigramma
 from . import inherit_res_users

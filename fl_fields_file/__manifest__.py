@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 {
     "name": "Fields File",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "Filestore Support for Fields",
     "description": "",
@@ -11,9 +11,7 @@
     "website": "https://www.flosslab.com",
     "license": "LGPL-3",
     "sequence": 0,
-    "depends": [
-
-    ],
+    "depends": [],
     "installable": True,
     "application": False,
     "auto_install": False,

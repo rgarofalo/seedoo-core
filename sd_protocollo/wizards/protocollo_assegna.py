@@ -173,7 +173,7 @@ class ProtocolloAssegnaStep1(models.TransientModel):
         assegnatore_ufficio = assegnazione_obj.get_default_assegnatore_ufficio(protocollo.id)
         result["assegnatore_ufficio_id"] = assegnatore_ufficio if assegnatore_ufficio else False
         result["assegnatore_ufficio_id_invisible"] = True if assegnatore_ufficio else False
-        conteggio_voci_organigramma = voce_organigramma_obj.search([], count=True)
+        conteggio_voci_organigramma = voce_organigramma_obj.search_count([])
         result["assegnatari_non_presenti"] = True if conteggio_voci_organigramma == 0 else False
 
         if not protocollo.is_stato_tracciamento_storico() or not protocollo.assegnazione_competenza_ids:

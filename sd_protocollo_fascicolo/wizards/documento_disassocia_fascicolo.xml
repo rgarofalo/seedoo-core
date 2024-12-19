@@ -33,13 +33,13 @@
                                    nolabel="1"
                                    force_save="1"
                             >
-                                <tree>
+                                <list>
                                     <field name="filename"/>
                                     <field name="folder_id"/>
                                     <field name="document_type_id"/>
                                     <field name="voce_titolario_id"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
                         <group>

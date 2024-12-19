@@ -4,15 +4,15 @@
     <data noupdate="0">
 
         <record id="view_sd_fascicolo_fascicolo_document_acl_tree" model="ir.ui.view">
-            <field name="name">view.sd.fascicolo.fascicolo.document.acl.tree</field>
+            <field name="name">view.sd.fascicolo.fascicolo.document.acl.list</field>
             <field name="model">sd.fascicolo.fascicolo.document.acl</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="res_model"/>
                     <field name="res_name"/>
                     <field name="perm_read"/>
                     <field name="fascicolo_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -40,7 +40,7 @@
                                     <field name="perm_read"/>
                                 </group>
                             </page>
-                            <page name="page_meta" string="Meta Information" attrs="{'invisible': [('create_date', '=', False)]}">
+                            <page name="page_meta" string="Meta Information" invisible="[('create_date', '=', False)]">
                                 <group>
                                     <group>
                                         <field name="create_date"/>

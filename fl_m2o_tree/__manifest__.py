@@ -1,6 +1,6 @@
 {
     "name": "M2O tree",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "",
     "description": "",
@@ -8,20 +8,19 @@
     "website": "https://www.flosslab.com",
     "license": "LGPL-3",
     "sequence": 0,
-    "depends": [
-        "web"
+    "depends": ["web"],
+    "qweb": [
+        "static/src/xml/*.xml",
     ],
-    "data": [
-        "template/assets.xml",
-    ],
-    'qweb': [
-        'static/src/xml/*.xml',
-    ],
-    "external_dependencies": {
-        "python": [],
-        "bin": [],
+    'assets': {
+        'web.assets_frontend': [
+            "/fl_m2o_tree/static/libs/ztree/js/jquery.ztree.core-3.5.min.js",
+            "/fl_m2o_tree/static/libs/ztree/js/jquery.ztree.excheck-3.5.min.js",
+            "/fl_m2o_tree/static/src/js/fl_m2o_tree.js",
+            "/fl_m2o_tree/static/libs/ztree/css/zTreeStyle.css",
+        ]
     },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

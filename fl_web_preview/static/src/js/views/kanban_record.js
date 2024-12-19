@@ -4,46 +4,52 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define('fl_web_preview.KanbanRecord', function (require) {
-    "use strict";
+import { Component, useState } from '@odoo/owl';
+import { useService } from '@web/core/utils/hooks';
+import { KanbanRecord } from '@web/views/kanban/kanban_record';
+import { PreviewDialog } from '@fl_web_preview/js/widgets/dialog';
+import { formatDateTime } from '@web/core/l10n/dates';
 
-	var session = require('web.session');
-    var field_utils = require('web.field_utils');
-    var KanbanRecord = require('web.KanbanRecord');
-	var PreviewDialog = require('fl_web_preview.PreviewDialog');
+class FlWebPreviewKanbanRecord extends KanbanRecord {
+    setup() {
+        super.setup();
+        this.orm = useService('orm');
+        this.dialogService = useService('dialog');
+    }
 
-    KanbanRecord.include({
-        events: _.extend({}, KanbanRecord.prototype.events, {
-            'click .o_kanban_image_preview': '_onImageClicked',
-        }),
-        _onImageClicked: function (event) {
-            var filename_fieldname = 'filename' in this.fields ? 'filename' : 'name';
-            var content_fieldname = 'content' in this.fields ? 'content' : 'datas';
-            var last_update = this.recordData.__last_update;
-            var mimetype = this.recordData['mimetype'] || null;
-            var filename = this.recordData[filename_fieldname] || null;
-            var unique = last_update && field_utils.format.datetime(last_update);
-            var binary_url = session.url('/web/content', {
-                model: this.modelName,
-                id: JSON.stringify(this.recordData.id),
-                data: null,
-                unique: unique ? unique.replace(/[^0-9]/g, '') : null,
-                filename_field: filename_fieldname,
-                filename: filename,
-                field: content_fieldname,
-                download: true,
-            });
-            var preview = new PreviewDialog(
-                this, [{
-                    url: binary_url,
-                    filename: filename,
-                    mimetype: mimetype,
-                }], 0
-            );
-            preview.appendTo($('body'));
-            event.stopPropagation();
-            event.preventDefault();
-        },
-    });
+    async _onImageClicked(event) {
+        event.stopPropagation();
+        event.preventDefault();
 
-});
+        const filenameFieldname = 'filename' in this.props.record.fields ? 'filename' : 'name';
+        const contentFieldname = 'content' in this.props.record.fields ? 'content' : 'datas';
+        const lastUpdate = this.props.record.data.__last_update;
+        const mimetype = this.props.record.data.mimetype || null;
+        const filename = this.props.record.data[filenameFieldname] || null;
+        const unique = lastUpdate ? formatDateTime(lastUpdate).replace(/[^0-9]/g, '') : null;
+
+        const binaryUrl = this.orm.url('/web/content', {
+            model: this.props.record.model,
+            id: JSON.stringify(this.props.record.data.id),
+            data: null,
+            unique: unique,
+            filename_field: filenameFieldname,
+            filename: filename,
+            field: contentFieldname,
+            download: true,
+        });
+
+        const preview = new PreviewDialog(this, [{
+            url: binaryUrl,
+            filename: filename,
+            mimetype: mimetype,
+        }], 0);
+
+        this.dialogService.add(preview);
+    }
+}
+
+FlWebPreviewKanbanRecord.template = 'fl_web_preview.KanbanRecord';
+FlWebPreviewKanbanRecord.components = { PreviewDialog };
+
+export default FlWebPreviewKanbanRecord;

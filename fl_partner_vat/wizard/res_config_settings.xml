@@ -6,7 +6,7 @@
             <field name="model">res.config.settings</field>
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//div[@id='partner_autocomplete']" position="after">
+                <xpath expr="//setting[@id='partner_autocomplete']" position="after">
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_left_pane">
                             <field name="vat_unique"/>

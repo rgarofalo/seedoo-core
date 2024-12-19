@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 
+
 class Document(models.Model):
     _inherit = "sd.dms.document"
 
@@ -8,11 +9,11 @@ class Document(models.Model):
         context = dict(self._context or {})
         context["default_documento_ids"] = [(6, 0, self.ids)]
         context["disassocia_fascicolo_documento_id"] = self.id
-        #TODO: gestire la creazione di un fascicolo con associazione del documento
+        # TODO: gestire la creazione di un fascicolo con associazione del documento
         context["create"] = False
         return {
             "name": _("Dossiers"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.fascicolo.fascicolo",
             "domain": [("documento_ids", "=", self.id)],
             "type": "ir.actions.act_window",
@@ -22,9 +23,9 @@ class Document(models.Model):
 
     def documento_aggiungi_fascicoli(self, fascicolo_ids):
         self.ensure_one()
-        self.write({
-            "fascicolo_ids": [(4, fascicolo_id) for fascicolo_id in fascicolo_ids]
-        })
+        self.write(
+            {"fascicolo_ids": [(4, fascicolo_id) for fascicolo_id in fascicolo_ids]}
+        )
 
     def documento_disassocia_fascicoli(self, fascicolo_ids):
         fascicolo_obj = self.env["sd.fascicolo.fascicolo"]

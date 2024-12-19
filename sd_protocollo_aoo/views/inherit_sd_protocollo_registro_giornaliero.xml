@@ -3,7 +3,7 @@
     <data noupdate="0">
 
         <record id="view_sd_protocollo_registro_giornaliero_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.registro.giornaliero.tree</field>
+            <field name="name">view.sd.protocollo.registro.giornaliero.list</field>
             <field name="model">sd.protocollo.registro.giornaliero</field>
             <field name="inherit_id" ref="sd_protocollo.view_sd_protocollo_registro_giornaliero_tree"/>
             <field name="arch" type="xml">
@@ -24,7 +24,7 @@
                 <xpath expr="//field[@name='company_id']" position="after">
                     <field name="aoo_id_readonly" invisible="1"/>
                     <field name="aoo_id"
-                           attrs="{'readonly': ['|',('field_readonly','=',True),('aoo_id_readonly','=',True)]}"
+                           readonly="['|',('field_readonly','=',True),('aoo_id_readonly','=',True)]"
                            options="{'no_open': True, 'no_create': True}"
                            force_save="1"
                     />

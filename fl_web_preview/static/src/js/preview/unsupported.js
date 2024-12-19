@@ -4,25 +4,15 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define('fl_web_preview.PreviewContentUnsupported', function (require) {
-"use strict";
+/** @odoo-module **/
 
-var core = require('web.core');
-var ajax = require('web.ajax');
-var utils = require('web.utils');
-var session = require('web.session');
+import AbstractPreviewContent from "@fl_web_preview/js/preview/content";
 
-var AbstractPreviewContent = require('fl_web_preview.AbstractPreviewContent');
+class PreviewContentUnsupported extends AbstractPreviewContent {
+    static template = "fl_web_preview.PreviewContentUnsupported";
+}
 
-var QWeb = core.qweb;
-var _t = core._t;
+PreviewContentUnsupported.downloadable = false;
+PreviewContentUnsupported.printable = false;
 
-var PreviewContentUnsupported = AbstractPreviewContent.extend({
-	template: "fl_web_preview.PreviewContentUnsupported",
-    downloadable: false,
-    printable: false,
-});
-
-return PreviewContentUnsupported;
-
-});
+export default PreviewContentUnsupported;

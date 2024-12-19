@@ -14,7 +14,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='email_bcc_ids']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|', ('account_pec', '=', True), ('composition_mode', '!=', 'comment')]}</attribute>
+                    <attribute name="invisible">['|', ('account_pec', '=', True), ('composition_mode', '!=', 'comment')]</attribute>
                 </xpath>
 
             </field>

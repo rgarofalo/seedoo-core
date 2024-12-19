@@ -3,7 +3,7 @@
     <data>
 
         <record id="view_sd_dms_contact_email_address_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.contact.email.address.tree</field>
+            <field name="name">view.sd.dms.contact.email.address.list</field>
             <field name="model">sd.dms.contact.email.address</field>
             <field name="inherit_id" ref="sd_dms.view_sd_dms_contact_email_address_tree"/>
             <field name="arch" type="xml">

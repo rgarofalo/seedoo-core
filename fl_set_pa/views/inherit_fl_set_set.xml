@@ -14,15 +14,19 @@
                     </group>
                     <group>
                         <field name="cod_aoo"
-                               attrs="{'invisible':[('set_type','!=','aoo')],'required': [('set_type', '=', 'aoo')]}"/>
+                               invisible="[('set_type','!=','aoo')]"
+                               required="[('set_type', '=', 'aoo')]"/>
                         <field name="cod_ou"
-                               attrs="{'invisible':[('set_type','!=','uo')],'required': [('set_type', '=', 'uo')]}"/>
+                               invisible="[('set_type','!=','uo')]"
+                               required="[('set_type', '=', 'uo')]"/>
                         <field name="aoo_id"
-                               attrs="{'invisible':[('set_type','!=','uo')],'readonly': [('parent_set_id', '!=', False)],'required': [('parent_set_id', '=', False),('set_type','=','uo')]}"
+                               invisibl="[('set_type','!=','uo')]"
+                               readonly="[('parent_set_id', '!=', False)]"
+                               required="[('parent_set_id', '=', False),('set_type','=','uo')]"
                         />
                     </group>
 
-                    <group attrs="{'invisible':[('set_type','=','default')]}">
+                    <group invisible="[('set_type','=','default')]">
                         <label for="street" string="Indirizzo"/>
                         <div class="o_address_format">
                             <field name="street" placeholder="Via..." class="o_address_street"/>
@@ -36,17 +40,17 @@
                         </div>
                     </group>
 
-                    <group attrs="{'invisible':[('set_type','not in',['uo','aoo'])]}">
+                    <group invisible="[('set_type','not in',['uo','aoo'])]">
                         <field name="uo_responsabile_id"
-                               attrs="{'invisible':[('set_type','!=','uo')]}"
+                               invisible="[('set_type','!=','uo')]"
                                options="{'no_open': True, 'no_create': True}"
                         />
                         <field name="aoo_responsabile_gestione_documentale_id"
-                               attrs="{'invisible':[('set_type','!=','aoo')]}"
+                               invisible="[('set_type','!=','aoo')]"
                                options="{'no_open': True, 'no_create': True}"
                         />
                         <field name="aoo_responsabile_conservazione_documentale_id"
-                               attrs="{'invisible':[('set_type','!=','aoo')]}"
+                               invisible="[('set_type','!=','aoo')]"
                                options="{'no_open': True, 'no_create': True}"
                         />
                     </group>
@@ -54,15 +58,15 @@
                 </xpath>
 
                 <xpath expr="//field[@name='parent_set_id']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('set_type', '=', 'aoo')]}</attribute>
+                    <attribute name="invisible">[('set_type', '=', 'aoo')]</attribute>
                     <attribute name="domain">[('set_type', '=', set_type), ('company_id', '=', company_id)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='user_ids']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('set_type', '=', 'aoo')]}</attribute>
+                    <attribute name="invisible">[('set_type', '=', 'aoo')]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='company_id']" position="attributes">
-                    <attribute name="attrs">{'required': [('set_type', '=', 'aoo')]}</attribute>
+                    <attribute name="required">[('set_type', '=', 'aoo')]</attribute>
                 </xpath>
 
             </field>

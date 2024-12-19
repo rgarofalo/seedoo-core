@@ -23,14 +23,14 @@
         </record>
 
         <record id="view_res_partner_tree_simplified" model="ir.ui.view">
-            <field name="name">view.res.partner.tree.simplified</field>
+            <field name="name">view.res.partner.list.simplified</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <tree create="false" import="false" edit="false" delete="false">
+                <list create="false" import="false" edit="false" delete="false">
                     <field name="display_name"/>
                     <field name="pec_mail"/>
                     <field name="email"/>
-                </tree>
+                </list>
             </field>
         </record>
     </data>

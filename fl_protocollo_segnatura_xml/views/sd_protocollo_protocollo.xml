@@ -13,7 +13,7 @@
                     <button string=""
                             class="oe_highlight protocollo-scarica_segnatura"
                             name="scarica_segnatura_xml" type="object"
-                            attrs="{'invisible': [('segnatura_xml','=', False)]}"
+                            invisible="[('segnatura_xml','=', False)]}"
                     />
                 </xpath>
 

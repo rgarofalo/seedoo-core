@@ -1,19 +1,17 @@
-odoo.define('fl_mail_client/static/src/components/thread_view/thread_view.js', function (require) {
-'use strict';
+/** @odoo-module **/
 
-/****
-  * Extends ThreadView component to manage through Discuss, the MailList (a list of mail.mail object)
-  * in a similar way to what was done with Messagelist
-*****/
+import { registry } from '@web/core/registry';
+import { ThreadView } from '@mail/components/thread_view/thread_view';
+import { MailList } from '@fl_mail_client/components/mail_list/mail_list';
 
 const components = {
-    ThreadView: require('mail/static/src/components/thread_view/thread_view.js'),
-    MailList: require('fl_mail_client/static/src/components/mail_list/mail_list.js'),
+    ThreadView,
+    MailList,
 };
 
-Object.assign(components.ThreadView.components, {
+// Extend ThreadView component to include MailList
+Object.assign(ThreadView.components, {
     MailList: components.MailList,
 });
 
-
-});
+registry.category('components').add('fl_mail_client.ThreadView', ThreadView);

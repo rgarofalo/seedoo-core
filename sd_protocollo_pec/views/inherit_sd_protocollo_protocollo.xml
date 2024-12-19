@@ -14,7 +14,7 @@
                             type="object"
                             string="Gestisci invii"
                             class="oe_highlight oe_read_only"
-                            attrs="{'invisible': [('button_gestisci_invii_invisible', '=', True)]}"
+                            invisible="[('button_gestisci_invii_invisible', '=', True)]"
                     />
                 </xpath>
 

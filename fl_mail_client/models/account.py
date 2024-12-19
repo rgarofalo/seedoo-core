@@ -11,15 +11,9 @@ class Account(models.Model):
         compute="_compute_name",
     )
 
-    description = fields.Char(
-        string="Name",
-        required=True
-    )
+    description = fields.Char(string="Name", required=True)
 
-    email = fields.Char(
-        string="Email",
-        required=True
-    )
+    email = fields.Char(string="Email", required=True)
 
     fetchmail_server_id = fields.Many2one(
         "fetchmail.server",
@@ -34,17 +28,15 @@ class Account(models.Model):
     use_outgoing_server = fields.Boolean(
         compute="_compute_use_outgoing_server",
         search="_search_use_outgoing_server",
-        string="Use Outgoing Server"
+        string="Use Outgoing Server",
     )
 
     email_received_count = fields.Integer(
-        string="Email Received",
-        compute="_compute_email_received_count"
+        string="Email Received", compute="_compute_email_received_count"
     )
 
     email_sent_count = fields.Integer(
-        string="Email Sent",
-        compute="_compute_email_sent_count"
+        string="Email Sent", compute="_compute_email_sent_count"
     )
 
     account_permission_ids = fields.One2many(
@@ -62,14 +54,14 @@ class Account(models.Model):
         mail_obj = self.env["mail.mail"]
         for account in self:
             account.email_received_count = mail_obj.search_count(
-                [("account_id", "=", account.id), ('direction', '=', 'in')]
+                [("account_id", "=", account.id), ("direction", "=", "in")]
             )
 
     def _compute_email_sent_count(self):
         mail_obj = self.env["mail.mail"]
         for account in self:
             account.email_sent_count = mail_obj.search_count(
-                [("account_id", "=", account.id), ('direction', '=', 'out')]
+                [("account_id", "=", account.id), ("direction", "=", "out")]
             )
 
     @api.depends("account_permission_ids")
@@ -80,7 +72,11 @@ class Account(models.Model):
     @api.depends("description", "email")
     def _compute_name(self):
         for account in self:
-            if self._context.get("display_with_email") and account.description and account.email:
+            if (
+                self._context.get("display_with_email")
+                and account.description
+                and account.email
+            ):
                 account.name = tools.formataddr((account.description, account.email))
             else:
                 account.name = account.description
@@ -102,13 +98,16 @@ class Account(models.Model):
     @api.model
     def _query_use_outgoing_server(self):
         cr = self.env.cr
-        cr.execute("""
+        cr.execute(
+            """
             SELECT fmca.id
             FROM fl_mail_client_account fmca, fl_mail_client_account_permission fmcap 
             WHERE fmca.id = fmcap.account_id AND 
                   fmcap.user_id = %s AND 
                   fmcap.use_outgoing_server = TRUE
-        """, (self.env.uid,))
+        """,
+            (self.env.uid,),
+        )
         ids = [result[0] for result in cr.fetchall()]
         return ids
 
@@ -117,21 +116,19 @@ class Account(models.Model):
         partner_obj = self.env["res.partner"]
         if not self.email:
             return
-        email = {
-            "email": self.email
-        }
+        email = {"email": self.email}
         partner_obj.check_email_validity(email)
 
     def action_show_account_permissions(self):
         self.ensure_one()
         return {
             "name": _("Account Permissions"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "fl.mail.client.account.permission",
             "type": "ir.actions.act_window",
             "target": "current",
             "domain": [("account_id", "=", self.id)],
             "context": {
                 "default_account_id": self.id,
-            }
+            },
         }

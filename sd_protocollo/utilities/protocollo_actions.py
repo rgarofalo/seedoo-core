@@ -21,9 +21,13 @@ class ProtocolloActions(models.Model):
         numero_protocollo = None
 
         if self.tipologia_registrazione == "normale":
-            numero_protocollo = self._get_numero_protocollo_normale(self.env, sequence_id)
+            numero_protocollo = self._get_numero_protocollo_normale(
+                self.env, sequence_id
+            )
         elif self.tipologia_registrazione == "emergenza":
-            numero_protocollo = self._get_numero_protocollo_emergenza(self.env, protocollo_id)
+            numero_protocollo = self._get_numero_protocollo_emergenza(
+                self.env, protocollo_id
+            )
 
         if not numero_protocollo:
             raise ValidationError(_("Errore nel reperimento del numero del protocollo"))
@@ -32,15 +36,17 @@ class ProtocolloActions(models.Model):
         data_registrazione = fields.Datetime.now()
         # l'anno deve essere calcolato con la data di registrazione impostata con il timezone locale
         anno = self._get_local_date(data_registrazione).year
-        self.write({
-            "numero_protocollo": numero_protocollo,
-            "state": "registrato",
-            "data_registrazione": data_registrazione,
-            "anno": anno,
-            "anno_numero_protocollo": "%s%s" % (str(anno), numero_protocollo),
-            "protocollatore_name": self.protocollatore_id.name,
-            "protocollatore_ufficio_name": self.protocollatore_ufficio_id.name
-        })
+        self.write(
+            {
+                "numero_protocollo": numero_protocollo,
+                "state": "registrato",
+                "data_registrazione": data_registrazione,
+                "anno": anno,
+                "anno_numero_protocollo": "%s%s" % (str(anno), numero_protocollo),
+                "protocollatore_name": self.protocollatore_id.name,
+                "protocollatore_ufficio_name": self.protocollatore_ufficio_id.name,
+            }
+        )
 
         self.env.cr.commit()
 
@@ -104,14 +110,23 @@ class ProtocolloActions(models.Model):
         if not self.documento_id:
             return errors
         self.documento_id.inserisci_segnatura_pdf(raise_exception)
-        if not self.documento_id.protocollo_segnatura_pdf and self.documento_id.mimetype == "application/pdf":
+        if (
+            not self.documento_id.protocollo_segnatura_pdf
+            and self.documento_id.mimetype == "application/pdf"
+        ):
             errors.append(_("Errore nella segnatura PDF del documento"))
         return errors
 
     def _get_config_inserisci_segnatura_pdf(self):
         config_param_obj = self.env["ir.config_parameter"].sudo()
-        ingresso_param = bool(config_param_obj.get_param("sd_protocollo.segnatura_pdf_protocollo_ingresso"))
-        uscita_param = bool(config_param_obj.get_param("sd_protocollo.segnatura_pdf_protocollo_uscita"))
+        ingresso_param = bool(
+            config_param_obj.get_param(
+                "sd_protocollo.segnatura_pdf_protocollo_ingresso"
+            )
+        )
+        uscita_param = bool(
+            config_param_obj.get_param("sd_protocollo.segnatura_pdf_protocollo_uscita")
+        )
         if not ingresso_param and self.tipologia_protocollo == "ingresso":
             return False
         if not uscita_param and self.tipologia_protocollo == "uscita":
@@ -124,13 +139,20 @@ class ProtocolloActions(models.Model):
         numero_protocollo = None
         try:
             sequence = sequence_obj.sudo().browse(sequence_id)
-            ultimo_protocollo_data_list = protocollo_obj.sudo().search_read([
-                ("state", "in", ["registrato", "annullato"]),
-                ("registro_id.sequence_id", "=", sequence_id)
-            ], ["data_registrazione"], limit=1, order="data_registrazione DESC")
+            ultimo_protocollo_data_list = protocollo_obj.sudo().search_read(
+                [
+                    ("state", "in", ["registrato", "annullato"]),
+                    ("registro_id.sequence_id", "=", sequence_id),
+                ],
+                ["data_registrazione"],
+                limit=1,
+                order="data_registrazione DESC",
+            )
             if ultimo_protocollo_data_list:
                 data_corrente = fields.Datetime.now()
-                ultima_data_registrazione = ultimo_protocollo_data_list[0]["data_registrazione"]
+                ultima_data_registrazione = ultimo_protocollo_data_list[0][
+                    "data_registrazione"
+                ]
                 if ultima_data_registrazione.year < data_corrente.year:
                     sequence.sudo().write({"number_next": 1})
             numero_protocollo = sequence.next_by_id()
@@ -143,19 +165,25 @@ class ProtocolloActions(models.Model):
         registro_emergenza_numero_obj = env["sd.protocollo.registro.emergenza.numero"]
         registro_emergenza_obj = env["sd.protocollo.registro.emergenza"]
         protocollo = env["sd.protocollo.protocollo"].browse(protocollo_id)
-        numero_protocollo = self._get_numero_protocollo_normale(env, protocollo.registro_id.sequence_id.id)
+        numero_protocollo = self._get_numero_protocollo_normale(
+            env, protocollo.registro_id.sequence_id.id
+        )
         try:
             registro_emergenza = registro_emergenza_obj.search(
-                self._get_domain_numero_protocollo_emergenza(protocollo))
+                self._get_domain_numero_protocollo_emergenza(protocollo)
+            )
 
-            registro_emergenza_numero_obj.create({
-                "numero_protocollo": numero_protocollo,
-                "registro_emergenza_id": registro_emergenza.id,
-                "protocollo_id": protocollo_id
-            })
+            registro_emergenza_numero_obj.create(
+                {
+                    "numero_protocollo": numero_protocollo,
+                    "registro_emergenza_id": registro_emergenza.id,
+                    "protocollo_id": protocollo_id,
+                }
+            )
 
             numero_protocolli = registro_emergenza_numero_obj.search_count(
-                [("registro_emergenza_id", "=", registro_emergenza.id)])
+                [("registro_emergenza_id", "=", registro_emergenza.id)]
+            )
             if numero_protocolli == registro_emergenza.numero_protocolli:
                 registro_emergenza.state = "chiuso"
 
@@ -169,9 +197,15 @@ class ProtocolloActions(models.Model):
     def annulla(self, causa, responsabile, richiedente, data):
         self.ensure_one()
         if self.state == "annullato":
-            raise ValidationError(_("Il protocollo è già stato annullato in precedenza!"))
+            raise ValidationError(
+                _("Il protocollo è già stato annullato in precedenza!")
+            )
         elif self.state != "registrato":
-            raise ValidationError(_("Il protocollo deve essere in stato registrato per poter essere annullato!"))
+            raise ValidationError(
+                _(
+                    "Il protocollo deve essere in stato registrato per poter essere annullato!"
+                )
+            )
         else:
             self.write({"state": "annullato"})
             self.storico_annulla(causa, responsabile, richiedente, data)
@@ -182,13 +216,15 @@ class ProtocolloActions(models.Model):
             raise ValidationError("Il protocollo deve essere in stato registrato!")
         return {
             "type": "ir.actions.act_url",
-            "url": "/protocollo/etichetta/%s" % str(self.id)
+            "url": "/protocollo/etichetta/%s" % str(self.id),
         }
 
     def _check_salva_documento_values(self, vals, field_list):
         errors = []
         for field in field_list:
-            if not vals.get(field, False) or (vals.get(field, False) and not vals[field]):
+            if not vals.get(field, False) or (
+                vals.get(field, False) and not vals[field]
+            ):
                 errors.append(field)
         return errors
 
@@ -196,28 +232,40 @@ class ProtocolloActions(models.Model):
         return
 
     def rinomina_documenti(self):
-        if self.env["ir.config_parameter"].sudo().get_param("sd_protocollo.rinomina_documento_allegati"):
+        if (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("sd_protocollo.rinomina_documento_allegati")
+        ):
             documento = self.documento_id
             if documento:
-                documento.filename = self.get_filename_documento_protocollo(documento.filename, "Documento")
+                documento.filename = self.get_filename_documento_protocollo(
+                    documento.filename, "Documento"
+                )
             for allegato in self.allegato_ids:
                 self._get_allegato_filename(allegato)
 
     def _get_allegato_filename(self, allegato):
-        allegato.filename = self.get_filename_documento_protocollo(allegato.filename, "Allegato")
+        allegato.filename = self.get_filename_documento_protocollo(
+            allegato.filename, "Allegato"
+        )
 
     def salva_mittente_interno(self, mittente):
         self.ensure_one()
 
-        self.write({
-            "mittente_interno_id_char": str(mittente.id),
-            "mittente_interno_nome": mittente.nome
-        })
+        self.write(
+            {
+                "mittente_interno_id_char": str(mittente.id),
+                "mittente_interno_nome": mittente.nome,
+            }
+        )
 
     def prendi_in_carico_assegnazione(self, assegnazione_id, utente_id):
         self.ensure_one()
         try:
-            esito, errore = self._modifica_state_assegnazione("preso_in_carico", assegnazione_id, utente_id)
+            esito, errore = self._modifica_state_assegnazione(
+                "preso_in_carico", assegnazione_id, utente_id
+            )
             if esito:
                 self.storico_prendi_in_carico_assegnazione(utente_id)
         except Exception as e:
@@ -227,7 +275,9 @@ class ProtocolloActions(models.Model):
     def rifiuta_assegnazione(self, assegnazione_id, utente_id, motivazione):
         self.ensure_one()
         try:
-            esito, errore = self._modifica_state_assegnazione("rifiutato", assegnazione_id, utente_id, motivazione)
+            esito, errore = self._modifica_state_assegnazione(
+                "rifiutato", assegnazione_id, utente_id, motivazione
+            )
             if esito:
                 self.rimetti_in_lavorazione_assegnatore(assegnazione_id, utente_id)
                 self.storico_rifiuta_assegnazione(utente_id, motivazione)
@@ -244,7 +294,9 @@ class ProtocolloActions(models.Model):
             state = "letto_cc"
             if assegnazione_obj.browse(assegnazione_id).tipologia == "competenza":
                 state = "letto_co"
-            esito, errore = self._modifica_state_assegnazione(state, assegnazione_id, utente_id)
+            esito, errore = self._modifica_state_assegnazione(
+                state, assegnazione_id, utente_id
+            )
             if esito:
                 self.storico_leggi_assegnazione(utente_id)
         except Exception as e:
@@ -256,10 +308,14 @@ class ProtocolloActions(models.Model):
         self.protocollatore_stato = "lavorazione_completata"
         self.storico_completa_lavorazione(utente_id, motivazione)
 
-    def completa_lavorazione_assegnazione(self, assegnazione_id, utente_id, motivazione):
+    def completa_lavorazione_assegnazione(
+        self, assegnazione_id, utente_id, motivazione
+    ):
         self.ensure_one()
         try:
-            esito, errore = self._modifica_state_assegnazione("lavorazione_completata", assegnazione_id, utente_id)
+            esito, errore = self._modifica_state_assegnazione(
+                "lavorazione_completata", assegnazione_id, utente_id
+            )
             if esito:
                 self.storico_completa_lavorazione(utente_id, motivazione)
         except Exception as e:
@@ -271,16 +327,22 @@ class ProtocolloActions(models.Model):
         self.protocollatore_stato = "lavorazione"
         self.storico_rimetti_in_lavorazione(utente_id, motivazione)
 
-    def rimetti_in_lavorazione_assegnazione(self, assegnazione_id, utente_id, motivazione):
+    def rimetti_in_lavorazione_assegnazione(
+        self, assegnazione_id, utente_id, motivazione
+    ):
         self.ensure_one()
         try:
             state = "letto_cc"
-            assegnazione = self.env["sd.protocollo.assegnazione"].browse(assegnazione_id)
+            assegnazione = self.env["sd.protocollo.assegnazione"].browse(
+                assegnazione_id
+            )
             if assegnazione.presa_in_carico:
                 state = "preso_in_carico"
             elif assegnazione.tipologia == "competenza":
                 state = "letto_co"
-            esito, errore = self._modifica_state_assegnazione(state, assegnazione_id, utente_id)
+            esito, errore = self._modifica_state_assegnazione(
+                state, assegnazione_id, utente_id
+            )
             if esito:
                 self.storico_rimetti_in_lavorazione(utente_id, motivazione)
         except Exception as e:
@@ -299,29 +361,43 @@ class ProtocolloActions(models.Model):
             return
         self.protocollatore_stato = "lavorazione"
 
-    def salva_assegnazione_competenza(self, assegnatario_ids, assegnatore_id, assegnatore_ufficio_id,
-                                      assegnatario_to_replace_ids=[], delete=True, values={}):
+    def salva_assegnazione_competenza(
+        self,
+        assegnatario_ids,
+        assegnatore_id,
+        assegnatore_ufficio_id,
+        assegnatario_to_replace_ids=[],
+        delete=True,
+        values={},
+    ):
         self.ensure_one()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
 
         assegnazione_obj.verifica_assegnazione_competenza(assegnatario_ids)
 
-        old_assegnazione_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "competenza"),
-            ("parent_id", "=", False)
-        ], ["assegnatario_id"])
+        old_assegnazione_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "competenza"),
+                ("parent_id", "=", False),
+            ],
+            ["assegnatario_id"],
+        )
 
         if old_assegnazione_list:
             old_assegnatario_ids = []
             for old_assegnazione in old_assegnazione_list:
                 old_assegnatario_ids.append(old_assegnazione["assegnatario_id"][0])
 
-            assegnatario_to_create_ids = assegnazione_obj.get_assegnatario_to_create_ids(
-                assegnatario_ids, old_assegnatario_ids, assegnatario_to_replace_ids
+            assegnatario_to_create_ids = (
+                assegnazione_obj.get_assegnatario_to_create_ids(
+                    assegnatario_ids, old_assegnatario_ids, assegnatario_to_replace_ids
+                )
             )
-            assegnatario_to_unlink_ids = assegnazione_obj.get_assegnatario_to_unlink_ids(
-                assegnatario_ids, old_assegnatario_ids, assegnatario_to_replace_ids
+            assegnatario_to_unlink_ids = (
+                assegnazione_obj.get_assegnatario_to_unlink_ids(
+                    assegnatario_ids, old_assegnatario_ids, assegnatario_to_replace_ids
+                )
             )
         else:
             assegnatario_to_create_ids = assegnatario_ids
@@ -329,64 +405,94 @@ class ProtocolloActions(models.Model):
 
         if assegnatario_to_unlink_ids and delete:
             # eliminazione delle vecchie assegnazioni (eventuali figli vengono eliminati a cascata)
-            assegnazione_to_unlink = assegnazione_obj.search([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", "competenza"),
-                ("assegnatario_id", "in", assegnatario_to_unlink_ids),
-                ("parent_id", "=", False)
-            ])
+            assegnazione_to_unlink = assegnazione_obj.search(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", "competenza"),
+                    ("assegnatario_id", "in", assegnatario_to_unlink_ids),
+                    ("parent_id", "=", False),
+                ]
+            )
             if assegnazione_to_unlink:
                 assegnazione_to_unlink.unlink()
 
         if assegnatario_to_create_ids:
             # creazione della nuova assegnazione
             assegnazione_obj.crea_assegnazioni(
-                self.id, assegnatario_to_create_ids, assegnatore_id, assegnatore_ufficio_id, "competenza", values
+                self.id,
+                assegnatario_to_create_ids,
+                assegnatore_id,
+                assegnatore_ufficio_id,
+                "competenza",
+                values,
             )
 
-        if self.state in ["registrato", "annullato"] and (assegnatario_to_unlink_ids or assegnatario_to_create_ids):
+        if self.state in ["registrato", "annullato"] and (
+            assegnatario_to_unlink_ids or assegnatario_to_create_ids
+        ):
             self.env["sd.protocollo.protocollo"].aggiorna_acl("assegnazione", self.id)
 
-    def salva_assegnazione_conoscenza(self, assegnatario_ids, assegnatore_id, assegnatore_ufficio_id, delete=True,
-                                      values={}):
+    def salva_assegnazione_conoscenza(
+        self,
+        assegnatario_ids,
+        assegnatore_id,
+        assegnatore_ufficio_id,
+        delete=True,
+        values={},
+    ):
         self.ensure_one()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
 
-        old_assegnazione_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "conoscenza"),
-            ("parent_id", "=", False)
-        ], ["assegnatario_id"])
+        old_assegnazione_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "conoscenza"),
+                ("parent_id", "=", False),
+            ],
+            ["assegnatario_id"],
+        )
 
         if old_assegnazione_list:
             old_assegnatario_ids = []
             for old_assegnazione in old_assegnazione_list:
                 old_assegnatario_ids.append(old_assegnazione["assegnatario_id"][0])
 
-            assegnatario_to_create_ids = list(set(assegnatario_ids) - set(old_assegnatario_ids))
-            assegnatario_to_unlink_ids = list(set(old_assegnatario_ids) - set(assegnatario_ids))
+            assegnatario_to_create_ids = list(
+                set(assegnatario_ids) - set(old_assegnatario_ids)
+            )
+            assegnatario_to_unlink_ids = list(
+                set(old_assegnatario_ids) - set(assegnatario_ids)
+            )
         else:
             assegnatario_to_create_ids = assegnatario_ids
             assegnatario_to_unlink_ids = []
 
         if assegnatario_to_unlink_ids and delete:
             # eliminazione delle vecchie assegnazioni (eventuali figli vengono eliminati a cascata)
-            assegnazione_to_unlink = assegnazione_obj.search([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", "conoscenza"),
-                ("assegnatario_id", "in", assegnatario_to_unlink_ids)
-            ])
+            assegnazione_to_unlink = assegnazione_obj.search(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", "conoscenza"),
+                    ("assegnatario_id", "in", assegnatario_to_unlink_ids),
+                ]
+            )
             if assegnazione_to_unlink:
                 assegnazione_to_unlink.unlink()
 
         if assegnatario_to_create_ids:
             # creazione della nuova assegnazione
             assegnazione_obj.crea_assegnazioni(
-                self.id, assegnatario_to_create_ids, assegnatore_id, assegnatore_ufficio_id, "conoscenza", values=values
+                self.id,
+                assegnatario_to_create_ids,
+                assegnatore_id,
+                assegnatore_ufficio_id,
+                "conoscenza",
+                values=values,
             )
 
-        if self.state in ["registrato", "annullato"] and \
-                ((assegnatario_to_unlink_ids and delete) or assegnatario_to_create_ids):
+        if self.state in ["registrato", "annullato"] and (
+            (assegnatario_to_unlink_ids and delete) or assegnatario_to_create_ids
+        ):
             self.env["sd.protocollo.protocollo"].aggiorna_acl("assegnazione", self.id)
 
     def elimina_assegnazione(self, assegnazione_id, motivazione=False):
@@ -394,32 +500,41 @@ class ProtocolloActions(models.Model):
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         assegnazione = assegnazione_obj.browse(assegnazione_id)
         if motivazione:
-            self.storico_elimina_assegnazione(assegnazione.assegnatario_id.id, assegnazione.tipologia, motivazione)
+            self.storico_elimina_assegnazione(
+                assegnazione.assegnatario_id.id, assegnazione.tipologia, motivazione
+            )
         assegnazione.unlink()
         if self.state in ["registrato", "annullato"]:
             self.aggiorna_acl("assegnazione", self.id)
 
-    def _modifica_state_assegnazione(self, state, assegnazione_id, utente_id, motivazione_rifiuto=None):
+    def _modifica_state_assegnazione(
+        self, state, assegnazione_id, utente_id, motivazione_rifiuto=None
+    ):
         self.ensure_one()
         data = fields.Datetime.now()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         assegnazione = assegnazione_obj.browse(assegnazione_id)
         # si recupera la lista degli stati successivi allo stato dell'assegnazione
-        next_state_assegnazione_list = assegnazione_obj.get_next_state_list(assegnazione.state)
+        next_state_assegnazione_list = assegnazione_obj.get_next_state_list(
+            assegnazione.state
+        )
         # si controlla se lo stato da modificare è uno stato successivo allo stato attuale dell'assegnazione oppure che
         # lo stato da modificare sia letto_co o letto_cc e lo si debba salvare su un'assegnazione di un ufficio
         caso1 = not (state in next_state_assegnazione_list)
-        caso2 = not (state in ["letto_co", "letto_cc"] and assegnazione.assegnatario_tipologia == "ufficio")
+        caso2 = not (
+            state in ["letto_co", "letto_cc"]
+            and assegnazione.assegnatario_tipologia == "ufficio"
+        )
         if caso1 and caso2:
             errore = _(
-                "Non è più possibile eseguire l'operazione richiesta! L'assegnazione è in stato %s" %
-                assegnazione.state
+                "Non è più possibile eseguire l'operazione richiesta! L'assegnazione è in stato %s"
+                % assegnazione.state
             )
             return False, errore
         vals = {
             "state": state,
             "motivazione_rifiuto": motivazione_rifiuto,
-            "data": data
+            "data": data,
         }
         if state == "preso_in_carico" and assegnazione.tipologia == "competenza":
             vals["presa_in_carico"] = True
@@ -437,11 +552,14 @@ class ProtocolloActions(models.Model):
         # se l'assegnazione all'utente non esiste allora la si deve creare
         if not assegnazione_child:
             # si ricerca l'id dell'assegnatario associato all'utente
-            assegnatario_list = self.env["fl.set.voce.organigramma"].search_read([
-                ("tipologia", "=", "utente"),
-                ("utente_id", "=", utente_id),
-                ("parent_id.ufficio_id", "=", ufficio_id),
-            ], ["id"])
+            assegnatario_list = self.env["fl.set.voce.organigramma"].search_read(
+                [
+                    ("tipologia", "=", "utente"),
+                    ("utente_id", "=", utente_id),
+                    ("parent_id.ufficio_id", "=", ufficio_id),
+                ],
+                ["id"],
+            )
             if not assegnatario_list:
                 errore = _("Non è stato trovato l'assegnatario associato all'utente")
                 return False, errore
@@ -452,7 +570,7 @@ class ProtocolloActions(models.Model):
                 assegnazione.assegnatore_id.id,
                 assegnazione.assegnatore_parent_id.id,
                 assegnazione.tipologia,
-                assegnazione.id
+                assegnazione.id,
             )
         # si modifica lo stato per l'assegnazione dell'utente associato all'ufficio
         assegnazione_child.write(vals)
@@ -464,36 +582,60 @@ class ProtocolloActions(models.Model):
         #           lavorazione_completata si deve verificare che all'interno dell'ufficio non rimane più nessun utente
         #           che debba effettuare la stessa modifica di stato
         caso1 = assegnazione.tipologia == "competenza" and state != "letto_co"
-        caso2 = assegnazione.tipologia == "conoscenza" and \
-                assegnazione.state == "lavorazione_completata" and \
-                state == "letto_cc"
+        caso2 = (
+            assegnazione.tipologia == "conoscenza"
+            and assegnazione.state == "lavorazione_completata"
+            and state == "letto_cc"
+        )
         if not caso2:
-            assegnazione_conoscenza_list = assegnazione_obj.search_read([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", "conoscenza"),
-                ("parent_id", "=", assegnazione.id),
-                ("state", "in", [state] + next_state_assegnazione_list)
-            ], ["assegnatario_utente_id"])
-            ufficio_utente_ids = [a["assegnatario_utente_id"][0] for a in assegnazione_conoscenza_list]
-            caso2 = len(self.env["res.users"].search_read([
-                ("id", "not in", ufficio_utente_ids),
-                ("fl_set_set_ids", "=", assegnazione.assegnatario_ufficio_id.id)
-            ], ["id"])) == 0
+            assegnazione_conoscenza_list = assegnazione_obj.search_read(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", "conoscenza"),
+                    ("parent_id", "=", assegnazione.id),
+                    ("state", "in", [state] + next_state_assegnazione_list),
+                ],
+                ["assegnatario_utente_id"],
+            )
+            ufficio_utente_ids = [
+                a["assegnatario_utente_id"][0] for a in assegnazione_conoscenza_list
+            ]
+            caso2 = (
+                len(
+                    self.env["res.users"].search_read(
+                        [
+                            ("id", "not in", ufficio_utente_ids),
+                            (
+                                "fl_set_set_ids",
+                                "=",
+                                assegnazione.assegnatario_ufficio_id.id,
+                            ),
+                        ],
+                        ["id"],
+                    )
+                )
+                == 0
+            )
         if caso1 or caso2:
             assegnazione.write(vals)
         return True, None
 
-    def get_assegnazione_assegnatore_ids(self, tipologia_assegnazione, state, utente_id):
+    def get_assegnazione_assegnatore_ids(
+        self, tipologia_assegnazione, state, utente_id
+    ):
         self.ensure_one()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         # si ricercano le assegnazioni fatte dall'utente
-        assegnazione_assegnatore_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", tipologia_assegnazione),
-            ("state", "=", state),
-            ("assegnatore_id", "=", utente_id),
-            ("parent_id", "=", False)
-        ], ["id"])
+        assegnazione_assegnatore_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", tipologia_assegnazione),
+                ("state", "=", state),
+                ("assegnatore_id", "=", utente_id),
+                ("parent_id", "=", False),
+            ],
+            ["id"],
+        )
         assegnazione_assegnatore_ids = [a["id"] for a in assegnazione_assegnatore_list]
         return assegnazione_assegnatore_ids
 
@@ -516,27 +658,39 @@ class ProtocolloActions(models.Model):
         """
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         # ricerca le assegnazioni del caso 1
-        assegnazione_caso1_ids = self._get_assegnazione_utente_ids("conoscenza", "assegnato", utente_id)
+        assegnazione_caso1_ids = self._get_assegnazione_utente_ids(
+            "conoscenza", "assegnato", utente_id
+        )
         # ricerca le assegnazioni del caso 2
         assegnazione_caso2_ids = []
         utente = self.env["res.users"].browse(utente_id)
         for ufficio_id in utente.fl_set_set_ids.ids:
-            assegnazione_caso2_ids += self._get_assegnazione_ufficio_ids("conoscenza", "assegnato", ufficio_id,
-                                                                         utente_id)
-        assegnazione_utente_letto_cc_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "conoscenza"),
-            ("state", "in", assegnazione_obj.get_next_state_list("assegnato")),
-            ("assegnatario_utente_id", "=", utente_id),
-            ("parent_id", "in", assegnazione_caso2_ids)
-        ], ["parent_id"])
+            assegnazione_caso2_ids += self._get_assegnazione_ufficio_ids(
+                "conoscenza", "assegnato", ufficio_id, utente_id
+            )
+        assegnazione_utente_letto_cc_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "conoscenza"),
+                ("state", "in", assegnazione_obj.get_next_state_list("assegnato")),
+                ("assegnatario_utente_id", "=", utente_id),
+                ("parent_id", "in", assegnazione_caso2_ids),
+            ],
+            ["parent_id"],
+        )
         for assegnazione_utente_letto_cc in assegnazione_utente_letto_cc_list:
             if assegnazione_utente_letto_cc["parent_id"][0] in assegnazione_caso2_ids:
-                assegnazione_caso2_ids.remove(assegnazione_utente_letto_cc["parent_id"][0])
+                assegnazione_caso2_ids.remove(
+                    assegnazione_utente_letto_cc["parent_id"][0]
+                )
         # ricerca le assegnazioni del caso 3 (solo se abilita_lettura_assegnazione_competenza è a True)
         assegnazione_caso3_ids = []
         config_obj = self.env["ir.config_parameter"].sudo()
-        if bool(config_obj.get_param("sd_protocollo.abilita_lettura_assegnazione_competenza")):
+        if bool(
+            config_obj.get_param(
+                "sd_protocollo.abilita_lettura_assegnazione_competenza"
+            )
+        ):
             # si recuperano tutti gli uffici associati all'utente corrente che dovranno essere usati nella ricerca delle
             # assegnazioni del caso 3
             ufficio_ids = utente.fl_set_set_ids.ids
@@ -545,24 +699,37 @@ class ProtocolloActions(models.Model):
             # per competenza associata all'utente con riferimento ad un ufficio (l'utente potrebbe aver già preso
             # visione dell'assegnazione oppure potrebbe aver ricevuto un'assegnazione diretta per smistamento), non ha
             # senso che l'assegnazione dello stesso ufficio sia inserita fra quelle da prendere in visione
-            assegnazione_competenza_utente_list = assegnazione_obj.search_read([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", "competenza"),
-                ("assegnatario_utente_id", "=", utente_id)
-            ], ["assegnatario_utente_parent_id"])
+            assegnazione_competenza_utente_list = assegnazione_obj.search_read(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", "competenza"),
+                    ("assegnatario_utente_id", "=", utente_id),
+                ],
+                ["assegnatario_utente_parent_id"],
+            )
             for assegnazione_competenza_utente in assegnazione_competenza_utente_list:
                 # se l'ufficio associato all'utente relativo all'assegnazione è presente nella
-                if assegnazione_competenza_utente["assegnatario_utente_parent_id"][0] in ufficio_ids:
-                    ufficio_ids.remove(assegnazione_competenza_utente["assegnatario_utente_parent_id"][0])
+                if (
+                    assegnazione_competenza_utente["assegnatario_utente_parent_id"][0]
+                    in ufficio_ids
+                ):
+                    ufficio_ids.remove(
+                        assegnazione_competenza_utente["assegnatario_utente_parent_id"][
+                            0
+                        ]
+                    )
             # ricerca la lista delle assegnazioni per competenza con stato preso_in_carico o lavorazione_completata
             # associate ad un ufficio dell'utente
-            assegnazione_ufficio_list = assegnazione_obj.search_read([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", "competenza"),
-                ("state", "in", ["preso_in_carico", "lavorazione_completata"]),
-                ("assegnatario_ufficio_id", "in", ufficio_ids),
-                ("parent_id", "=", False)
-            ], ["id"])
+            assegnazione_ufficio_list = assegnazione_obj.search_read(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", "competenza"),
+                    ("state", "in", ["preso_in_carico", "lavorazione_completata"]),
+                    ("assegnatario_ufficio_id", "in", ufficio_ids),
+                    ("parent_id", "=", False),
+                ],
+                ["id"],
+            )
             for assegnazione_ufficio in assegnazione_ufficio_list:
                 assegnazione_caso3_ids.append(assegnazione_ufficio["id"])
         return assegnazione_caso1_ids + assegnazione_caso2_ids + assegnazione_caso3_ids
@@ -572,38 +739,52 @@ class ProtocolloActions(models.Model):
         # le assegnazione da portare in lavorazione completata rientrano in due casi
         # caso 1: l'utente è un assegnatario per competenza la cui assegnazione è in stato preso_in_carico o letto_co
         # caso 2: l'utente è un assegnatario per conoscenza la cui assegnazione è in stato letto_cc
-        assegnazione_competenza_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "competenza"),
-            ("state", "in", ["preso_in_carico", "letto_co"]),
-            ("assegnatario_utente_id", "=", utente_id)
-        ], ["id", "parent_id", "state"])
+        assegnazione_competenza_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "competenza"),
+                ("state", "in", ["preso_in_carico", "letto_co"]),
+                ("assegnatario_utente_id", "=", utente_id),
+            ],
+            ["id", "parent_id", "state"],
+        )
         # iteriamo sulle assegnazioni per competenza in stato lavorazione o letto_co assegnate all'utente. Se
         # l'assegnazione è in stato lavorazione e ha un parent allora si prende il parent come assegnazione da spostare
         # in lavorazione_completata, nei restanti casi si prende l'assegnazione stessa perché lo stato da modificare
         # deve essere solamente il suo e non quello dell'eventuale assegnazione parent
         assegnazione_caso1_ids = []
         for assegnazione_competenza_utente in assegnazione_competenza_utente_list:
-            if assegnazione_competenza_utente["state"] == "preso_in_carico" and assegnazione_competenza_utente[
-                "parent_id"]:
-                assegnazione_caso1_ids.append(assegnazione_competenza_utente["parent_id"][0])
+            if (
+                assegnazione_competenza_utente["state"] == "preso_in_carico"
+                and assegnazione_competenza_utente["parent_id"]
+            ):
+                assegnazione_caso1_ids.append(
+                    assegnazione_competenza_utente["parent_id"][0]
+                )
             else:
                 assegnazione_caso1_ids.append(assegnazione_competenza_utente["id"])
-        assegnazione_conoscenza_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "conoscenza"),
-            ("state", "=", "letto_cc"),
-            ("assegnatario_utente_id", "=", utente_id)
-        ], ["id", "parent_id"])
+        assegnazione_conoscenza_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "conoscenza"),
+                ("state", "=", "letto_cc"),
+                ("assegnatario_utente_id", "=", utente_id),
+            ],
+            ["id", "parent_id"],
+        )
         # iteriamo sulle assegnazioni per conoscenza in stato letto_co assegnate all'utente, se l'assegnazione ha
         # un parent si considera tale id, altrimenti si prende l'id dell'assegnazione stessa
         assegnazione_caso2_ids = []
         for assegnazione_conoscenza_utente in assegnazione_conoscenza_utente_list:
             if assegnazione_conoscenza_utente["parent_id"]:
-                assegnazione_caso2_ids.append(assegnazione_conoscenza_utente["parent_id"][0])
+                assegnazione_caso2_ids.append(
+                    assegnazione_conoscenza_utente["parent_id"][0]
+                )
             else:
                 assegnazione_caso2_ids.append(assegnazione_conoscenza_utente["id"])
-        assegnazione_da_completare_lavorazione_ids = assegnazione_caso1_ids + assegnazione_caso2_ids
+        assegnazione_da_completare_lavorazione_ids = (
+            assegnazione_caso1_ids + assegnazione_caso2_ids
+        )
         return assegnazione_da_completare_lavorazione_ids
 
     def get_assegnazione_da_rimettere_in_lavorazione_ids(self, utente_id):
@@ -611,37 +792,52 @@ class ProtocolloActions(models.Model):
         # le assegnazione da rimettere in lavorazione rientrano in due casi
         # caso 1: l'utente è un assegnatario per competenza la cui assegnazione è in stato lavorazione_completata
         # caso 2: l'utente è un assegnatario per conoscenza la cui assegnazione è in stato lavorazione_completata
-        assegnazione_competenza_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "competenza"),
-            ("state", "=", "lavorazione_completata"),
-            ("assegnatario_utente_id", "=", utente_id)
-        ], ["id", "parent_id", "presa_in_carico"])
+        assegnazione_competenza_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "competenza"),
+                ("state", "=", "lavorazione_completata"),
+                ("assegnatario_utente_id", "=", utente_id),
+            ],
+            ["id", "parent_id", "presa_in_carico"],
+        )
         # iteriamo sulle assegnazioni per competenza in stato lavorazione_completata assegnate all'utente. Se
         # l'assegnazione ha il campo_presa_in_carico a True e ha un parent allora si prende il parent come assegnazione
         # da spostare in lavorazione, nei restanti casi si prende l'assegnazione stessa perché lo stato da modificare
         # deve essere solamente il suo e non quello dell'eventuale assegnazione parent
         assegnazione_caso1_ids = []
         for assegnazione_competenza_utente in assegnazione_competenza_utente_list:
-            if assegnazione_competenza_utente["presa_in_carico"] and assegnazione_competenza_utente["parent_id"]:
-                assegnazione_caso1_ids.append(assegnazione_competenza_utente["parent_id"][0])
+            if (
+                assegnazione_competenza_utente["presa_in_carico"]
+                and assegnazione_competenza_utente["parent_id"]
+            ):
+                assegnazione_caso1_ids.append(
+                    assegnazione_competenza_utente["parent_id"][0]
+                )
             else:
                 assegnazione_caso1_ids.append(assegnazione_competenza_utente["id"])
-        assegnazione_conoscenza_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", "conoscenza"),
-            ("state", "=", "lavorazione_completata"),
-            ("assegnatario_utente_id", "=", utente_id)
-        ], ["id", "parent_id"])
+        assegnazione_conoscenza_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", "conoscenza"),
+                ("state", "=", "lavorazione_completata"),
+                ("assegnatario_utente_id", "=", utente_id),
+            ],
+            ["id", "parent_id"],
+        )
         # iteriamo sulle assegnazioni per conoscenza in stato lavorazione_completata assegnate all'utente, se
         # l'assegnazione ha un parent si considera tale id, altrimenti si prende l'id dell'assegnazione stessa
         assegnazione_caso2_ids = []
         for assegnazione_conoscenza_utente in assegnazione_conoscenza_utente_list:
             if assegnazione_conoscenza_utente["parent_id"]:
-                assegnazione_caso2_ids.append(assegnazione_conoscenza_utente["parent_id"][0])
+                assegnazione_caso2_ids.append(
+                    assegnazione_conoscenza_utente["parent_id"][0]
+                )
             else:
                 assegnazione_caso2_ids.append(assegnazione_conoscenza_utente["id"])
-        assegnazione_da_completare_lavorazione_ids = assegnazione_caso1_ids + assegnazione_caso2_ids
+        assegnazione_da_completare_lavorazione_ids = (
+            assegnazione_caso1_ids + assegnazione_caso2_ids
+        )
         return assegnazione_da_completare_lavorazione_ids
 
     def check_state_assegnazione(self, tipologia_assegnazione, state, utente_id):
@@ -650,18 +846,23 @@ class ProtocolloActions(models.Model):
         # ricerca le assegnazioni per l'ufficio dell'utente corrente
         utente = self.env["res.users"].browse(utente_id)
         for ufficio_id in utente.fl_set_set_ids.ids:
-            if self._get_assegnazione_ufficio_ids(tipologia_assegnazione, state, ufficio_id, utente_id):
+            if self._get_assegnazione_ufficio_ids(
+                tipologia_assegnazione, state, ufficio_id, utente_id
+            ):
                 return True
         return False
 
     def get_assegnazione_ids(self, tipologia_assegnazione, state, utente_id):
         # ricerca le assegnazioni per l'utente corrente
-        ass_com_ids = self._get_assegnazione_utente_ids(tipologia_assegnazione, state, utente_id)
+        ass_com_ids = self._get_assegnazione_utente_ids(
+            tipologia_assegnazione, state, utente_id
+        )
         # ricerca le assegnazioni per l'ufficio dell'utente corrente
         utente = self.env["res.users"].browse(utente_id)
         for ufficio_id in utente.fl_set_set_ids.ids:
-            ass_com_ufficio_ids = self._get_assegnazione_ufficio_ids(tipologia_assegnazione, state, ufficio_id,
-                                                                     utente_id)
+            ass_com_ufficio_ids = self._get_assegnazione_ufficio_ids(
+                tipologia_assegnazione, state, ufficio_id, utente_id
+            )
             ass_com_ids = ass_com_ids + ass_com_ufficio_ids
         return ass_com_ids
 
@@ -669,42 +870,57 @@ class ProtocolloActions(models.Model):
         self.ensure_one()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         # si ricercano le assegnazioni fatte direttamente sull'utente
-        assegnazione_competenza_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", tipologia_assegnazione),
-            ("state", "=", state),
-            ("assegnatario_utente_id", "=", utente_id),
-            ("parent_id", "=", False)
-        ], ["id"])
-        assegnazione_competenza_utente_ids = [a["id"] for a in assegnazione_competenza_utente_list]
+        assegnazione_competenza_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", tipologia_assegnazione),
+                ("state", "=", state),
+                ("assegnatario_utente_id", "=", utente_id),
+                ("parent_id", "=", False),
+            ],
+            ["id"],
+        )
+        assegnazione_competenza_utente_ids = [
+            a["id"] for a in assegnazione_competenza_utente_list
+        ]
         return assegnazione_competenza_utente_ids
 
-    def _get_assegnazione_ufficio_ids(self, tipologia_assegnazione, state, ufficio_id, utente_id):
+    def _get_assegnazione_ufficio_ids(
+        self, tipologia_assegnazione, state, ufficio_id, utente_id
+    ):
         self.ensure_one()
         assegnazione_obj = self.env["sd.protocollo.assegnazione"]
         # se lo stato è assegnato si ricercano le assegnazioni fatte all'ufficio dell'utente perché le assegnazioni
         # dell'utente potrebbero non esistere
-        if state == 'assegnato':
-            assegnazione_ufficio_list = assegnazione_obj.search_read([
-                ("protocollo_id", "=", self.id),
-                ("tipologia", "=", tipologia_assegnazione),
-                ("state", "=", state),
-                ("assegnatario_ufficio_id", "=", ufficio_id),
-                ("parent_id", "=", False)
-            ], ["id"])
+        if state == "assegnato":
+            assegnazione_ufficio_list = assegnazione_obj.search_read(
+                [
+                    ("protocollo_id", "=", self.id),
+                    ("tipologia", "=", tipologia_assegnazione),
+                    ("state", "=", state),
+                    ("assegnatario_ufficio_id", "=", ufficio_id),
+                    ("parent_id", "=", False),
+                ],
+                ["id"],
+            )
             assegnazione_ufficio_ids = [a["id"] for a in assegnazione_ufficio_list]
             return assegnazione_ufficio_ids
         # altrimenti si ricercano le assegnazioni per utente il cui parent_id è valorizzato, si itera sulle assegnazioni
         # trovate e si recupera il relativo parent_id
-        assegnazione_utente_list = assegnazione_obj.search_read([
-            ("protocollo_id", "=", self.id),
-            ("tipologia", "=", tipologia_assegnazione),
-            ("state", "=", state),
-            ("assegnatario_utente_id", "=", utente_id),
-            ("assegnatario_utente_parent_id", "=", ufficio_id),
-            ("parent_id", "!=", False)
-        ], ["id", "parent_id"])
-        assegnazione_competenza_ufficio_ids = [a["parent_id"][0] for a in assegnazione_utente_list]
+        assegnazione_utente_list = assegnazione_obj.search_read(
+            [
+                ("protocollo_id", "=", self.id),
+                ("tipologia", "=", tipologia_assegnazione),
+                ("state", "=", state),
+                ("assegnatario_utente_id", "=", utente_id),
+                ("assegnatario_utente_parent_id", "=", ufficio_id),
+                ("parent_id", "!=", False),
+            ],
+            ["id", "parent_id"],
+        )
+        assegnazione_competenza_ufficio_ids = [
+            a["parent_id"][0] for a in assegnazione_utente_list
+        ]
         return assegnazione_competenza_ufficio_ids
 
     def is_prima_assegnazione(self, modifica_assegnatari=False):
@@ -719,36 +935,47 @@ class ProtocolloActions(models.Model):
         # se nessuno dei precedenti casi è verificato allora è un'assegnazione successiva alla prima
         return False
 
-    def get_assegnatario_disable_dictionary_ids(self, action_tipologia=None, tipologia=None, assegnazione_to_exclude_ids=[]):
+    def get_assegnatario_disable_dictionary_ids(
+        self, action_tipologia=None, tipologia=None, assegnazione_to_exclude_ids=[]
+    ):
         self.ensure_one()
         config_obj = self.env["ir.config_parameter"].sudo()
-        assegnatario_disable_dictionary_ids = {
-            "competenza": [],
-            "conoscenza": []
-        }
-        stesso_ufficio = bool(config_obj.get_param("sd_protocollo.abilita_assegnazione_stesso_utente_ufficio"))
-        if not stesso_ufficio and action_tipologia != "riassegnazione" and self.tipologia_protocollo in ["ingresso",
-                                                                                                         "uscita"]:
+        assegnatario_disable_dictionary_ids = {"competenza": [], "conoscenza": []}
+        stesso_ufficio = bool(
+            config_obj.get_param(
+                "sd_protocollo.abilita_assegnazione_stesso_utente_ufficio"
+            )
+        )
+        if (
+            not stesso_ufficio
+            and action_tipologia != "riassegnazione"
+            and self.tipologia_protocollo in ["ingresso", "uscita"]
+        ):
             assegnatario_disable_ids = self._get_assegnatario_disable_ids(
-                self.assegnazione_parent_ids, assegnazione_to_exclude_ids=assegnazione_to_exclude_ids
+                self.assegnazione_parent_ids,
+                assegnazione_to_exclude_ids=assegnazione_to_exclude_ids,
             )
             assegnatario_disable_dictionary_ids["competenza"] = assegnatario_disable_ids
             assegnatario_disable_dictionary_ids["conoscenza"] = assegnatario_disable_ids
             return assegnatario_disable_dictionary_ids
         if not tipologia or tipologia == "competenza":
             assegnatario_disable_ids = self._get_assegnatario_disable_ids(
-                self.assegnazione_competenza_ids, assegnazione_to_exclude_ids=assegnazione_to_exclude_ids
+                self.assegnazione_competenza_ids,
+                assegnazione_to_exclude_ids=assegnazione_to_exclude_ids,
             )
             assegnatario_disable_dictionary_ids["competenza"] = assegnatario_disable_ids
         if not tipologia or tipologia == "conoscenza":
             assegnatario_disable_ids = self._get_assegnatario_disable_ids(
-                self.assegnazione_conoscenza_ids, assegnazione_to_exclude_ids=assegnazione_to_exclude_ids
+                self.assegnazione_conoscenza_ids,
+                assegnazione_to_exclude_ids=assegnazione_to_exclude_ids,
             )
             assegnatario_disable_dictionary_ids["conoscenza"] = assegnatario_disable_ids
         return assegnatario_disable_dictionary_ids
 
     @api.model
-    def _get_assegnatario_disable_ids(self, assegnazione_list, assegnazione_to_exclude_ids=[]):
+    def _get_assegnatario_disable_ids(
+        self, assegnazione_list, assegnazione_to_exclude_ids=[]
+    ):
         assegnatario_disable_ids = []
         for assegnazione in assegnazione_list:
             if assegnazione.id in assegnazione_to_exclude_ids:
@@ -762,10 +989,14 @@ class ProtocolloActions(models.Model):
             # se l'assegnazione è di tipo utente e non appartiene a nessuna assegnazione di tipo ufficio allora anche
             # l'ufficio di appartenenza dell'utente non deve essere selezionabile, mentre gli altri utenti appartenenti
             # all'ufficio possono esserlo
-            if assegnazione.assegnatario_tipologia == "utente" and \
-                    not assegnazione.parent_id and \
-                    assegnazione.assegnatario_id.parent_id:
-                assegnatario_disable_ids.append(assegnazione.assegnatario_id.parent_id.id)
+            if (
+                assegnazione.assegnatario_tipologia == "utente"
+                and not assegnazione.parent_id
+                and assegnazione.assegnatario_id.parent_id
+            ):
+                assegnatario_disable_ids.append(
+                    assegnazione.assegnatario_id.parent_id.id
+                )
         return assegnatario_disable_ids
 
     def error_get(self, error):
@@ -791,10 +1022,15 @@ class ProtocolloActions(models.Model):
             "assegnatario_competenza": "Assegnatario per Competenza",
             "uffici_assegnatario_conoscenza": "Uffici Assegnatari per Conoscenza",
             "dipendente_assegnatario_conoscenza": "Dipendenti Assegnatari per Conoscenza",
-            "documento_document_type": _("The main document doesn't have a document type associated"),
+            "documento_document_type": _(
+                "The main document doesn't have a document type associated"
+            ),
             "allegati_document_type": _(
-                "There are attachments (<b>%s</b>) that doesn't have a document type associated"),
-            "allegato_document_type": _("The attachment <b>%s</b> doesn't have a document type associated")
+                "There are attachments (<b>%s</b>) that doesn't have a document type associated"
+            ),
+            "allegato_document_type": _(
+                "The attachment <b>%s</b> doesn't have a document type associated"
+            ),
         }
         return error_dict.get(error, False)
 
@@ -815,10 +1051,21 @@ class ProtocolloActions(models.Model):
             (not self.documento_id and self.allegato_ids, "documento_id_allegati"),
             (not self.protocollatore_id, "protocollatore_id"),
             (not self.documento_id_oggetto, "oggetto"),
-            (self.tipologia_protocollo != "ingresso" and not self.mittente_interno_id, "mittente_interno_id"),
-            (self.protocollatore_id and self.protocollatore_ufficio_id and not self.protocollatore_id.fl_set_set_ids,
-             "protocollatore_not_ufficio"),
-            (common_conditions_list[0] and not self.mezzo_trasmissione_id, "mezzo_trasmissione_id"),
+            (
+                self.tipologia_protocollo != "ingresso"
+                and not self.mittente_interno_id,
+                "mittente_interno_id",
+            ),
+            (
+                self.protocollatore_id
+                and self.protocollatore_ufficio_id
+                and not self.protocollatore_id.fl_set_set_ids,
+                "protocollatore_not_ufficio",
+            ),
+            (
+                common_conditions_list[0] and not self.mezzo_trasmissione_id,
+                "mezzo_trasmissione_id",
+            ),
         ]
 
         for condition in conditions_list:
@@ -831,7 +1078,9 @@ class ProtocolloActions(models.Model):
 
         if common_conditions_list[0] and not self.destinatario_ids:
             if not self.mittente_ids and not self.mittente_interno_id:
-                send_rec = common_conditions_list[1] and _("Mittente") or _("Destinatari")
+                send_rec = (
+                    common_conditions_list[1] and _("Mittente") or _("Destinatari")
+                )
                 errors_list.append(send_rec)
 
         if common_conditions_list[1] and self.mezzo_trasmissione_id:
@@ -843,8 +1092,6 @@ class ProtocolloActions(models.Model):
             if not self.destinatario_ids and "Destinatari" not in errors_list:
                 errors_list.append(_("Destinatari"))
 
-
-
         return errors_list
 
     @api.model
@@ -855,14 +1102,18 @@ class ProtocolloActions(models.Model):
             errors.extend(document_errors)
         config = {}
 
-        ir_config_obj = self.env['ir.config_parameter'].sudo()
+        ir_config_obj = self.env["ir.config_parameter"].sudo()
 
         required_fields_list = [
             "required_assegnatari_competenza_uffici",
-            "required_assegnatari_competenza_dipendenti", "required_assegnatari_conoscenza_uffici",
-            "required_assegnatari_conoscenza_dipendenti", "required_data_ricezione",
-            "required_assegnatari_competenza_uffici_senza_doc", "required_assegnatari_competenza_dipendenti_senza_doc",
-            "required_assegnatari_conoscenza_uffici_senza_doc", "required_assegnatari_conoscenza_dipendenti_senza_doc",
+            "required_assegnatari_competenza_dipendenti",
+            "required_assegnatari_conoscenza_uffici",
+            "required_assegnatari_conoscenza_dipendenti",
+            "required_data_ricezione",
+            "required_assegnatari_competenza_uffici_senza_doc",
+            "required_assegnatari_competenza_dipendenti_senza_doc",
+            "required_assegnatari_conoscenza_uffici_senza_doc",
+            "required_assegnatari_conoscenza_dipendenti_senza_doc",
         ]
 
         for field in required_fields_list:
@@ -875,61 +1126,110 @@ class ProtocolloActions(models.Model):
         conoscenza_dipendente_found = False
 
         for assegnazione in self.assegnazione_ids:
-            if assegnazione.tipologia == 'competenza' and assegnazione.assegnatario_tipologia == "ufficio":
+            if (
+                assegnazione.tipologia == "competenza"
+                and assegnazione.assegnatario_tipologia == "ufficio"
+            ):
                 competenza_ufficio_found = True
-            if assegnazione.tipologia == 'competenza' and assegnazione.assegnatario_tipologia == "utente":
+            if (
+                assegnazione.tipologia == "competenza"
+                and assegnazione.assegnatario_tipologia == "utente"
+            ):
                 competenza_dipendente_found = True
-            if assegnazione.tipologia == 'conoscenza' and assegnazione.assegnatario_tipologia == "ufficio":
+            if (
+                assegnazione.tipologia == "conoscenza"
+                and assegnazione.assegnatario_tipologia == "ufficio"
+            ):
                 conoscenza_ufficio_found = True
-            if assegnazione.tipologia == 'conoscenza' and assegnazione.assegnatario_tipologia == "utente":
+            if (
+                assegnazione.tipologia == "conoscenza"
+                and assegnazione.assegnatario_tipologia == "utente"
+            ):
                 conoscenza_dipendente_found = True
 
         conditions_list = []
 
-        if not self.env.user.has_group("sd_protocollo.group_sd_protocollo_registra_protocollo_senza_assegnazione"):
+        if not self.env.user.has_group(
+            "sd_protocollo.group_sd_protocollo_registra_protocollo_senza_assegnazione"
+        ):
             if self.documento_id_content:
                 conditions_list.extend(
                     [
-                        (config["required_assegnatari_competenza_uffici"] and not config[
-                            "required_assegnatari_competenza_dipendenti"] and not competenza_ufficio_found,
-                         "ufficio_assegnatario_competenza"),
-
-                        (config["required_assegnatari_competenza_dipendenti"] and not config[
-                            "required_assegnatari_competenza_uffici"] and not competenza_dipendente_found,
-                         "dipendente_assegnatario_competenza"),
-
-                        (config["required_assegnatari_competenza_dipendenti"] and config[
-                            "required_assegnatari_competenza_uffici"] and not competenza_ufficio_found and not competenza_dipendente_found,
-                         "assegnatario_competenza"),
-
-                        (config["required_assegnatari_conoscenza_uffici"] and not conoscenza_ufficio_found,
-                         "uffici_assegnatario_conoscenza"),
-
-                        (config["required_assegnatari_conoscenza_dipendenti"] and not conoscenza_dipendente_found,
-                         "dipendente_assegnatario_conoscenza")
+                        (
+                            config["required_assegnatari_competenza_uffici"]
+                            and not config["required_assegnatari_competenza_dipendenti"]
+                            and not competenza_ufficio_found,
+                            "ufficio_assegnatario_competenza",
+                        ),
+                        (
+                            config["required_assegnatari_competenza_dipendenti"]
+                            and not config["required_assegnatari_competenza_uffici"]
+                            and not competenza_dipendente_found,
+                            "dipendente_assegnatario_competenza",
+                        ),
+                        (
+                            config["required_assegnatari_competenza_dipendenti"]
+                            and config["required_assegnatari_competenza_uffici"]
+                            and not competenza_ufficio_found
+                            and not competenza_dipendente_found,
+                            "assegnatario_competenza",
+                        ),
+                        (
+                            config["required_assegnatari_conoscenza_uffici"]
+                            and not conoscenza_ufficio_found,
+                            "uffici_assegnatario_conoscenza",
+                        ),
+                        (
+                            config["required_assegnatari_conoscenza_dipendenti"]
+                            and not conoscenza_dipendente_found,
+                            "dipendente_assegnatario_conoscenza",
+                        ),
                     ]
                 )
             else:
                 conditions_list.extend(
                     [
-                        (config["required_assegnatari_competenza_uffici_senza_doc"] and not config[
-                            "required_assegnatari_competenza_dipendenti_senza_doc"] and not competenza_ufficio_found,
-                         "ufficio_assegnatario_competenza"),
-
-                        (config["required_assegnatari_competenza_dipendenti_senza_doc"] and not config[
-                            "required_assegnatari_competenza_uffici_senza_doc"] and not competenza_dipendente_found,
-                         "dipendente_assegnatario_competenza"),
-
-                        (config["required_assegnatari_competenza_dipendenti_senza_doc"] and config[
-                            "required_assegnatari_competenza_uffici_senza_doc"] and not competenza_ufficio_found and not competenza_dipendente_found,
-                         "assegnatario_competenza"),
-
-                        (config["required_assegnatari_conoscenza_uffici_senza_doc"] and not conoscenza_ufficio_found,
-                         "uffici_assegnatario_conoscenza"),
-
-                        (config[
-                             "required_assegnatari_conoscenza_dipendenti_senza_doc"] and not conoscenza_dipendente_found,
-                         "dipendente_assegnatario_conoscenza")
+                        (
+                            config["required_assegnatari_competenza_uffici_senza_doc"]
+                            and not config[
+                                "required_assegnatari_competenza_dipendenti_senza_doc"
+                            ]
+                            and not competenza_ufficio_found,
+                            "ufficio_assegnatario_competenza",
+                        ),
+                        (
+                            config[
+                                "required_assegnatari_competenza_dipendenti_senza_doc"
+                            ]
+                            and not config[
+                                "required_assegnatari_competenza_uffici_senza_doc"
+                            ]
+                            and not competenza_dipendente_found,
+                            "dipendente_assegnatario_competenza",
+                        ),
+                        (
+                            config[
+                                "required_assegnatari_competenza_dipendenti_senza_doc"
+                            ]
+                            and config[
+                                "required_assegnatari_competenza_uffici_senza_doc"
+                            ]
+                            and not competenza_ufficio_found
+                            and not competenza_dipendente_found,
+                            "assegnatario_competenza",
+                        ),
+                        (
+                            config["required_assegnatari_conoscenza_uffici_senza_doc"]
+                            and not conoscenza_ufficio_found,
+                            "uffici_assegnatario_conoscenza",
+                        ),
+                        (
+                            config[
+                                "required_assegnatari_conoscenza_dipendenti_senza_doc"
+                            ]
+                            and not conoscenza_dipendente_found,
+                            "dipendente_assegnatario_conoscenza",
+                        ),
                     ]
                 )
 
@@ -938,7 +1238,11 @@ class ProtocolloActions(models.Model):
                 error = _(self.error_get(condition[1]))
                 errors.append(error)
 
-        if config["required_data_ricezione"] and self.tipologia_protocollo == "ingresso" and not self.data_ricezione:
+        if (
+            config["required_data_ricezione"]
+            and self.tipologia_protocollo == "ingresso"
+            and not self.data_ricezione
+        ):
             error = self.error_get("data_ricezione")
             errors.append(error)
 
@@ -951,10 +1255,15 @@ class ProtocolloActions(models.Model):
             if not allegato.document_type_id:
                 allegati_document_type_list.append(allegato.filename)
         if len(allegati_document_type_list) > 1:
-            error = self.error_get("allegati_document_type") % ", ".join(allegati_document_type_list)
+            error = self.error_get("allegati_document_type") % ", ".join(
+                allegati_document_type_list
+            )
             errors.append(error)
         elif len(allegati_document_type_list) == 1:
-            error = self.error_get("allegato_document_type") % allegati_document_type_list[0]
+            error = (
+                self.error_get("allegato_document_type")
+                % allegati_document_type_list[0]
+            )
             errors.append(error)
 
         if errors:
@@ -967,19 +1276,25 @@ class ProtocolloActions(models.Model):
         if not errors:
             return False
         error_message_start = '<div class="verifica-campi-container"><b><p>'
-        error_message_start += _(
-            "Valorizzare correttamente i seguenti campi per procedere alla registrazione:") + '</p></b><ul>'
-        error_message_end = '</ul></div>'
-        error_message = ''
+        error_message_start += (
+            _(
+                "Valorizzare correttamente i seguenti campi per procedere alla registrazione:"
+            )
+            + "</p></b><ul>"
+        )
+        error_message_end = "</ul></div>"
+        error_message = ""
         for error in errors:
-            error_message += '<li>' + error + '</li>'
+            error_message += "<li>" + error + "</li>"
         return error_message_start + error_message + error_message_end
 
     def protocollo_elimina_bozza_action(self):
         self.ensure_one()
         if self.button_elimina_bozza_invisible:
             return
-        protocol_documents = self.env["sd.dms.document"].search([("protocollo_id", "=", self.id)])
+        protocol_documents = self.env["sd.dms.document"].search(
+            [("protocollo_id", "=", self.id)]
+        )
         for sd_document in protocol_documents:
             if sd_document.created_by_protocol:
                 sd_document.sudo().unlink()
@@ -988,16 +1303,17 @@ class ProtocolloActions(models.Model):
 
     @api.model
     def redirect_menu_protocolli(self):
-        action = self.env.ref("sd_protocollo.action_sd_protocollo_protocollo_list").read()[0]
+        action = self.env.ref(
+            "sd_protocollo.action_sd_protocollo_protocollo_list"
+        ).read()[0]
         company_id = self.env.user.company_id.id
         menu_id = self.env.ref("sd_protocollo.menu_sd_protocollo").id
         return {
             "type": "ir.actions.act_url",
             "name": "Protocolli",
             "target": "self",
-            "url": "/web#action=%s&model=sd.protocollo.protocollo&view_type=list&cids=%s&menu_id=%s" % (
-                action["id"], company_id, menu_id
-            )
+            "url": "/web#action=%s&model=sd.protocollo.protocollo&view_type=list&cids=%s&menu_id=%s"
+            % (action["id"], company_id, menu_id),
         }
 
     def protocollo_lista_allegati_action(self):
@@ -1012,15 +1328,17 @@ class ProtocolloActions(models.Model):
             domain.append(("id", "!=", self.documento_id.id))
         return {
             "name": "Allegati",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.dms.document",
             "type": "ir.actions.act_window",
             "domain": domain,
             "search_view_id": [
-                self.env.ref("sd_protocollo.view_sd_dms_document_search_protocollo_allegato_list").id,
-                "search"
+                self.env.ref(
+                    "sd_protocollo.view_sd_dms_document_search_protocollo_allegato_list"
+                ).id,
+                "search",
             ],
-            "context": context
+            "context": context,
         }
 
     def protocollo_form_documento_action(self):
@@ -1031,7 +1349,6 @@ class ProtocolloActions(models.Model):
             "res_model": "sd.dms.document",
             "view_mode": "form",
             "res_id": self.documento_id.id,
-
         }
 
     def _get_context_for_list_allegati(self):
@@ -1040,10 +1357,12 @@ class ProtocolloActions(models.Model):
             registration_type="protocol",
             default_folder_id=self.documento_id_cartella_id.id,
             default_document_type_id=self.documento_id_document_type_id.id,
-            default_protocollo_id=self.id if not self.button_aggiungi_allegati_invisible else False,
+            default_protocollo_id=(
+                self.id if not self.button_aggiungi_allegati_invisible else False
+            ),
             default_button_document_add_contact_sender_invisible=True,
             default_button_document_add_contact_recipient_invisible=True,
-            create=not self.button_aggiungi_allegati_invisible
+            create=not self.button_aggiungi_allegati_invisible,
         )
 
     def protocollo_lista_source_action(self):
@@ -1059,8 +1378,13 @@ class ProtocolloActions(models.Model):
     def protocollo_rispondi_action(self):
         self.ensure_one()
         context = dict(self.env.context)
-        if self.tipologia_protocollo == "ingresso" and self.state == "registrato" and self.env.user.has_group(
-                'sd_protocollo.group_sd_protocollo_crea_protocollo_uscita'):
+        if (
+            self.tipologia_protocollo == "ingresso"
+            and self.state == "registrato"
+            and self.env.user.has_group(
+                "sd_protocollo.group_sd_protocollo_crea_protocollo_uscita"
+            )
+        ):
             values = self.get_reply_values()
             bozza_protocollo = self.create(values)
             context["form_view_initial_mode"] = "edit"
@@ -1072,30 +1396,42 @@ class ProtocolloActions(models.Model):
                 domicilio_copy = domicilio.copy()
                 domicilio_copy.contact_id = recipient.id
             recipient.typology = "recipient"
-            bozza_protocollo.documento_id.write({"recipient_ids": [(6, 0, [recipient.id])]})
+            bozza_protocollo.documento_id.write(
+                {"recipient_ids": [(6, 0, [recipient.id])]}
+            )
             return {
                 "name": "Protocollo",
                 "type": "ir.actions.act_window",
                 "res_id": bozza_protocollo.id,
                 "view_type": "form",
-                "view_mode": "form,tree",
+                "view_mode": "form,list",
                 "res_model": "sd.protocollo.protocollo",
                 "target": "current",
-                "context": context
+                "context": context,
             }
         else:
             list_errors = [_("Unable to create a response for the following reasons:")]
             e = 1
             message = "\n"
             if self.tipologia_protocollo == "uscita":
-                list_errors.append(str(e) + _(". You cannot reply to an outbound protocol."))
+                list_errors.append(
+                    str(e) + _(". You cannot reply to an outbound protocol.")
+                )
                 e += 1
             elif self.tipologia_protocollo == "interno":
-                list_errors.append(str(e) + _(". You cannot reply to an internal protocol."))
+                list_errors.append(
+                    str(e) + _(". You cannot reply to an internal protocol.")
+                )
                 e += 1
-            if not self.env.user.has_group('sd_protocollo.group_sd_protocollo_crea_protocollo_uscita'):
-                list_errors.append(str(e) + _(
-                    ". You are not authorized to create an outbound protocol, please contact your system administrator."))
+            if not self.env.user.has_group(
+                "sd_protocollo.group_sd_protocollo_crea_protocollo_uscita"
+            ):
+                list_errors.append(
+                    str(e)
+                    + _(
+                        ". You are not authorized to create an outbound protocol, please contact your system administrator."
+                    )
+                )
                 e += 1
             if self.state != "registrato":
                 list_errors.append(str(e) + _(". Protocol must be registered."))
@@ -1114,7 +1450,7 @@ class ProtocolloActions(models.Model):
             "tipologia_protocollo": "uscita",
             "documento_id_cartella_id": values_default["folder"].id,
             "documento_id_filename": "Nuovo Documento",
-            "is_reply": True
+            "is_reply": True,
         }
         return values
 
@@ -1122,12 +1458,14 @@ class ProtocolloActions(models.Model):
         self.ensure_one()
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         url_params = {
-            'id': self.id,
-            'view_type': 'form',
-            'model': 'protocollo.protocollo',
-            'menu_id': self.env.ref('sd_protocollo.menu_sd_protocollo').id,
-            'action': self.env.ref('sd_protocollo.action_sd_protocollo_protocollo_list').id,
+            "id": self.id,
+            "view_type": "form",
+            "model": "protocollo.protocollo",
+            "menu_id": self.env.ref("sd_protocollo.menu_sd_protocollo").id,
+            "action": self.env.ref(
+                "sd_protocollo.action_sd_protocollo_protocollo_list"
+            ).id,
         }
 
-        params = '/web?#%s' % werkzeug.url_encode(url_params)
+        params = "/web?#%s" % werkzeug.url_encode(url_params)
         return base_url + params

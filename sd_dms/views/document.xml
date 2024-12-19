@@ -8,10 +8,10 @@
     <data>
 
         <record id="view_sd_dms_document_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.document.tree</field>
+            <field name="name">view.sd.dms.document.list</field>
             <field name="model">sd.dms.document</field>
             <field name="arch" type="xml">
-                <tree string="Files">
+                <list string="Files">
                     <field name="filename"/>
                     <field name="subject"/>
                     <field name="folder_id"/>
@@ -19,15 +19,15 @@
                     <field name="registration_date"/>
                     <field name="write_date"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 
         <record id="view_sd_dms_document_tree_migration" model="ir.ui.view">
-            <field name="name">view.sd.dms.document.tree.migration</field>
+            <field name="name">view.sd.dms.document.list.migration</field>
             <field name="model">sd.dms.document</field>
             <field name="arch" type="xml">
-                <tree string="Files" decoration-muted="(is_locked and not is_lock_editor)">
+                <list string="Files" decoration-muted="(is_locked and not is_lock_editor)">
                     <field name="is_locked" invisible="1"/>
                     <field name="is_lock_editor" invisible="1"/>
                     <field name="filename"/>
@@ -36,7 +36,7 @@
                     <field name="mimetype"/>
                     <field name="storage_id"/>
                     <field name="migration"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -59,9 +59,9 @@
                         <field name="button_document_add_other_subject_invisible" invisible="1"/>
                         <field name="button_document_add_contact_recipient_invisible" invisible="1"/>
                         <!--                        <button string="Lock" class="btn btn-primary" name="lock_document" type="object"-->
-                        <!--                                attrs="{'invisible':[('locked_by_user_id', '!=', False)]}"/>-->
+                        <!--                                invisible="{[('locked_by_user_id', '!=', False)]}"/>-->
                         <!--                        <button string="Unlock" class="btn btn-primary" name="unlock_document" type="object"-->
-                        <!--                                attrs="{'invisible':['&amp;',('locked_by_user_id', '=', False),('is_lock_editor','=', False)]}"/>-->
+                        <!--                                invisible="{['&amp;',('locked_by_user_id', '=', False),('is_lock_editor','=', False)]}"/>-->
                         <field name="state"
                                widget="statusbar"
                                statusbar_visible="draft,registered"
@@ -71,21 +71,21 @@
                         <div name="button_box" class="oe_button_box">
                         </div>
                         <widget name="web_ribbon" title="REGISTRATION CANCELED" bg_color="bg-danger"
-                                attrs="{'invisible': [('state', '!=', 'registration_canceled')]}"/>
+                                invisible="[('state', '!=', 'registration_canceled')]"/>
                         <div class="oe_title">
                             <label for="filename" class="oe_edit_only"/>
                             <h1>
                                 <field name="filename"
-                                       attrs="{'readonly': [('field_readonly','=',True)]}"
+                                       readonly="[('field_readonly','=',True)]"
                                 />
                             </h1>
                         </div>
                         <group name="content">
                             <group>
-                                <field name="subject" attrs="{'readonly': [('field_readonly','=',True)]}"/>
+                                <field name="subject" readonly="[('field_readonly','=',True)]"/>
                                 <field name="content"
                                        filename="filename"
-                                       attrs="{'readonly': [('field_readonly','=',True)]}"
+                                       readonly="[('field_readonly','=',True)]"
                                 />
                                 <field name="human_size"/>
                             </group>
@@ -94,7 +94,7 @@
                                        options="{'no_open': True}"
                                 />
                                 <field name="folder_id"
-                                       attrs="{'readonly':[('folder_id_readonly','=',True)]}"
+                                       readonly="[('folder_id_readonly','=',True)]"
                                        invisible="context.get('folder_invisible')"
                                        options="{'no_open': True, 'no_create': True}"
                                 />
@@ -104,7 +104,7 @@
                             <group colspan="2" col="4">
                                 <field name="document_type_id"
                                        options="{'no_open':True, 'no_create':True}"
-                                       attrs="{'readonly':[('document_type_id_readonly','=',True)]}"
+                                       readonly="[('document_type_id_readonly','=',True)]"
                                        colspan="2"
                                 />
                                 <separator colspan="2"/>
@@ -115,20 +115,20 @@
                                 <field name="category_id"
                                        placeholder="Internal / Human Resource"
                                        options="{'no_open': True, 'no_create': True}"
-                                       attrs="{'readonly': [('perm_write','=',False)]}"
+                                       readonly="[('perm_write','=',False)]"
                                 />
                                 <field name="tag_ids"
                                        widget="many2many_tags"
                                        placeholder="Tags..."
                                        options="{'no_create_edit': True}"
-                                       attrs="{'readonly': [('perm_write','=',False)]}"
+                                       readonly="[('perm_write','=',False)]"
                                 />
                             </group>
                             <group>
                                 <field name="registration_type"
-                                       attrs="{'invisible':[('registration_type_invisible','=',True)]}"
+                                       invisible="[('registration_type_invisible','=',True)]"
                                 />
-                                <field name="registration_date" attrs="{'invisible':[('registration_date','=', False)]}" />
+                                <field name="registration_date" invisible="[('registration_date','=', False)]" />
                             </group>
                         </group>
                         <notebook>
@@ -136,7 +136,7 @@
                                 <button name="document_add_contact_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                        attrs="{'invisible': [('button_document_add_contact_recipient_invisible','=',True)]}"
+                                        invisible="[('button_document_add_contact_recipient_invisible','=',True)]"
                                         context="{'contact_type':'recipient', 'wizard_label': 'Aggiungi Destinatario'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Add</span>
@@ -148,7 +148,7 @@
                                 <button name="document_add_contact_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                        attrs="{'invisible': [('button_document_add_contact_sender_invisible','=',True)]}"
+                                        invisible="[('button_document_add_contact_sender_invisible','=',True)]"
                                         context="{'contact_type':'sender', 'wizard_label': 'Aggiungi Mittente'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Add</span>
@@ -160,7 +160,7 @@
                                 <button name="document_add_contact_action"
                                         type="object"
                                         class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                        attrs="{'invisible': [('button_document_add_other_subject_invisible','=',True)]}"
+                                        invisible="[('button_document_add_other_subject_invisible','=',True)]"
                                         context="{'contact_type':'other_subjects', 'wizard_label': 'Aggiungi Altro Soggetto'}">
                                     <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                     <span>Add</span>
@@ -200,21 +200,21 @@
                             <page name="page_acl" string="Acl">
                                 <group>
                                     <field name="owner_id"
-                                           attrs="{'readonly': [('is_owner','!=',True)]}"
+                                           readonly="[('is_owner','!=',True)]"
                                            colspan="2"
                                     />
                                     <separator string="Inherit Acl"
-                                               attrs="{'invisible': [('inherit_acl','!=',True),('perm_write','!=',True)]}"
+                                               invisible="[('inherit_acl','!=',True),('perm_write','!=',True)]"
                                                colspan="2"
                                     />
                                     <field name="inherit_acl"
-                                           attrs="{'invisible': [('perm_write','!=',True)]}"
+                                           invisible="[('perm_write','!=',True)]"
                                            widget="boolean_toggle"
                                            nolabel="1"
                                            colspan="2"
                                     />
                                     <field name="inherit_acl_ids"
-                                           attrs="{'invisible':[('inherit_acl','!=',True)]}"
+                                           invisible="[('inherit_acl','!=',True)]"
                                            nolabel="1"
                                            colspan="2"
                                     />
@@ -226,7 +226,7 @@
                                     <separator string="Acl" colspan="2"/>
                                     <field name="acl_ids"
                                            widget="one2many"
-                                           attrs="{'readonly': [('perm_write','!=',True)]}"
+                                           readonly="[('perm_write','!=',True)]"
                                            context="{'acl_values': acl_ids}"
                                            nolabel="1"
                                            colspan="2"
@@ -267,7 +267,6 @@
                     <field name="create_uid"/>
                     <field name="write_date"/>
                     <field name="locked_by_user_id"/>
-                    <field name="__last_update"/>
                     <field name="is_favorite"/>
                     <templates>
                         <t t-name="kanban-box">
@@ -446,7 +445,7 @@
         <record id="sd_dms.action_sd_dms_document_list_storage_migration" model="ir.actions.act_window">
             <field name="search_view_id" ref="view_sd_dms_document_search_migration"/>
             <field name="view_ids"
-                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_sd_dms_document_tree_migration')})]"/>
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('view_sd_dms_document_tree_migration')})]"/>
         </record>
 
     </data>

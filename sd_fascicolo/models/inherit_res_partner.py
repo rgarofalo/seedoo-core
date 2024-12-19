@@ -20,9 +20,9 @@ class ResPartner(models.Model):
     def _compute_fascicolo_ids_count(self):
         partners_dossiers_obj = self.env["sd.fascicolo.fascicolo"]
         for partner in self:
-            fascicolo_ids_count = partners_dossiers_obj.search(["|","|","|",
+            fascicolo_ids_count = partners_dossiers_obj.search_count(["|","|","|",
                                                                 ("rup_ids.partner_id", "=", self.id),
                                                                 ("soggetto_intestatario_ids.partner_id", "=", self.id),
                                                                 ("amministrazione_partecipante_ids.partner_id", "=", self.id),
-                                                                ("amministrazione_titolare_ids.partner_id", "=", self.id)], count=True)
+                                                                ("amministrazione_titolare_ids.partner_id", "=", self.id)])
             partner.fascicolo_ids_count = fascicolo_ids_count

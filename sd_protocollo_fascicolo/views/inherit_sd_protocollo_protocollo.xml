@@ -18,7 +18,7 @@
                             type="object"
                             class="oe_highlight oe_read_only btn_sd"
                             context="{'wizard_label': 'Fascicola'}"
-                            attrs="{'invisible': [('button_fascicola_invisible', '=', True)]}"
+                            invisible="[('button_fascicola_invisible', '=', True)]"
                     />
                 </xpath>
 

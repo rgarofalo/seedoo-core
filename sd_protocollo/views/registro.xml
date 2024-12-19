@@ -3,16 +3,16 @@
     <data>
 
         <record id="view_sd_protocollo_registro_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.registro.tree</field>
+            <field name="name">view.sd.protocollo.registro.list</field>
             <field name="model">sd.protocollo.registro</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="ordinamento" widget="handle"/>
                     <field name="nome"/>
                     <field name="codice"/>
                     <field name="ufficiale" widget="boolean_toggle"/>
                     <field name="sequence_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -23,7 +23,7 @@
                 <form>
                     <sheet>
                         <widget name="web_ribbon" title="Ufficiale" bg_color="bg-info"
-                                attrs="{'invisible': [('ufficiale', '=', False)]}"/>
+                                invisible="[('ufficiale', '=', False)]"/>
                         <group>
                             <group>
                                 <field name="nome"/>

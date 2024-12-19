@@ -1,6 +1,6 @@
 {
     "name": "Segnatura XML - Protocollo",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Document Management",
     "summary": "Aggiunge le funzionalità di segnatura XML",
     "description": """
@@ -13,19 +13,13 @@
     "depends": [
         "sd_protocollo_pec",
     ],
-    "external_dependencies": {
-        "python": [
-            "signxml",
-            "pandas"
-        ]
-    },
+    "external_dependencies": {"python": ["signxml", "pandas"]},
     "data": [
         "data/ir_config_parameter.xml",
-
         "views/res_config_settings.xml",
-        "views/sd_protocollo_protocollo.xml"
+        "views/sd_protocollo_protocollo.xml",
     ],
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

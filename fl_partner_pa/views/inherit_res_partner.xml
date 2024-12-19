@@ -42,14 +42,15 @@
                 </xpath>
 
                 <xpath expr="//field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'required': [('type','=','contact')]}</attribute>
+                    <attribute name="required">[('type','=','contact')]</attribute>
                     <attribute name="force_save">1</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='company_type']" position="after">
                     <field name="company_subject_type"
                            placeholder="Typology"
-                           attrs="{'required': [('company_type','=','company')], 'invisible': ['|', '|', ('company_type','!=','company'), ('contact_pa_type','!=',False), ('company_subject_type_invisible','=',True)]}"
+                           required="[('company_type','=','company')]" 
+                         invisible= "['|', '|', ('company_type','!=','company'), ('contact_pa_type','!=',False), ('company_subject_type_invisible','=',True)]"
                     />
                 </xpath>
 
@@ -62,26 +63,28 @@
                            widget="res_partner_many2one"
                            placeholder="Company / PA / GPS / AOO / UO"
                            domain="['|', '|', '|', '|', ('is_private_company','=',True), ('is_amm','=',True), ('is_gps','=',True), ('is_aoo','=',True), ('is_uo','=',True)]"
-                           attrs="{'invisible': ['|', ('company_type','=','company'), ('company_subject_type','!=',False)]}"
+                           invisible="['|', ('company_type','=','company'), ('company_subject_type','!=',False)]"
                            context="{'default_company_type': 'company', 'default_company_subject_type': 'private'}"
                     />
                     <field name="parent_company_id"
                            widget="res_partner_many2one"
                            placeholder="Company"
                            domain="[('is_private_company','=',True)]"
-                           attrs="{'invisible': [('is_private_company','=',False)]}"
+                           invisible="[('is_private_company','=',False)]"
                            context="{'default_company_type_invisible': True, 'default_company_type': 'company', 'default_company_subject_type_invisible': True, 'default_company_subject_type': 'private'}"
                     />
                     <field name="amministrazione_id"
                            placeholder="PA / GPS"
                            domain="[('company_subject_type','=',company_subject_type),'|','|',('is_private_company','=',True),('is_amm','=',True),('is_gps','=',True)]"
-                           attrs="{'invisible': [('amministrazione_id_invisible','=',True)], 'required': [('amministrazione_id_invisible','=',False)]}"
+                           invisible="[('amministrazione_id_invisible','=',True)]",
+                           required= "[('amministrazione_id_invisible','=',False)]"
                            context="{'default_company_type_invisible': True, 'default_company_subject_type_invisible': True}"
                            options="{'no_create': True}"
                     />
                     <field name="aoo_id"
                            placeholder="Homogeneous Organizational Areas"
-                           attrs="{'invisible': [('aoo_id_invisible','=',True)], 'required': [('aoo_id_invisible','=',False)]}"
+                           invisible="[('aoo_id_invisible','=',True)]"
+                           required= "[('aoo_id_invisible','=',False)]"
                            context="{'default_company_type_invisible': True, 'default_company_subject_type_invisible': True}"
                            options="{'always_reload': True, 'no_create': True}"
                     />
@@ -89,96 +92,99 @@
 
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="cod_amm"
-                           attrs="{'invisible': [('is_amm','=',False), ('is_gps','=',False)]}"
+                           invisible="[('is_amm','=',False), ('is_gps','=',False)]"
                     />
                     <field name="cod_aoo"
-                           attrs="{'invisible': [('is_aoo','=', False)]}"
+                           invisible="[('is_aoo','=', False)]"
                     />
                     <field name="cod_ou"
-                           attrs="{'invisible': [('is_uo','=', False)]}"
+                           invisible="[('is_uo','=', False)]"
                     />
                 </xpath>
 
                 <xpath expr="//field[@name='category_id']/.." position="after">
                     <group colspan="2">
                         <field name="pa_digital_domicile_ids"
-                               attrs="{'invisible': [('pa_digital_domicile_ids_invisible','=',True)]}"
+                               invisible="[('pa_digital_domicile_ids_invisible','=',True)]"
                                context="{'tree_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_tree_aoo', 'form_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_form_aoo'}"
                         />
                         <field name="aoo_digital_domicile_ids"
-                               attrs="{'invisible': [('aoo_digital_domicile_ids_invisible','=',True)]}"
+                               invisible="[('aoo_digital_domicile_ids_invisible','=',True)]"
                                context="{'tree_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_tree', 'form_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_form'}"
                         />
                         <field name="uo_digital_domicile_ids"
-                               attrs="{'invisible': [('uo_digital_domicile_ids_invisible','=',True)]}"
+                               invisible="[('uo_digital_domicile_ids_invisible','=',True)]"
                                context="{'tree_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_tree', 'form_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_form'}"
                         />
                         <field name="email_address_ids"
-                               attrs="{'invisible': [('is_uo','=', False)]}"
+                               invisible="[('is_uo','=', False)]"
                         />
                     </group>
                 </xpath>
 
                 <xpath expr="//label[@for='email']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('email_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('email_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='email']" position="attributes">
-                    <attribute name="attrs">{'required': [('user_ids','!=', [])], 'invisible': [('email_invisible', '=', True)]}</attribute>
+                    <attribute name="required">[('user_ids','!=', [])]</attribute>
+                    <attribute name="invisible">[('email_invisible', '=', True)]</attribute>
+
                 </xpath>
 
                 <xpath expr="//field[@name='phone']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('phone_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('phone_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='company_type']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('company_type_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('company_type_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='mobile']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('mobile_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('mobile_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='title']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('title_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('title_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='street2']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('street2_invisible', '=', True)],'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}</attribute>
+                    <attribute name="invisible">[('street2_invisible', '=', True)]</attribute>
+                    <attribute name="readonly"> [('type', '=', 'contact'),('parent_id', '!=', False)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='vat']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('vat_invisible', '=', True)],'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}</attribute>
+                    <attribute name="invisible">[('vat_invisible', '=', True)]</attribute>
+                    <attribute name="readonly">[('type', '=', 'contact'),('parent_id', '!=', False)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='category_id']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('category_id_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('category_id_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='type']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('company_type', '!=', 'person')],
-                                             'readonly': [('user_ids', '!=', [])]}</attribute>
+                    <attribute name="invisible">[('company_type', '!=', 'person')]</attribute>
+                     <attribute name="readonly">[('user_ids', '!=', [])]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='website']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('website_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">[('website_invisible', '=', True)]</attribute>
                 </xpath>
 
                 <xpath expr="//label[@for='lang']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|', ('lang_invisible', '=', True), ('active_lang_count', '&lt;=', 1)]}</attribute>
+                    <attribute name="invisible">['|', ('lang_invisible', '=', True), ('active_lang_count', '&lt;=', 1)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='lang']/.." position="attributes">
-                    <attribute name="attrs">{'invisible': ['|', ('lang_invisible', '=', True), ('active_lang_count', '&lt;=', 1)]}</attribute>
+                    <attribute name="invisible">['|', ('lang_invisible', '=', True), ('active_lang_count', '&lt;=', 1)]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='function']" position="attributes">
-                    <attribute name="attrs">{'invisible': [('company_type', '!=', 'person')]}</attribute>
+                    <attribute name="invisible">[('company_type', '!=', 'person')]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='parent_id']" position="attributes">
-                    <attribute name="attrs">{
-                        'invisible': [('company_type', 'not in', ['person', 'company'])]}</attribute>
+                    <attribute name="invisible">[('company_type', 'not in', ['person', 'company'])]</attribute>
                 </xpath>
 
                 <xpath expr="//field[@name='child_ids']//form//field[@name='name']" position="before">
@@ -190,16 +196,16 @@
                 </xpath>
 
                 <xpath expr="//field[@name='child_ids']//form//hr" position="after">
-                    <group col="12" attrs="{'invisible': [('parent_child_aoo_id_invisible','=',True), ('parent_child_uo_id_invisible','=',True)]}">
+                    <group col="12" invisible="[('parent_child_aoo_id_invisible','=',True), ('parent_child_uo_id_invisible','=',True)]">
                         <group colspan="12" >
                             <field name="parent_child_aoo_id"
                                    domain="[('is_aoo','=',True),('amministrazione_id','=',context.get('default_parent_id'))]"
-                                   attrs="{'invisible': [('parent_child_aoo_id_invisible','=',True)]}"
+                                   invisible="[('parent_child_aoo_id_invisible','=',True)]"
                                    options="{'no_open': True, 'no_create': True}"
                             />
                             <field name="parent_child_uo_id"
                                    domain="[('is_uo','=',True),'|',('amministrazione_id','=',context.get('default_parent_id')),('aoo_id','=',context.get('default_parent_id'))]"
-                                   attrs="{'invisible': [('parent_child_uo_id_invisible','=',True)]}"
+                                   invisible="[('parent_child_uo_id_invisible','=',True)]"
                                    options="{'no_open': True, 'no_create': True}"
                             />
                             <field name="parent_child_aoo_id_invisible" invisible="1"/>
@@ -217,7 +223,7 @@
                 <xpath expr="//page[@name='contact_addresses']" position="after">
                     <field name="id" invisible="1"/>
                     <page string="Homogeneous Organizational Areas" name="aoo_ids"
-                          attrs="{'invisible':[('is_amm','=',False),('is_gps','=',False)]}">
+                          invisible="[('is_amm','=',False),('is_gps','=',False)]">
                         <field name="aoo_ids"
                                nolabel="1"
                                options="{'no_create':True}"
@@ -236,10 +242,10 @@
                     </page>
                     <page string="Organizational Unit"
                           name="uo_ids"
-                          attrs="{'invisible': [('is_private_company','=',False),('is_aoo','=',False),('is_amm','=',False),('is_gps','=',False)]}">
+                          invisible="[('is_private_company','=',False),('is_aoo','=',False),('is_amm','=',False),('is_gps','=',False)]">
 
                         <field name="uo_ids" nolabel="1"
-                               attrs="{'invisible': [('uo_ids_invisible','=',True)]}"
+                               invisible="[('uo_ids_invisible','=',True)]"
                                options="{'no_create':False}"
                                mode="kanban"
                                context="{
@@ -256,7 +262,7 @@
                         />
 
                         <field name="aoo_uo_ids" nolabel="1"
-                               attrs="{'invisible': [('is_aoo','=',False)]}"
+                               invisible="[('is_aoo','=',False)]"
                                options="{'no_create':False}"
                                mode="kanban"
                                context="{
@@ -291,10 +297,10 @@
 
                 <!-- Estensione per il campo fiscalcode di fl_partner_cf -->
                 <xpath expr="//label[@name='fl_fiscalcode']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|',('fl_fiscalcode_invisible', '=', True), ('fiscalcode_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">['|',('fl_fiscalcode_invisible', '=', True), ('fiscalcode_invisible', '=', True)]</attribute>
                 </xpath>
                 <xpath expr="//div[@name='fl_fiscalcode']" position="attributes">
-                    <attribute name="attrs">{'invisible': ['|',('fl_fiscalcode_invisible', '=', True), ('fiscalcode_invisible', '=', True)]}</attribute>
+                    <attribute name="invisible">['|',('fl_fiscalcode_invisible', '=', True), ('fiscalcode_invisible', '=', True)]</attribute>
                 </xpath>
 
             </field>
@@ -316,7 +322,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='name']" position="attributes">
-                    <attribute name="attrs">{'required': [('type','=','contact')]}</attribute>
+                    <attribute name="required">[('type','=','contact')]</attribute>
                 </xpath>
 
             </field>
@@ -371,7 +377,7 @@
                         </group>
                         <group col="12">
                             <group colspan="6">
-                                <field name="fiscalcode" attrs="{'invisible': [('fiscalcode_invisible','=', True)]}"/>
+                                <field name="fiscalcode" invisible="[('fiscalcode_invisible','=', True)]}"/>
                                 <label for="street" string="Address"/>
                                 <div class="o_address_format" name="div_address">
                                     <field name="street" placeholder="Street..." class="o_address_street"/>
@@ -383,46 +389,46 @@
                                     <field name="country_id" placeholder="Country" class="o_address_country"
                                            options='{"no_open": True, "no_create": True}'/>
                                 </div>
-                                <field name="vat" attrs="{'invisible': [('vat_invisible','=', True)]}"/>
+                                <field name="vat" invisible="[('vat_invisible','=', True)]"/>
                             </group>
                             <group colspan="6">
                                 <field name="phone" widget="phone"
-                                       attrs="{'invisible': [('phone_invisible','=', True)]}"/>
+                                       invisible="[('phone_invisible','=', True)]"/>
                                 <field name="mobile" widget="phone"
-                                       attrs="{'invisible': [('mobile_invisible','=', True)]}"/>
-                                <field name="email" widget="email" attrs="{'invisible': [('email_invisible','=', True)]}"/>
+                                       invisible="[('mobile_invisible','=', True)]"/>
+                                <field name="email" widget="email" invisible="[('email_invisible','=', True)]"/>
                                 <field name="pec_mail" widget="email"
-                                       attrs="{'invisible': [('fl_pec_mail_invisible','=', True)]}"
+                                       invisible="[('fl_pec_mail_invisible','=', True)]"
                                 />
-                                <field name="website" attrs="{'invisible': [('website_invisible','=', True)]}"/>
+                                <field name="website" invisible="[('website_invisible','=', True)]"/>
                                 <field name="category_id"
                                        widget="many2many_tags"
                                        options="{'color_field': 'color', 'no_create_edit': True}"
                                        placeholder="Tags..."
-                                       attrs="{'invisible': [('category_id_invisible','=', True)]}"
+                                       invisible="[('category_id_invisible','=', True)]"
                                 />
                                 <field name="company_id" invisible="1"/>
                                 <field name="cod_amm"
-                                       attrs="{'invisible': [('contact_pa_type','!=',False)]}"
+                                       invisible="[('contact_pa_type','!=',False)]"
                                 />
                                 <field name="cod_aoo"
-                                       attrs="{'invisible': [('contact_pa_type','!=','aoo')]}"
+                                       invisible="[('contact_pa_type','!=','aoo')]"
                                 />
                                 <field name="cod_ou"
-                                       attrs="{'invisible': [('contact_pa_type','!=','uo')]}"
+                                       invisible="[('contact_pa_type','!=','uo')]"
                                 />
                             </group>
                             <group colspan="12">
                                 <field name="aoo_digital_domicile_ids"
-                                       attrs="{'invisible': [('contact_pa_type','!=','aoo')]}"
+                                       invisible="[('contact_pa_type','!=','aoo')]"
                                        context="{'tree_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_tree', 'form_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_form'}"
                                 />
                                 <field name="uo_digital_domicile_ids"
-                                       attrs="{'invisible': [('contact_pa_type','!=','uo')]}"
+                                       invisible="[('contact_pa_type','!=','uo')]"
                                        context="{'tree_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_tree', 'form_view_ref': 'fl_partner_pa.view_res_partner_digital_domicile_form'}"
                                 />
                                 <field name="email_address_ids"
-                                       attrs="{'invisible': [('contact_pa_type','!=','uo')]}"
+                                       invisible="[('contact_pa_type','!=','uo')]"
                                 />
                             </group>
                         </group>

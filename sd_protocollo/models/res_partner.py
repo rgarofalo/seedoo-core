@@ -37,9 +37,9 @@ class ResPartner(models.Model):
     def _compute_protocollo_ids_count(self):
         protocollo_obj = self.env["sd.protocollo.protocollo"]
         for rec in self:
-            protocollo_ids_count = protocollo_obj.search([
+            protocollo_ids_count = protocollo_obj.search_count([
                 "|",
                 ("destinatario_ids.partner_id", "=", self.id),
                 ("mittente_ids.partner_id", "=", self.id)
-            ], count=True)
+            ])
             rec.protocollo_ids_count = protocollo_ids_count

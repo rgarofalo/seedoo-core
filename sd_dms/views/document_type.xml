@@ -8,13 +8,13 @@
     <data noupdate="0">
 
         <record id="view_sd_dms_document_type_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.document.type.tree</field>
+            <field name="name">view.sd.dms.document.type.list</field>
             <field name="model">sd.dms.document.type</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="active" />
-                </tree>
+                </list>
             </field>
         </record>
 

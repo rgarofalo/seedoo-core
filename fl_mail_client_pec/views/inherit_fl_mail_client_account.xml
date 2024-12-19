@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <record id="view_fl_mail_client_account_tree" model="ir.ui.view">
-            <field name="name">view.fl.mail.client.account.tree</field>
+            <field name="name">view.fl.mail.client.account.list</field>
             <field name="model">fl.mail.client.account</field>
             <field name="inherit_id" ref="fl_mail_client.view_fl_mail_client_account_tree"/>
             <field name="arch" type="xml">
@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//label[@for='description']" position="before">
-                    <widget name="web_ribbon" title="PEC" bg_color="bg-danger" attrs="{'invisible': [('pec', '!=', True)]}"/>
+                    <widget name="web_ribbon" title="PEC" bg_color="bg-danger" invisible="[('pec', '!=', True)]"/>
                 </xpath>
 
                 <xpath expr="//group[@name='left']" position="inside">

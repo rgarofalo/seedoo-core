@@ -42,13 +42,13 @@
         </record>
 
         <record id="view_sd_dms_document_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.document.tree</field>
+            <field name="name">view.sd.dms.document.list</field>
             <field name="model">sd.dms.document</field>
             <field name="inherit_id" ref="sd_dms.view_sd_dms_document_tree"/>
             <field name="arch" type="xml">
-                 <xpath expr="//tree" position="inside">
+                 <xpath expr="//list" position="inside">
                     <field name="button_disassocia_documento_invisible" invisible ="1"/>
-                    <button attrs="{'invisible': [('button_disassocia_documento_invisible','=',True)]}"
+                    <button invisible= "[('button_disassocia_documento_invisible','=',True)]"
                             name="disassocia_documento"
                             help="Disassociate"
                             type="object"

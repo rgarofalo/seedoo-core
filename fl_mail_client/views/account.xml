@@ -4,14 +4,14 @@
     <data noupdate="0">
 
         <record id="view_fl_mail_client_account_tree" model="ir.ui.view">
-            <field name="name">view.fl.mail.client.account.tree</field>
+            <field name="name">view.fl.mail.client.account.list</field>
             <field name="model">fl.mail.client.account</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="description"/>
                     <field name="fetchmail_server_id"/>
                     <field name="ir_mail_server_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -10,7 +10,9 @@ class Fascicolo(models.Model):
     def apri_fascicolo(self):
         self.ensure_one()
         if self.parent_id and self.parent_id.state == "bozza":
-            raise ValidationError(_("The dossier cannot be opened because parent is in draft state!"))
+            raise ValidationError(
+                _("The dossier cannot be opened because parent is in draft state!")
+            )
         self.state = "aperto"
         self.data_apertura = datetime.datetime.now()
         self.anno = self.data_apertura.strftime("%Y")
@@ -27,18 +29,18 @@ class Fascicolo(models.Model):
         context = dict(
             self.env.context,
             default_tipologia="sottofascicolo",
-            default_parent_id=self.id
+            default_parent_id=self.id,
         )
         return {
             "name": "Sottofascicoli",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.fascicolo.fascicolo",
             "type": "ir.actions.act_window",
             "domain": [
                 ("parent_id", "=", self.id),
-                ("tipologia", "=", "sottofascicolo")
+                ("tipologia", "=", "sottofascicolo"),
             ],
-            "context": context
+            "context": context,
         }
 
     def protocollo_lista_inserti_action(self):
@@ -50,16 +52,12 @@ class Fascicolo(models.Model):
         )
         return {
             "name": "Inserti",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.fascicolo.fascicolo",
             "type": "ir.actions.act_window",
-            "domain": [
-                ("parent_id", "=", self.id),
-                ("tipologia", "=", "inserto")
-            ],
-            "context": context
+            "domain": [("parent_id", "=", self.id), ("tipologia", "=", "inserto")],
+            "context": context,
         }
-
 
     def disassocia_fascicolo(self):
         self.ensure_one()
@@ -73,11 +71,11 @@ class Fascicolo(models.Model):
         context = dict(self._context or {})
         context["default_fascicolo_ids"] = [(6, 0, self.ids)]
         context["disassocia_documento_fascicolo_id"] = self.id
-        #TODO: gestire la creazione di un documento con associazione del fascicolo
+        # TODO: gestire la creazione di un documento con associazione del fascicolo
         context["create"] = False
         return {
             "name": _("Documents"),
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "res_model": "sd.dms.document",
             "domain": [("fascicolo_ids", "=", self.id)],
             "type": "ir.actions.act_window",
@@ -87,13 +85,19 @@ class Fascicolo(models.Model):
 
     def fascicolo_aggiungi_documenti(self, documento_ids):
         if self.state == "aperto":
-            self.write({"documento_ids": [(4, documento_id) for documento_id in documento_ids]})
+            self.write(
+                {"documento_ids": [(4, documento_id) for documento_id in documento_ids]}
+            )
             self.storico_aggiunta_documento(documento_ids)
         else:
-            raise UserError("Non è possibile aggiungere documenti in quanto lo stato del fascicolo deve essere aperto")
+            raise UserError(
+                "Non è possibile aggiungere documenti in quanto lo stato del fascicolo deve essere aperto"
+            )
 
     def fascicolo_disassocia_documenti(self, documento_ids):
-        self.write({"documento_ids": [(3, documento_id) for documento_id in documento_ids]})
+        self.write(
+            {"documento_ids": [(3, documento_id) for documento_id in documento_ids]}
+        )
         self.storico_disassocia_documento(documento_ids)
 
     @api.model

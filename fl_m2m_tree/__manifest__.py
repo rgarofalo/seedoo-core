@@ -1,6 +1,6 @@
 {
     "name": "M2M tree",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "",
     "description": "",
@@ -8,21 +8,16 @@
     "website": "https://www.flosslab.com",
     "license": "LGPL-3",
     "sequence": 0,
-    "depends": [
-        "web",
-        "fl_m2o_tree"
+    "depends": ["web", "fl_m2o_tree"],
+    "qweb": [
+        "static/src/xml/*.xml",
     ],
-    "data": [
-        "template/assets.xml",
-    ],
-    'qweb': [
-        'static/src/xml/*.xml',
-    ],
-    "external_dependencies": {
-        "python": [],
-        "bin": [],
+    'assets': {
+        'web.assets_backend': [
+            "/fl_m2m_tree/static/src/js/fl_m2m_tree.js"
+        ]
     },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

@@ -1,6 +1,6 @@
 {
     "name": "Onchange Action",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Extra Tools",
     "summary": "",
     "description": "",
@@ -11,10 +11,13 @@
     "depends": [
         "web",
     ],
-    "data": [
-        "template/assets.xml"
-    ],
+    "assets": {
+        "web.assets_backend": [
+            "/fl_onchange_action/static/src/js/AbstractWebClient.js",
+            "/fl_onchange_action/static/src/js/BasicModel.js",
+        ]
+    },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

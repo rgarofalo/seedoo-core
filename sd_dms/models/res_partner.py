@@ -35,8 +35,8 @@ class ResPartner(models.Model):
     def _compute_documents_count(self):
         document_obj = self.env["sd.dms.document"]
         for rec in self:
-            rec.documents_count = document_obj.search([
+            rec.documents_count = document_obj.search_count([
                 "|",
                 ("recipient_ids.partner_id", "=", self.id),
                 ("sender_ids.partner_id", "=", self.id)
-            ], count=True)
+            ])

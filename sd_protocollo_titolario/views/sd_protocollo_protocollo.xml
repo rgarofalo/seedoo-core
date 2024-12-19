@@ -13,7 +13,7 @@
                             string="Classifica"
                             type="object"
                             class="oe_highlight oe_read_only btn_sd"
-                            attrs="{'invisible': [('button_classifica_invisible', '=', True)]}"
+                            invisible="[('button_classifica_invisible', '=', True)]"
                             context="{'wizard_label': 'Classifica'}"
                     />
                 </xpath>
@@ -21,7 +21,8 @@
                 <xpath expr="//field[@name='documento_id_document_type_id']" position="before">
                     <field name="documento_id_voce_titolario_id"
                            string="Classificazione"
-                           attrs="{'readonly': [('documento_id_voce_titolario_readonly', '=', True)],'required':[('documento_id_voce_titolario_required','=',True)]}"
+                           readonly="[('documento_id_voce_titolario_readonly', '=', True)]"
+                           required="[('documento_id_voce_titolario_required','=',True)]"
                            widget="ztree_select"
                            options="{
                                 'ztree_parent_key': 'parent_id',

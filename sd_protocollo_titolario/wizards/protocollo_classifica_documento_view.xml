@@ -14,7 +14,7 @@
                             <field name="protocollo_company_id"/>
                         </group>
 
-                        <group attrs="{'invisible':[('voci_titolario_non_presenti','=',False)]}">
+                        <group invisible="[('voci_titolario_non_presenti','=',False)]">
                             <div colspan="4">
                                 <h3>Il titolario è vuoto.</h3>
                                 <p>Per classificare il protocollo è necessario inserire delle voci di titolario dalla
@@ -23,7 +23,7 @@
                             </div>
                         </group>
 
-                        <group attrs="{'invisible':[('voci_titolario_non_presenti','=',True)]}">
+                        <group invisible="[('voci_titolario_non_presenti','=',True)]">
                             <field name="voce_titolario_id"
                                    widget="ztree_select"
                                    options="{
@@ -38,7 +38,7 @@
                                    'no_open': True,
                                    'no_create': True
                                    }"
-                                   attrs="{'required' : [('voce_titolario_required', '=', True)]}"
+                                   required="[('voce_titolario_required', '=', True)]"
                             />
                         </group>
                     </sheet>
@@ -47,7 +47,7 @@
                                 name="action_salva"
                                 type="object"
                                 class="oe_highlight"
-                                attrs="{'invisible':[('voci_titolario_non_presenti','=',True)]}"
+                                invisible="[('voci_titolario_non_presenti','=',True)]"
                         />
                         <button string="Abbandona"
                                 class="oe_link"
@@ -83,9 +83,9 @@
                             </ul>
                         </group>
                         <separator/>
-                        <h5 attrs="{'invisible':[('messaggio_sostituzione_invisible','=',False)]}"><p>Desideri
+                        <h5 invisible="[('messaggio_sostituzione_invisible','=',False)]"><p>Desideri
                             utilizzarlo?</p></h5>
-                        <h5 attrs="{'invisible':[('messaggio_sostituzione_invisible','=',True)]}"><p>Desideri utilizzarlo e
+                        <h5 invisible="[('messaggio_sostituzione_invisible','=',True)]"><p>Desideri utilizzarlo e
                             sostituire l'assegnatario del protocollo?</p></h5>
                     </sheet>
                     <footer>

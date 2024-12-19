@@ -50,4 +50,4 @@ class ProtocolloDashboardController(http.Controller):
             return
         protocollo_obj = http.request.env["sd.protocollo.protocollo"]
         filter_field = "filter_%s" % key
-        values[key] = protocollo_obj.search([(filter_field, "=", True)], count=True)
+        values[key] = protocollo_obj.search_count([(filter_field, "=", True)])

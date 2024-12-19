@@ -54,8 +54,7 @@ class Etichetta(http.Controller):
 
         type_str = ""
         # Ricerca la selection con Sudo per avere la visibilità su tutta la selection
-        for selection_tuple_value in http.request.env[
-            "sd.protocollo.protocollo"]._fields["tipologia_protocollo"].selection:
+        for selection_tuple_value in http.request.env["sd.protocollo.protocollo"]._fields["tipologia_protocollo"].selection:
             if protocol_type == selection_tuple_value[0]:
                 type_str = selection_tuple_value[1]
                 break

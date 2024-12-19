@@ -3,10 +3,10 @@
     <data>
 
         <record id="view_sd_protocollo_protocollo_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.protocollo.tree</field>
+            <field name="name">view.sd.protocollo.protocollo.list</field>
             <field name="model">sd.protocollo.protocollo</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="tipologia_protocollo"/>
                     <field name="numero_protocollo" string="Numero protocollo"/>
                     <field name="data_registrazione"/>
@@ -20,7 +20,7 @@
                            options="{'icon_field':'mezzo_trasmissione_icon', 'icon_color_field': 'mezzo_trasmissione_icon_color'}"
                            class="sd-mezzo-trasmissione"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -35,70 +35,70 @@
                         <button name="protocollo_invia_action"
                                 type="object"
                                 string="Invia"
-                                attrs="{'invisible': [('button_invia_invisible', '=', True)]}"
+                                invisible="[('button_invia_invisible', '=', True)]"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_registra_action"
                                 type="object"
                                 string="Registra"
-                                attrs="{'invisible': [('button_registra_invisible', '=', True)]}"
+                                invisible="[('button_registra_invisible', '=', True)]"
                                 class="oe_highlight oe_read_only"
                         />
                         <button string="Inserisci segnatura PDF"
                                 class="oe_highlight oe_read_only"
                                 name="inserisci_segnatura_pdf_documento"
                                 type="object"
-                                attrs="{'invisible': [('button_inserisci_segnatura_pdf_documento_invisible','=', True)]}"
+                                invisible="[('button_inserisci_segnatura_pdf_documento_invisible','=', True)]"
                         />
                         <button name="protocollo_assegna_action"
                                 type="object"
                                 string="Assegna"
-                                attrs="{'invisible': [('button_assegna_invisible', '=', True)]}"
+                                invisible="[('button_assegna_invisible', '=', True)]"
                                 context="{'wizard_label': 'Assegna'}"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_prendi_in_carico_assegnazione_action"
                                 type="object"
                                 string="Prendi in carico"
-                                attrs="{'invisible': [('button_prendi_in_carico_assegnazione_invisible', '=', True)]}"
+                                invisible="[('button_prendi_in_carico_assegnazione_invisible', '=', True)]"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_rifiuta_assegnazione_action"
                                 type="object"
                                 string="Rifiuta assegnazione"
-                                attrs="{'invisible': [('button_rifiuta_assegnazione_invisible', '=', True)]}"
+                                invisible="[('button_rifiuta_assegnazione_invisible', '=', True)]"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_riassegna_action"
                                 type="object"
                                 string="Riassegna"
-                                attrs="{'invisible': [('button_riassegna_invisible', '=', True)]}"
+                                invisible="[('button_riassegna_invisible', '=', True)]"
                                 context="{'wizard_label': 'Riassegna'}"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_leggi_assegnazione_action"
                                 type="object"
                                 string="Segna come letto"
-                                attrs="{'invisible': [('button_leggi_assegnazione_invisible', '=', True)]}"
+                                invisible="[('button_leggi_assegnazione_invisible', '=', True)]"
                                 class="oe_highlight oe_read_only"
                         />
                         <button name="protocollo_elimina_bozza_action"
                                 type="object"
                                 string="Elimina bozza"
                                 class="oe_highlight oe_read_only"
-                                attrs="{'invisible': [('button_elimina_bozza_invisible', '=', True)]}"
+                                invisible="[('button_elimina_bozza_invisible', '=', True)]"
                         />
                         <button name="protocollo_completa_lavorazione_action"
                                 type="object"
                                 string="Lavorazione completata"
                                 class="oe_highlight oe_read_only"
-                                attrs="{'invisible': [('button_completa_lavorazione_stato_invisible', '=', True)]}"
+                                invisible="[('button_completa_lavorazione_stato_invisible', '=', True)]"
                         />
                         <button name="protocollo_rimetti_in_lavorazione_action"
                                 type="object"
                                 string="Rimetti in lavorazione"
                                 class="oe_highlight oe_read_only"
-                                attrs="{'invisible': [('button_rimetti_in_lavorazione_stato_invisible', '=', True)]}"
+                                invisible="[('button_rimetti_in_lavorazione_stato_invisible', '=', True)]"
                         />
                     </header>
                     <sheet>
@@ -174,7 +174,7 @@
                         <div name="button_box" class="oe_button_box">
                             <button name="protocollo_lista_source_action"
                                     type="object"
-                                    attrs="{'invisible': [('source_count', '=', 0)]}"
+                                    invisible="[('source_count', '=', 0)]"
                                     class="oe_stat_button"
                                     icon="fa-envelope"
                             >
@@ -199,7 +199,7 @@
                                 />
                             </button>
                         </div>
-                        <widget name="web_ribbon" title="ANNULLATO" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'annullato')]}"/>
+                        <widget name="web_ribbon" title="ANNULLATO" bg_color="bg-danger" invisible="[('state', '!=', 'annullato')]"/>
                         <group>
                             <div class="oe_title protocollo-form-numero_protocollo">
                                 <div class="o_horizontal_separator">
@@ -215,105 +215,121 @@
                         <group>
                             <group>
                                 <field name="tipologia_registrazione"
-                                       attrs="{'invisible': [('tipologia_registrazione_invisible','=', True)], 'readonly': [('field_readonly','=', True)]}"
+                                       invisible="[('tipologia_registrazione_invisible','=', True)]"
+                                        readonly="[('field_readonly','=', True)]"
                                 />
                                 <field name="emergenza_numero_protocollo"
-                                       attrs="{'invisible': [('tipologia_registrazione','!=', 'emergenza')],'required':[('tipologia_registrazione','=', 'emergenza')], 'readonly': [('field_readonly','=', True)]}"
+                                       invisible="[('tipologia_registrazione','!=', 'emergenza')]"
+                                       required="[('tipologia_registrazione','=', 'emergenza')]"
+                                       readonly= "[('field_readonly','=', True)]"
                                 />
                                 <field name="emergenza_data_registrazione"
-                                       attrs="{'invisible': [('tipologia_registrazione','!=', 'emergenza')],'required':[('tipologia_registrazione','=', 'emergenza')], 'readonly': [('field_readonly','=', True)]}"
+                                       invisible="[('tipologia_registrazione','!=', 'emergenza')]"
+                                       required="[('tipologia_registrazione','=', 'emergenza')]"
+                                       readonly="[('field_readonly','=', True)]"
                                 />
                                 <field name="user_tipologia_protocollo" class="oe_edit_only"
-                                       attrs="{'invisible': [('field_invisible','=', False)], 'required': [('tipologia_protocollo_readonly', '=', False)], 'readonly': ['|',('tipologia_protocollo_readonly', '=', True), ('is_reply', '=', True)]}"
+                                       invisible="[('field_invisible','=', False)]" 
+                                       required= "[('tipologia_protocollo_readonly', '=', False)]"
+                                       readonly= "['|',('tipologia_protocollo_readonly', '=', True), ('is_reply', '=', True)]"
                                 />
                                 <field name="tipologia_protocollo" class="oe_read_only"
-                                       attrs="{'invisible': [('field_invisible','=', False)], 'readonly': [('tipologia_protocollo_readonly', '=', True)]}"
+                                       invisible="[('field_invisible','=', False)]"
+                                       readonly ="[('tipologia_protocollo_readonly', '=', True)]"
                                 />
                                 <field name="archivio_id"
                                        options="{'no_open': True, 'no_create': True}"
                                        force_save="1"
                                 />
                                 <field name="registro_id"
-                                       attrs="{'readonly': [('registro_id_readonly','=', True)]}"
+                                       readonly="[('registro_id_readonly','=', True)]"
                                        context="{'company_id': company_id}"
                                        options="{'no_open': True, 'no_create': True}"
                                        force_save="1"
                                 />
                                 <field name="riservato"
-                                       attrs="{'readonly': [('riservato_readonly','=',True)]}"
+                                       readonly="[('riservato_readonly','=',True)]"
                                 />
                             </group>
                             <group>
                                 <field name="company_id"
                                        groups="base.group_multi_company"
-                                       attrs="{'readonly': [('company_id_readonly', '=', True)]}"
+                                       readonly="[('company_id_readonly', '=', True)]"
                                        options="{'no_open': True, 'no_create': True}"
                                        force_save="1"
                                 />
                                 <field name="protocollatore_id"
-                                       attrs="{'invisible': ['|',('field_invisible','=', False),('protocollatore_name','!=', False)]}"
+                                       invisible="['|',('field_invisible','=', False),('protocollatore_name','!=', False)]"
                                        options="{'no_open': True, 'no_create': True}"
                                 />
                                 <field name="protocollatore_name"
-                                       attrs="{'invisible': ['|',('field_invisible','=', False),('protocollatore_name','=', False)]}"
+                                       invisible="['|',('field_invisible','=', False),('protocollatore_name','=', False)]"
                                 />
                                 <field name="protocollatore_ufficio_id"
-                                       attrs="{'invisible': ['|',('field_invisible','=', False),('protocollatore_ufficio_name','!=', False)], 'readonly': [('protocollatore_ufficio_id_readonly', '=', True)]}"
+                                       invisible="['|',('field_invisible','=', False),('protocollatore_ufficio_name','!=', False)]"
+                                       readonly="[('protocollatore_ufficio_id_readonly', '=', True)]"
                                        context="{'company_id': company_id}"
                                        options="{'no_open': True, 'no_create': True}"
                                        force_save="1"
                                 />
                                 <field name="protocollatore_ufficio_name"
-                                       attrs="{'invisible': ['|',('field_invisible','=', False),('protocollatore_ufficio_name','=', False)]}"
+                                       invisible="['|',('field_invisible','=', False),('protocollatore_ufficio_name','=', False)]"
                                 />
                                 <field name="protocollatore_stato"
-                                       attrs="{'invisible': [('field_invisible','=', False)]}"
+                                       invisible="[('field_invisible','=', False)]"
                                 />
                             </group>
 
                         </group>
                         <group string="Documento" class="documento-title"
-                               attrs="{'invisible': ['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]}"/>
+                               invisible="['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]"/>
 
-                        <group attrs="{'invisible': ['|', ('tipologia_protocollo','=',False), '|', ('protocollatore_ufficio_id','=',False), ('mezzo_trasmissione_id_invisible', '=', True)]}">
+                        <group invisible="['|', ('tipologia_protocollo','=',False), '|', ('protocollatore_ufficio_id','=',False), ('mezzo_trasmissione_id_invisible', '=', True)]">
                             <group>
                                 <field name="mezzo_trasmissione_id"
                                        context="{'company_id': company_id, 'tipologia_protocollo': tipologia_protocollo, 'state_protocollo': state, 'id_protocollo': id}"
-                                       attrs="{'readonly': [('mezzo_trasmissione_id_readonly','=', True)], 'required': [('tipologia_protocollo','in', ['uscita','ingresso'])]}"
+                                       readonly="[('mezzo_trasmissione_id_readonly','=', True)]"
+                                       required="[('tipologia_protocollo','in', ['uscita','ingresso'])]"
                                        options="{'no_open': True, 'no_create': True}"
                                 />
                                 <field name="data_ricezione"
-                                       attrs="{'invisible': [('data_ricezione_invisible','=',True)], 'required': [('data_ricezione_required','=',True)], 'readonly': [('data_ricezione_readonly','=',True)]}"
+                                       invisible= "[('data_ricezione_invisible','=',True)]"
+                                       required= "[('data_ricezione_required','=',True)]"
+                                       readonly="[('data_ricezione_readonly','=',True)]"
                                 />
                             </group>
                             <group/>
                         </group>
 
-                        <group name="documento" attrs="{'invisible': ['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]}">
+                        <group name="documento" invisible="['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]">
                             <group>
                                 <field name="documento_id_oggetto"
-                                       attrs="{'required': [('documento_id_oggetto_required','=',True)], 'readonly': [('documento_id_oggetto_readonly','=',True)]}"
+                                       required="[('documento_id_oggetto_required','=',True)]"
+                                       readonly="[('documento_id_oggetto_readonly','=',True)]"
                                 />
                                 <field name="documento_id" invisible="1"/>
                                 <field name="documento_id_content"
                                        filename="documento_id_filename"
-                                       attrs="{'required': [('documento_id_content_required','=',True)], 'readonly': [('documento_id_content_readonly','=',True)]}"
+                                       required="[('documento_id_content_required','=',True)]" 
+                                       readonly="[('documento_id_content_readonly','=',True)]"
                                 />
                                 <field name="documento_id_cartella_id"
-                                       attrs="{'required': 1, 'readonly': [('documento_id_cartella_id_readonly','=',True)]}"
+                                       required="1"
+                                       readonly="[('documento_id_cartella_id_readonly','=',True)]"
                                        options="{'no_open': True, 'no_create': True}"
                                        force_save="1"
                                 />
                                 <field name="documento_id_impronta"
-                                       attrs="{'invisible': [('documento_id_content','=',False)]}"
+                                       invisible="[('documento_id_content','=',False)]"
                                 />
                             </group>
                         </group>
 
-                        <group name="tipologia_documento" attrs="{'invisible': ['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]}">
+                        <group name="tipologia_documento" invisible="['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]">
                             <group colspan="2" col="4">
                                 <field name="documento_id_document_type_id"
-                                       attrs="{'required': [('documento_id_document_type_id_required','=',True)], 'readonly': [('documento_id_document_type_id_readonly','=',True)]}"
+                                       required="[('documento_id_document_type_id_required','=',True)]"
+                                       readonly="[('documento_id_document_type_id_readonly','=',True)]"
                                        options="{'no_create': True, 'no_open': True}"
                                        force_save="1"
                                        colspan="2"
@@ -322,12 +338,12 @@
                             </group>
                         </group>
 
-                        <notebook attrs="{'invisible': ['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]}">
+                        <notebook invisible="['|', ('tipologia_protocollo','=',False), ('protocollatore_ufficio_id','=',False)]">
 
                             <page string="Destinatari" name="destinatari_ids"
-                                  attrs="{'invisible': [('page_destinatari_ids_invisible','=', True)]}">
+                                  invisible="[('page_destinatari_ids_invisible','=', True)]">
 
-                                <div attrs="{'invisible': [('button_aggiungi_destinatario_invisible','=', True)]}">
+                                <div invisible="[('button_aggiungi_destinatario_invisible','=', True)]">
                                     <button name="protocollo_aggiungi_contatto_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
@@ -349,7 +365,7 @@
                                     <button name="protocollo_aggiungi_contatto_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                            attrs="{'invisible': [('button_aggiungi_mittente_invisible','=', True)]}"
+                                            invisible="[('button_aggiungi_mittente_invisible','=', True)]"
                                             context="{'contact_type':'sender', 'wizard_label': 'Aggiungi Mittente'}">
                                         <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                         <span>Aggiungi</span>
@@ -357,7 +373,7 @@
                                     <button name="protocollo_aggiungi_mittente_interno_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                            attrs="{'invisible': [('button_aggiungi_mittente_interno_invisible','=', True)]}"
+                                            invisible="[('button_aggiungi_mittente_interno_invisible','=', True)]"
                                             context="{'wizard_label':'Aggiungi Mittente'}">
                                         <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                         <span>Aggiungi</span>
@@ -371,10 +387,10 @@
                                 <field name="mittente_interno_ufficio_id_set_type" invisible="1"/>
                                 <div class="o_kanban_view o_kanban_ungrouped"
                                      style="width:400px !important;"
-                                     attrs="{'invisible': [('mittente_interno_id_invisible', '=', True)]}">
+                                     invisible="[('mittente_interno_id_invisible', '=', True)]">
                                     <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban o_kanban_record">
                                         <div class="o_dropdown_kanban dropdown"
-                                             attrs="{'invisible': [('button_elimina_mittente_interno_invisible','=', True)]}">
+                                             invisible="[('button_elimina_mittente_interno_invisible','=', True)]">
                                             <a class="dropdown-toggle o-no-caret btn oe_edit_only"
                                                href="#"
                                                role="button"
@@ -397,11 +413,11 @@
                                         <div name="mittente_set_type"
                                              class="o_kanban_image_fill_left d-none d-md-block"
                                              style="background-image:url('/base/static/img/company_image.png')"
-                                             attrs="{'invisible': [('mittente_interno_ufficio_id_set_type','!=', 'standard')]}"
+                                             invisible="[('mittente_interno_ufficio_id_set_type','!=', 'standard')]"
                                         />
                                         <div class="o_kanban_image_fill_left d-none d-md-block"
                                              style="background-image:url('/base/static/img/avatar_grey.png')"
-                                             attrs="{'invisible': [('mittente_interno_utente_id','=', False)]}"
+                                             invisible="[('mittente_interno_utente_id','=', False)]"
                                         />
                                         <div class="oe_kanban_details d-flex flex-column">
                                             <strong class="o_kanban_record_title oe_partner_heading">
@@ -409,10 +425,10 @@
                                             </strong>
                                             <div name="mittente_interno_id_section" class="o_kanban_tags_section oe_kanban_partner_categories"/>
                                             <ul name="mittente_interno_id_ul">
-                                                <li attrs="{'invisible': [('mittente_interno_utente_id_email','=', False)]}">
+                                                <li invisible="[('mittente_interno_utente_id_email','=', False)]">
                                                     <field name="mittente_interno_utente_id_email"/>
                                                 </li>
-                                                <li attrs="{'invisible': [('mittente_interno_utente_id_pec_mail','=', False)]}">
+                                                <li invisible="[('mittente_interno_utente_id_pec_mail','=', False)]">
                                                     <field name="mittente_interno_utente_id_pec_mail"/>
                                                     <span>(PEC)</span>
                                                 </li>
@@ -434,7 +450,7 @@
                                     <button name="protocollo_aggiungi_contatto_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                            attrs="{'invisible': [('button_aggiungi_altro_soggetto_invisible','=', True)]}"
+                                            invisible="[('button_aggiungi_altro_soggetto_invisible','=', True)]"
                                             context="{'contact_type':'other_subjects', 'wizard_label': 'Aggiungi Altri Soggetti'}">
                                         <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                         <span>Aggiungi</span>
@@ -452,7 +468,7 @@
                                     <button name="protocollo_assegna_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                            attrs="{'invisible': [('button_aggiungi_assegnatari_invisible','=', True)]}"
+                                            invisible="[('button_aggiungi_assegnatari_invisible','=', True)]"
                                             context="{'wizard_label': 'Aggiungi assegnatari'}">
                                         <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                         <span>Aggiungi</span>
@@ -461,7 +477,7 @@
                                     <button name="protocollo_assegna_conoscenza_action"
                                             type="object"
                                             class="btn btn-secondary o-kanban-button-new oe_edit_only"
-                                            attrs="{'invisible': [('button_aggiungi_assegnatari_conoscenza_invisible','=', True)]}"
+                                            invisible="[('button_aggiungi_assegnatari_conoscenza_invisible','=', True)]"
                                             context="{'wizard_label': 'Aggiungi assegnatari conoscenza'}">
                                         <i class="fa fa-plus" title="Add">&amp;nbsp;</i>
                                         <span>Aggiungi assegnatari conoscenza</span>
@@ -469,14 +485,14 @@
                                 </div>
                                 <field name="assegnazione_parent_ids"
                                        force_save="1"
-                                       attrs="{'invisible': [('assegnazione_parent_ids','=',[])]}"/>
+                                       invisible="[('assegnazione_parent_ids','=',[])]"/>
                             </page>
 
                             <page string="Invii" name="invio"
-                                  attrs="{'invisible': [('invio_ids','=',[])]}">
+                                  invisible= "[('invio_ids','=',[])]">
                                 <field name="invio_ids"/>
                             </page>
-                            <page name="page_acl" string="Acl" attrs="{'invisible': [('id','=',False)]}">
+                            <page name="page_acl" string="Acl" invisible="[('id','=',False)]">
                                 <group>
                                     <field name="perm_write" invisible="1"/>
                                     <separator string="System Acl" colspan="2"/>
@@ -484,18 +500,18 @@
                                            nolabel="1"
                                            colspan="2"
                                     >
-                                        <tree>
+                                        <list>
                                             <field name="res_model"/>
                                             <field name="res_name"/>
                                             <field name="perm_read"/>
                                             <field name="perm_write"/>
                                             <field name="perm_delete"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                     <separator string="Acl" colspan="2"/>
                                     <field name="acl_ids"
                                            widget="one2many"
-                                           attrs="{'readonly': [('perm_write','!=',True)]}"
+                                           readonly="[('perm_write','!=',True)]"
                                            context="{'acl_values': acl_ids, 'default_protocollo_id': id}"
                                            nolabel="1"
                                            colspan="2"
@@ -538,11 +554,16 @@
                     <field name="data_registrazione" widget="date"/>
                     <field name="data_ricezione" widget="date"/>
 
-                    <filter string="Data Registrazione" name="filter_data_registrazione" date="data_registrazione"
-                            default_period="this_month"/>
+                    <filter string="Data Registrazione Mese Corrente" name="filter_data_registrazione" 
+                        domain="[('data_registrazione', '=',  context_today().strftime('%%m'))]"/>
+                        
                     <separator/>
-                    <filter string="Data Ricezione" name="filter_data_ricezione" date="data_ricezione"
-                            default_period="this_month"/>
+                    <filter string="Data Ricezione Mese Corrente" 
+                            name="filter_data_ricezione_this_month" 
+                            domain="[('data_ricezione', '=', context_today().strftime('%%m'))]"/>
+
+                                     
+
                     <separator/>
                     <group expand="0" string="Group By" name="filter_tipologia">
                         <filter name="uscita" string="Uscita" domain="[('tipologia_protocollo', '=', 'uscita')]"/>

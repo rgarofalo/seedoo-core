@@ -20,7 +20,9 @@ class Protocollo(models.Model):
         # se ci sono da reinviare più invii appartenenti a più di un'integrazione per un mezzo di trasmissione allora si
         # genera un errore: può essere gestito il reinvio di una sola integrazione
         if len(set(invii_integrazione)) > 1:
-            raise ValidationError(_("The resending of more than one transmission media is not managed!"))
+            raise ValidationError(
+                _("The resending of more than one transmission media is not managed!")
+            )
         # se ci sono invii da resettare allora si procede con la relativa action
         for invio_da_resettare in invii_da_resettare:
             invio_da_resettare.action_reset_mail()
@@ -36,28 +38,27 @@ class Protocollo(models.Model):
         return {
             "name": "Reinvio Mail",
             "view_type": "form",
-            "view_mode": "form,tree",
+            "view_mode": "form,list",
             "res_model": "sd.protocollo.wizard.protocollo.reinvio.mail",
             "type": "ir.actions.act_window",
             "target": "new",
-            "context": context
+            "context": context,
         }
 
     def protocollo_invia_action(self):
         self.ensure_one()
-        integrazione_values = self.env["sd.protocollo.mezzo.trasmissione"].get_integrazione_values()
+        integrazione_values = self.env[
+            "sd.protocollo.mezzo.trasmissione"
+        ].get_integrazione_values()
         if self.mezzo_trasmissione_id.integrazione in integrazione_values:
-            context = dict(
-                self.env.context,
-                protocollo_id=self.id
-            )
+            context = dict(self.env.context, protocollo_id=self.id)
             return {
                 "name": "Invio Mail",
                 "view_type": "form",
-                "view_mode": "form,tree",
+                "view_mode": "form,list",
                 "res_model": "sd.protocollo.wizard.protocollo.invio.mail",
                 "type": "ir.actions.act_window",
                 "target": "new",
-                "context": context
+                "context": context,
             }
         return super(Protocollo, self).protocollo_invia_action()

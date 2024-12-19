@@ -3,15 +3,15 @@
     <data>
 
         <record id="view_sd_protocollo_mezzo_trasmissione_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.mezzo.trasmissione.tree</field>
+            <field name="name">view.sd.protocollo.mezzo.trasmissione.list</field>
             <field name="model">sd.protocollo.mezzo.trasmissione</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="ordinamento" widget="handle"/>
                     <field name="nome" widget="icon_label" options="{'icon_field':'icon','icon_color_field':'icon_color'}" class="sd-mezzo-trasmissione"/>
                     <field name="icon"/>
                     <field name="icon_color"/>
-                </tree>
+                </list>
             </field>
         </record>
 

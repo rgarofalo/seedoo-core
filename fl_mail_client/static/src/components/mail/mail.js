@@ -1,152 +1,80 @@
-odoo.define('fl_mail_client/static/src/components/mail/mail.js', function (require) {
-'use strict';
+/** @odoo-module **/
 
-/****
- *
- * It applies the Message component concept to mail.mail object
- *
-*****/
+import { Component, useState, useRef, onWillUpdateProps, useEffect } from "@odoo/owl";
+import { getLangDatetimeFormat } from "@web/core/l10n/dates";
+import { useStore } from "@mail/core/hooks/use_store";
+import { useUpdate } from "@mail/core/hooks/use_update";
+import { AttachmentList } from "@mail/components/attachment_list/attachment_list";
 
-const components = {
-        AttachmentList: require('mail/static/src/components/attachment_list/attachment_list.js'),
-};
-const { Component, useState } = owl;
-const { getLangDatetimeFormat } = require('web.time');
-const useShouldUpdateBasedOnProps = require('mail/static/src/component_hooks/use_should_update_based_on_props/use_should_update_based_on_props.js');
-const useStore = require('mail/static/src/component_hooks/use_store/use_store.js');
-const useUpdate = require('mail/static/src/component_hooks/use_update/use_update.js');
-const { useRef } = owl.hooks;
+export class Mail extends Component {
+    static template = "fl_mail_client.Mail";
+    static components = { AttachmentList };
 
-class Mail extends Component {
+    static props = {
+        mailLocalId: { type: String, required: true },
+        threadViewLocalId: { type: String, optional: true },
+    };
 
-    /**
-     * @override
-     */
-    constructor(...args) {
-        super(...args);
-        this.state = useState({
-            isClicked: false,
-        });
-        useShouldUpdateBasedOnProps();
-        useStore(props => {
-            const mail = this.env.models['fl_mail_client.mail'].get(props.mailLocalId);
-            const author = mail ? mail.author : undefined;
-            const threadView = this.env.models['mail.thread_view'].get(props.threadViewLocalId);
-            const thread = threadView ? threadView.thread : undefined;
+    setup() {
+        this.state = useState({ isClicked: false });
+        this._prettyBodyRef = useRef("prettyBody");
+        this._lastPrettyBody = null;
+
+        this.store = useStore((props) => {
+            const mail = this.env.models["fl_mail_client.mail"].get(props.mailLocalId);
+            const threadView = this.env.models["mail.thread_view"].get(props.threadViewLocalId);
             return {
-                attachments: mail
-                    ? mail.attachments.map(attachment => attachment.__state)
-                    : [],
-                author,
-                mail: mail ? mail.__state : undefined,
-                thread,
-            }
+                mail: mail?.__state,
+                author: mail?.author,
+                attachments: mail?.attachments.map((att) => att.__state) || [],
+                thread: threadView?.thread,
+            };
         });
-        useUpdate({ func: () => this._update() });
 
-        /**
-         * Value of the last rendered prettyBody. Useful to compare to new value
-         * to decide if it has to be updated.
-         */
-        this._lastPrettyBody;
-        /**
-         * Reference to element containing the prettyBody. Useful to be able to
-         * replace prettyBody with new value in JS (which is faster than t-raw).
-         */
-        this._prettyBodyRef = useRef('prettyBody');
+        useUpdate(() => this._update());
     }
 
-    /**
-     * @returns {fl_mail_client.mail}
-     */
     get mail() {
-        return this.env.models['fl_mail_client.mail'].get(this.props.mailLocalId);
+        return this.env.models["fl_mail_client.mail"].get(this.props.mailLocalId);
     }
 
-    /**
-     * Get the received date time of the mail at current user locale time.
-     *
-     * @returns {string}
-     */
-    get server_received_datetime_formatted() {
-        return this.mail.server_received_datetime.format(getLangDatetimeFormat());
+    get serverReceivedDatetimeFormatted() {
+        return this.mail?.server_received_datetime.format(getLangDatetimeFormat());
     }
 
-    /**
-     * Get the received sent date time of the mail at current user locale time.
-     *
-     * @returns {string}
-     */
-    get sent_datetime_formatted() {
-        return this.mail.sent_datetime.format(getLangDatetimeFormat());
+    get sentDatetimeFormatted() {
+        return this.mail?.sent_datetime.format(getLangDatetimeFormat());
     }
 
-    /**
-     * Get state list for sent emails.
-     *
-     * @returns {list}
-     */
-    get state_out_list() {
+    get stateOutList() {
         return [
-            ['outgoing', this.env._t('Outgoing')],
-            ['sent', this.env._t('Sent')],
-            ['accepted', this.env._t('Accepted')],
-            ['received', this.env._t('Received')],
-            ['exception', this.env._t('Delivery Failed')],
-            ['cancel', this.env._t('Cancelled')]
+            ["outgoing", this.env._t("Outgoing")],
+            ["sent", this.env._t("Sent")],
+            ["accepted", this.env._t("Accepted")],
+            ["received", this.env._t("Received")],
+            ["exception", this.env._t("Delivery Failed")],
+            ["cancel", this.env._t("Cancelled")],
         ];
     }
 
-    /**
-     * @private
-     */
     _update() {
-        if (!this.mail) {
-            return;
-        }
-        if (this._prettyBodyRef.el && this.mail.prettyBody !== this._lastPrettyBody) {
+        if (!this.mail || !this._prettyBodyRef.el) return;
+        if (this._lastPrettyBody !== this.mail.prettyBody) {
             this._prettyBodyRef.el.innerHTML = this.mail.prettyBody;
             this._lastPrettyBody = this.mail.prettyBody;
         }
     }
 
-    //--------------------------------------------------------------------------
-    // Handlers
-    //--------------------------------------------------------------------------
-
-    /**
-     * @private
-     * @param {MouseEvent} ev
-     */
-    _onClick(ev) {
-        this.el.querySelector('.o_Message_footer').classList.toggle("not_visible");
-
-        $('.nav-pills a').click(function(){
-            var tabs = document.querySelectorAll('.tab-content>.tab-pane');
-            for (var k = 0; k < tabs.length; k++) {
-                tabs[k].className = "tab-pane";
-            }
-            var linkTab = this.getAttribute("aria-controls");
-            var tab = document.querySelectorAll('.tab-content>' + linkTab)[0];
-            tab.className = "tab-pane active";
-        })
-    };
+    onClick() {
+        this.el.querySelector(".o_Message_footer")?.classList.toggle("not_visible");
+        document.querySelectorAll(".nav-pills a").forEach((tab) => {
+            tab.addEventListener("click", (event) => {
+                document.querySelectorAll(".tab-content > .tab-pane").forEach((pane) => {
+                    pane.classList.remove("active");
+                });
+                const linkTab = tab.getAttribute("aria-controls");
+                document.querySelector(`.tab-content > ${linkTab}`).classList.add("active");
+            });
+        });
+    }
 }
-
-Object.assign(Mail, {
-    components,
-    defaultProps: {
-    },
-    props: {
-        mailLocalId: String,
-        threadViewLocalId: {
-            type: String,
-            optional: true,
-        },
-    },
-    template: 'fl_mail_client.Mail',
-});
-
-return Mail;
-
-});

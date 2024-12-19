@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <record id="view_sd_fascicolo_fascicolo_acl_tree" model="ir.ui.view">
-            <field name="name">view.sd.fascicolo.fascicolo.acl.tree</field>
+            <field name="name">view.sd.fascicolo.fascicolo.acl.list</field>
             <field name="model">sd.fascicolo.fascicolo.acl</field>
             <field name="mode">primary</field>
             <field name="inherit_id" ref="fl_acl.view_fl_acl_tree"/>

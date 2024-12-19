@@ -10,23 +10,23 @@
                     <sheet>
                         <group name="mittente">
                             <field name="mittente"
-                                   attrs="{'invisible': [('mittente','=', False)]}"/>
+                                   invisible="[('mittente','=', False)]"/>
                         </group>
                         <group name="destinatari">
                             <field name="destinatari"
-                                   attrs="{'invisible': [('destinatari','=', False)]}"/>
+                                   invisible="[('destinatari','=', False)]"/>
                         </group>
                         <group name="data_ricezione">
                             <field name="data_ricezione"
-                                   attrs="{'invisible': [('data_ricezione','=', False)]}"/>
+                                   invisible="[('data_ricezione','=', False)]"/>
                         </group>
                         <group name="assegnatari_competenza">
                             <field name="assegnatari_competenza"
-                                   attrs="{'invisible': [('assegnatari_competenza','=', False)]}"/>
+                                   invisible="[('assegnatari_competenza','=', False)]"/>
                         </group>
                         <group name="assegnatari_conoscenza">
                             <field name="assegnatari_conoscenza"
-                                   attrs="{'invisible': [('assegnatari_conoscenza','=', False)]}"/>
+                                   invisible="[('assegnatari_conoscenza','=', False)]"/>
                         </group>
                     </sheet>
                     <footer>

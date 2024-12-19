@@ -30,7 +30,7 @@ class InheritSdDmsDocument(models.Model):
     def _compute_fascicolo_ids_count(self):
         document_dossiers_obj = self.env["sd.fascicolo.fascicolo"]
         for document in self:
-            fascicolo_ids_count = document_dossiers_obj.search([("documento_ids", "=", self.id)], count=True)
+            fascicolo_ids_count = document_dossiers_obj.search_count([("documento_ids", "=", self.id)])
             document.fascicolo_ids_count = fascicolo_ids_count
 
     @api.depends("fascicolo_ids.inherit_acl_ids", "fascicolo_ids.system_acl_ids", "fascicolo_ids.acl_ids")

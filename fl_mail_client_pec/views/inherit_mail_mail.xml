@@ -15,7 +15,7 @@
                             class="oe_stat_button"
                             icon="fa-envelope"
                             context="{'mail_id': id}"
-                            attrs="{'invisible': [('direction', '=', 'in')]}"
+                            invisible="[('direction', '=', 'in')]"
                     >
                         <field string="Receipts"
                                name="pec_mail_child_count"
@@ -27,7 +27,7 @@
                 <xpath expr="//group[@name='status']" position="after">
                     <group name="pec"
                            string="PEC"
-                           attrs="{'invisible': [('pec', '!=', True)]}"
+                           invisible="[('pec', '!=', True)]"
                     >
                         <field name="pec_type"/>
                         <field name="cert_datetime"/>
@@ -37,7 +37,7 @@
                                context="{'form_view_ref':'fl_mail_client_pec.view_mail_mail_form'}"
                         />
                         <field name="err_type"
-                               attrs="{'invisible': [('error', '!=', True)]}"
+                               invisible="[('error', '!=', True)]"
                         />
                         <field name="pec"
                                invisible="1"
@@ -52,7 +52,7 @@
 
                 <xpath expr="//page[@name='advanced']" position="after">
                     <page string="Transport Envelope"
-                          attrs="{'invisible': [('original_attachment_ids', '=', [])]}"
+                          invisible="[('original_attachment_ids', '=', [])]"
                     >
                         <h2>
                             <field name="original_subject"
@@ -76,7 +76,7 @@
                             />
 
                         </group>
-                        <group string="Error" attrs="{'invisible': [('error', '!=', True)]}">
+                        <group string="Error" invisible="[('error', '!=', True)]">
                             <field name="err_type"/>
                         </group>
                         <group invisible="1">
@@ -107,15 +107,15 @@
                                     <div class="o_kanban_image">
                                         <div class="o_kanban_image_wrapper fl-mail-client-pec-image-wrapper">
                                             <i title="Posta Certificata" class="fa fa-envelope-o fl-mail-client-pec"
-                                               attrs="{'invisible': [('pec_type', '!=', 'posta_certificata')]}"/>
+                                               invisible="[('pec_type', '!=', 'posta_certificata')]"/>
                                             <i title="Avvenuta Consegna"
                                                class="fa fa-check-circle-o fl-mail-client-pec-consegna"
-                                               attrs="{'invisible': [('pec_type', 'not in', ['avvenuta-consegna'])]}"/>
+                                               invisible="[('pec_type', 'not in', ['avvenuta-consegna'])]"/>
                                             <i title="Accettazione"
                                                class="fa fa-check-circle-o fl-mail-client-pec-accettazione"
-                                               attrs="{'invisible': [('pec_type', 'not in', ['accettazione'])]}"/>
+                                               invisible="[('pec_type', 'not in', ['accettazione'])]"/>
                                             <i title="Errore" class="fa fa-exclamation-circle fl-mail-client-pec-errore"
-                                               attrs="{'invisible': [('pec_type', 'in', ['posta_certificata','avvenuta-consegna','accettazione'])]}"/>
+                                               invisible="[('pec_type', 'in', ['posta_certificata','avvenuta-consegna','accettazione'])]"/>
                                         </div>
                                         <div class="fl-mail-client-pec-date"><field name="cert_datetime"/></div>
                                     </div>

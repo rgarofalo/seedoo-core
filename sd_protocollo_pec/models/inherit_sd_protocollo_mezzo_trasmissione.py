@@ -39,10 +39,10 @@ class MezzoTrasmissione(models.Model):
             domain.append(("integrazione", "not in", self.get_integrazione_values()))
             return domain
         if tipologia_protocollo == "uscita":
-            account_count = self.env["fl.mail.client.account"].search([
+            account_count = self.env["fl.mail.client.account"].search_count([
                 ('use_outgoing_server', '=', True),
                 ('pec', '=', True)
-            ], count=True)
+            ])
             if account_count == 0:
                 domain.append(("integrazione", "not in", ["pec"]))
             return domain

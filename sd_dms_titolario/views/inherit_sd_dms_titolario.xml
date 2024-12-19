@@ -3,14 +3,14 @@
     <data>
 
         <record id="view_sd_dms_titolario_titolario_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.titolario.titolario.tree</field>
+            <field name="name">view.sd.dms.titolario.titolario.list</field>
             <field name="model">sd.dms.titolario.titolario</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="state"/>
                     <field name="voce_titolario_ids"/>
-                </tree>
+                </list>
             </field>
         </record>
 

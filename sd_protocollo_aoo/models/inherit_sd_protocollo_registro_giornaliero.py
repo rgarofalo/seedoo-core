@@ -43,7 +43,7 @@ class RegistroGiornaliero(models.Model):
             ("company_id", "=", kwargs["company_id"])
         ])
         for aoo in aoo_list:
-            if registro_obj.search([("ufficiale", "=", True), ("aoo_id", "=", aoo.id)], count=True) == 0:
+            if registro_obj.search_count([("ufficiale", "=", True), ("aoo_id", "=", aoo.id)]) == 0:
                 continue
             kwargs["aoo_id"] = aoo.id
             super(RegistroGiornaliero, self).crea_registro_giornaliero(**kwargs)

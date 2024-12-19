@@ -8,13 +8,13 @@
     <data>
 
         <record id="view_sd_dms_category_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.category.tree</field>
+            <field name="name">view.sd.dms.category.list</field>
             <field name="model">sd.dms.category</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="parent_category_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

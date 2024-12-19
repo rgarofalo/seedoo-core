@@ -5,7 +5,7 @@
 
         <record id="access_fetchmail_server_1" model="ir.model.access">
             <field name="name">access.fetchmail.server.1</field>
-            <field name="model_id" ref="fetchmail.model_fetchmail_server"/>
+            <field name="model_id" ref="mail.model_fetchmail_server"/>
             <field name="group_id" ref="group_fl_mail_client_user_base"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
@@ -15,7 +15,7 @@
 
         <record id="access_fetchmail_server_2" model="ir.model.access">
             <field name="name">access.fetchmail.server.2</field>
-            <field name="model_id" ref="fetchmail.model_fetchmail_server"/>
+            <field name="model_id" ref="mail.model_fetchmail_server"/>
             <field name="group_id" ref="group_fl_mail_client_user_advanced"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
@@ -25,7 +25,7 @@
 
         <record id="access_fetchmail_server_3" model="ir.model.access">
             <field name="name">access.fetchmail.server.3</field>
-            <field name="model_id" ref="fetchmail.model_fetchmail_server"/>
+            <field name="model_id" ref="mail.model_fetchmail_server"/>
             <field name="group_id" ref="group_fl_mail_client_manager"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>

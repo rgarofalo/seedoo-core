@@ -7,8 +7,8 @@
         <field name="arch" type="xml">
             <field name="type" position="after">
                 <field name="fl_fiscalcode_invisible" invisible="1"/>
-                <label name="fl_fiscalcode" for="fiscalcode" attrs="{'invisible': [('fl_fiscalcode_invisible', '=', True)]}"/>
-                <div name="fl_fiscalcode" class="o_row" attrs="{'invisible': [('fl_fiscalcode_invisible', '=', True)]}">
+                <label name="fl_fiscalcode" for="fiscalcode" invisible="[('fl_fiscalcode_invisible', '=', True)]"/>
+                <div name="fl_fiscalcode" class="o_row" invisible="[('fl_fiscalcode_invisible', '=', True)]">
                     <field name="fiscalcode" class="fl_fiscalcode oe_inline"/>
                 </div>
             </field>

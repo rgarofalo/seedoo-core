@@ -1,9 +1,9 @@
 {
     "name": "E-mail client",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Discuss",
     "summary": "Receive and send e-mail",
-    'description': """
+    "description": """
             APP to use e-mail message.
         """,
     "author": "Flosslab",
@@ -17,11 +17,12 @@
         "password_security",
         "disable_odoo_online",
         "fl_feature_enterprise",
+        "mail",
+        "base","web"
     ],
     "data": [
         "security/categories.xml",
         "security/groups.xml",
-
         "security/access/account.xml",
         "security/access/account_permission.xml",
         "security/access/contact.xml",
@@ -31,39 +32,56 @@
         "security/access/inherit_mail_mail.xml",
         "security/access/inherit_ir_module_module.xml",
         "security/access/inherit_ir_cron.xml",
-
         "security/rules/inherit_mail_mail.xml",
-
         "wizards/inherit_mail_compose_message.xml",
         "wizards/inherit_res_config_settings.xml",
-
-        "templates/assets.xml",
-
         "views/contact.xml",
         "views/inherit_fetchmail_server.xml",
         "views/inherit_ir_mail_server.xml",
         "views/inherit_ir_attachment.xml",
-
         "views/inherit_mail_mail.xml",
         "actions/inherit_mail_mail.xml",
-
         "views/account.xml",
         "views/account_permission.xml",
-
         "menu/actions.xml",
         "menu/items.xml",
-
-        "static/src/templates/web_templates.xml"
+        # "static/src/templates/web_templates.xml",
     ],
     "qweb": [
-        'static/src/components/discuss_sidebar/discuss_sidebar.xml',
-        'static/src/components/mail_list/mail_list.xml',
-        'static/src/components/mail/mail.xml',
-        'static/src/components/thread_view/thread_view.xml',
-        'static/src/components/thread_icon/thread_icon.xml',
+        "/fl_mail_client/static/src/components/discuss_sidebar/discuss_sidebar.xml",
+        "/fl_mail_client/static/src/components/mail_list/mail_list.xml",
+        "/fl_mail_client/static/src/components/mail/mail.xml",
+        "/fl_mail_client/static/src/components/thread_view/thread_view.xml",
+        "/fl_mail_client/static/src/components/thread_icon/thread_icon.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "/fl_mail_client/static/src/components/mail/mail.js",
+            "/fl_mail_client/static/src/components/mail_list/mail_list.js",
+            "/fl_mail_client/static/src/components/thread_view/thread_view.js",
+            "/fl_mail_client/static/src/components/discuss_sidebar/discuss_sidebar.js",
+            "/fl_mail_client/static/src/components/discuss_sidebar_item/discuss_sidebar_item.js",
+            "/fl_mail_client/static/src/models/thread/thread.js",
+            "/fl_mail_client/static/src/models/partner/partner.js",
+            "/fl_mail_client/static/src/models/thread_view/thread_view.js",
+            "/fl_mail_client/static/src/models/thread_view/thread_viewer.js",
+            "/fl_mail_client/static/src/models/mail/mail.js",
+            "/fl_mail_client/static/src/models/mail_cache/mail_cache.js",
+            "/fl_mail_client/static/src/models/thread_cache/thread_cache.js",
+            "/fl_mail_client/static/src/models/messaging/messaging.js",
+            "/fl_mail_client/static/src/models/messaging_initializer/messaging_initializer.js",
+            "/fl_mail_client/static/src/models/messaging_notification_handler/messaging_notification_handler.js",
+            "/fl_mail_client/static/src/models/attachment/attachment.js",
+            "/fl_mail_client/static/src/widgets/discuss/discuss.js",
+            "/fl_mail_client/static/src/components/mail_list/mail_list.scss",
+            "/fl_mail_client/static/src/components/mail/mail.scss",
+            "/fl_mail_client/static/src/scss/res_config_settings.scss",
+            "/fl_mail_client/static/src/scss/mail.scss",
+            
+        ]
+    },
     "installable": True,
     "application": True,
     "auto_install": False,
-    "post_init_hook": "post_init_hook"
+    # "post_init_hook": "post_init_hook",
 }

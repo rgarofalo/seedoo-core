@@ -3,10 +3,10 @@
     <data>
 
         <record id="view_sd_protocollo_invio_tree" model="ir.ui.view">
-            <field name="name">view.sd.protocollo.invio.tree</field>
+            <field name="name">view.sd.protocollo.invio.list</field>
             <field name="model">sd.protocollo.invio</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="field_tree_invio_decoration_state == 'danger'"
+                <list decoration-danger="field_tree_invio_decoration_state == 'danger'"
                       decoration-success="field_tree_invio_decoration_state == 'success'"
                       decoration-muted="field_tree_invio_decoration_state == 'muted'"
                       decoration-info="field_tree_invio_decoration_state == 'info'">
@@ -15,7 +15,7 @@
                     <field name="mezzo_trasmissione_nome"/>
                     <field name="data_invio"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 

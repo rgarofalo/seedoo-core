@@ -1,6 +1,6 @@
 {
     "name": "PEC - Protocollo",
-    "version": "14.0.2.0.0",
+    "version": "18.0.2.0.0",
     "category": "Document Management",
     "summary": "Aggiunge la gestione della PEC al Protocollo",
     "description": "",
@@ -14,12 +14,9 @@
     "data": [
         "data/inherit_ir_config_parameter.xml",
         "data/inherit_mezzo_trasmissione.xml",
-
         "actions/mail_mail.xml",
-
         "security/groups.xml",
         "security/access/wizard.xml",
-
         "views/inherit_mail_mail.xml",
         "views/inherit_sd_dms_contact.xml",
         "views/inherit_sd_dms_contact_digital_domicile.xml",
@@ -28,14 +25,11 @@
         "views/inherit_sd_protocollo_invio_destinatario.xml",
         "views/inherit_sd_protocollo_mezzo_trasmissione.xml",
         "views/inherit_sd_protocollo_protocollo.xml",
-
         "templates/assets.xml",
         "templates/protocollo_dashboard_template.xml",
         "templates/mail_mail.xml",
         "templates/inherit_header_footer_template.xml",
-
         "reports/mail_mail.xml",
-
         "wizards/protocollo_crea_da_mail_view.xml",
         "wizards/protocollo_invio_mail_view.xml",
         "wizards/protocollo_reinvio_mail_view.xml",
@@ -43,10 +37,16 @@
         "wizards/inherit_sd_dms_wizard_document_add_contact.xml",
         "wizards/inherit_sd_protocollo_wizard_protocollo_registra.xml",
     ],
-    "qweb": [
-        "static/src/components/mail/mail.xml"
-    ],
+    "qweb": ["static/src/components/mail/mail.xml"],
+    "assets": {
+        "web.assets_frontend": [
+            "/sd_protocollo_pec/static/src/components/mail/mail.js",
+            "/sd_protocollo_pec/static/src/models/mail/mail.js",
+            "/sd_protocollo_pec/static/src/models/messaging_notification_handler/messaging_notification_handler.js",
+            "/sd_protocollo_pec/static/src/components/mail/mail.scss",
+        ]
+    },
     "installable": True,
     "application": False,
-    "auto_install": False
+    "auto_install": False,
 }

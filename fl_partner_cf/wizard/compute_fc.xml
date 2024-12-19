@@ -58,7 +58,7 @@
                         icon="fa-gear"
                         colspan="2"
                         style="margin-left: 10px"
-                        attrs="{'invisible': [('calculate_fiscalcode', '=', False)]}"
+                        invisible="[('calculate_fiscalcode', '=', False)]"
                 />
             </field>
         </field>

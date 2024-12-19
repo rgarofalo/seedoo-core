@@ -8,14 +8,14 @@
     <data>
 
         <record id="view_sd_dms_contact_tree" model="ir.ui.view">
-            <field name="name">view.sd.dms.contact.tree</field>
+            <field name="name">view.sd.dms.contact.list</field>
             <field name="model">sd.dms.contact</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="typology"/>
                     <field name="company_type"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -52,7 +52,7 @@
                             />
                         </group>
                         <hr/>
-                        <group attrs="{'invisible': [('company_type','!=','company')]}">
+                        <group invisible="[('company_type','!=','company')]">
                             <field name="company_type"
                                    invisible="1"
                             />
@@ -62,38 +62,38 @@
                         </group>
                         <h3>
                             <field name="name"
-                                   attrs="{'invisible':[('name_invisible','=',True)]}"
+                                   invisible="[('name_invisible','=',True)]"
                                    nolabel="1"
                                    style="width: 60% !important;"
                             />
                             <field name="name_amm"
-                                   attrs="{'invisible': [('name_amm_invisible','=',True)]}"
+                                   invisible="[('name_amm_invisible','=',True)]"
                                    placeholder="Name"
                                    style="width: 60% !important;"
                             />
                         </h3>
                         <group colspan="2">
                             <field name="parent_person"
-                                   attrs="{'invisible': [('parent_person_invisible','=',True)]}"
+                                   invisible="[('parent_person_invisible','=',True)]"
                                    nolabel="1"
                             />
                         </group>
 
-                        <group attrs="{'invisible':[('person_or_company_invisible','=',True)]}"
+                        <group invisible="[('person_or_company_invisible','=',True)]"
                                colspan="2"
                         >
                             <group>
                                 <field name="title"
-                                       attrs="{'invisible':[('title_invisible','=',True)]}"
+                                       invisible="[('title_invisible','=',True)]"
                                 />
                                 <field name="vat"
-                                       attrs="{'invisible':[('vat_invisible','=',True)]}"
+                                       invisible="[('vat_invisible','=',True)]"
                                 />
                                 <label for="street"
                                        string="Address"
-                                       attrs="{'invisible': [('street_invisible','=',True)]}"
+                                       invisible="[('street_invisible','=',True)]"
                                 />
-                                <div class="o_address_format" attrs="{'invisible': [('street_invisible','=',True)]}">
+                                <div class="o_address_format" invisible="[('street_invisible','=',True)]">
                                     <field name="street"
                                            placeholder="Street..."
                                            class="o_address_street"
@@ -124,27 +124,27 @@
                             </group>
                             <group>
                                 <field name="fiscalcode"
-                                       attrs="{'invisible': [('fiscalcode_invisible','=',True)]}"
+                                       invisible="[('fiscalcode_invisible','=',True)]"
                                 />
                                 <field name="function"
-                                       attrs="{'invisible': [('function_invisible','=',True)]}"
+                                       invisible="[('function_invisible','=',True)]"
                                 />
                                 <field name="email"
-                                       attrs="{'invisible': [('email_invisible','=',True)]}"
+                                       invisible="[('email_invisible','=',True)]"
                                 />
                                 <field name="pec_mail"
-                                       attrs="{'invisible': [('pec_mail_invisible','=',True)]}"
+                                       invisible="[('pec_mail_invisible','=',True)]"
                                 />
                                 <field name="phone"
-                                       attrs="{'invisible': [('phone_invisible','=',True)]}"
+                                       invisible="[('phone_invisible','=',True)]"
                                 />
                                 <field name="mobile"
-                                       attrs="{'invisible': [('mobile_invisibile','=',True)]}"
+                                       invisible="[('mobile_invisibile','=',True)]"
                                 />
                             </group>
                         </group>
 
-                        <group attrs="{'invisible': [('amm_invisible','=',True)]}"
+                        <group invisible="[('amm_invisible','=',True)]"
                                colspan="2"
                         >
                             <group>
@@ -156,7 +156,7 @@
                             </group>
                         </group>
 
-                        <group attrs="{'invisible': [('aoo_invisible','=',True)]}"
+                        <group invisible="[('aoo_invisible','=',True)]"
                                colspan="2"
                         >
                             <group col="1">
@@ -173,7 +173,7 @@
                             </group>
                         </group>
 
-                        <group attrs="{'invisible': [('uo_invisible','=',True)]}"
+                        <group invisible="[('uo_invisible','=',True)]"
                                colspan="2"
                         >
                             <group col="1">
@@ -190,7 +190,7 @@
                             </group>
                         </group>
 
-                        <group attrs="{'invisible': [('contact_pa_invisible','=',True)]}"
+                        <group invisible="[('contact_pa_invisible','=',True)]"
                                colspan="2"
                         >
                             <group>
@@ -208,7 +208,7 @@
                             </group>
                         </group>
 
-                        <group attrs="{'invisible':[('category_id_invisible','=',True)]}"
+                        <group invisible="[('category_id_invisible','=',True)]"
                                colspan="2"
                         >
                             <field name="category_id"
@@ -261,7 +261,7 @@
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
-                                <div attrs="{'invisible': [('button_edit_contact_invisible','=',True)]}"
+                                <div invisible="[('button_edit_contact_invisible','=',True)]"
                                      class="o_dropdown_kanban dropdown"
                                 >
                                     <a class="dropdown-toggle o-no-caret btn oe_edit_only"
